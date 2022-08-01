@@ -1,0 +1,22 @@
+﻿@page
+@model IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Westwind.AspNetCore.Markdown
+@addTagHelper *, Htmx.TagHelpers
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <a href="#" hx-get="" hx-target="#xContent">click HTMX</a>
+</div>
+
+@* hx-trigger="keyup changed delay:250ms" *@
+<textarea hx-post="@Url.Page("Index")"  hx-trigger="keyup changed delay:250ms" hx-target="#xContent" asp-for="PostContent" ></textarea>
+<div id="preview">
+    
+</div>
+
+<div id="xContent" style="margin: auto 0"><partial name="_Preview"/></div>

@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeMe", "TreeMe.csproj", "{13D432A7-0DE7-48DE-BD11-BAD66758B457}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{29DC7629-6EF9-46DB-95B9-3CA2FF11AC7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeMeX", "TreeMeX\TreeMeX.csproj", "{26C2B67C-8CF0-4477-BB35-6EC64333F6B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackEnd", "BackEnd\BackEnd.csproj", "{A7EA754E-2F87-438D-B3CA-4B037E38EDD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Htmx", "..\Htmx.Net\src\Htmx\Htmx.csproj", "{C645E889-ECD3-4356-A966-9BFEF04B531B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Htmx.TagHelpers", "..\Htmx.Net\src\Htmx.TagHelpers\Htmx.TagHelpers.csproj", "{149FDA80-49EF-40C7-9C62-548386A46A4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Westwind.AspNetCore.Markdown", "..\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown.csproj", "{2A34C94B-1B94-44C2-A42C-E59CF9F32F63}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{13D432A7-0DE7-48DE-BD11-BAD66758B457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13D432A7-0DE7-48DE-BD11-BAD66758B457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13D432A7-0DE7-48DE-BD11-BAD66758B457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13D432A7-0DE7-48DE-BD11-BAD66758B457}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29DC7629-6EF9-46DB-95B9-3CA2FF11AC7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29DC7629-6EF9-46DB-95B9-3CA2FF11AC7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29DC7629-6EF9-46DB-95B9-3CA2FF11AC7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29DC7629-6EF9-46DB-95B9-3CA2FF11AC7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26C2B67C-8CF0-4477-BB35-6EC64333F6B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26C2B67C-8CF0-4477-BB35-6EC64333F6B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26C2B67C-8CF0-4477-BB35-6EC64333F6B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26C2B67C-8CF0-4477-BB35-6EC64333F6B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7EA754E-2F87-438D-B3CA-4B037E38EDD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7EA754E-2F87-438D-B3CA-4B037E38EDD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7EA754E-2F87-438D-B3CA-4B037E38EDD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7EA754E-2F87-438D-B3CA-4B037E38EDD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C645E889-ECD3-4356-A966-9BFEF04B531B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C645E889-ECD3-4356-A966-9BFEF04B531B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C645E889-ECD3-4356-A966-9BFEF04B531B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C645E889-ECD3-4356-A966-9BFEF04B531B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{149FDA80-49EF-40C7-9C62-548386A46A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{149FDA80-49EF-40C7-9C62-548386A46A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{149FDA80-49EF-40C7-9C62-548386A46A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{149FDA80-49EF-40C7-9C62-548386A46A4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A34C94B-1B94-44C2-A42C-E59CF9F32F63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A34C94B-1B94-44C2-A42C-E59CF9F32F63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A34C94B-1B94-44C2-A42C-E59CF9F32F63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A34C94B-1B94-44C2-A42C-E59CF9F32F63}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

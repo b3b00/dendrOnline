@@ -1,0 +1,10 @@
+@model IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Westwind.AspNetCore.Markdown
+@addTagHelper *, Htmx.TagHelpers
+
+<div style="border: red solid 1px">
+<markdown>@Model.PostContent</markdown>
+</div>
+
+
