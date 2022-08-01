@@ -16,10 +16,11 @@
       <Content Include="Pages\Shared\_Layout2.txt.css" />
     </ItemGroup>
 
-    <ItemGroup>
-<!--      <ProjectReference Include="..\..\Htmx.Net\src\Htmx.TagHelpers\Htmx.TagHelpers.csproj" />-->
+    <ItemGroup><!--      <ProjectReference Include="..\..\Htmx.Net\src\Htmx.TagHelpers\Htmx.TagHelpers.csproj" />-->
 <!--      <ProjectReference Include="..\..\Htmx.Net\src\Htmx\Htmx.csproj" />-->
 <!--      <ProjectReference Include="..\..\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown.csproj" />-->
+    
+      <ProjectReference Include="..\BackEnd\BackEnd.csproj" />
     </ItemGroup>
 
 </Project>

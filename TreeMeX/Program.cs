@@ -1,4 +1,5 @@
 using System.Text;
+using BackEnd;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,8 @@ builder.Services.AddRazorPages(o => {
      o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
  });
 
+builder.Services.AddScoped<INotesService>((IServiceProvider provider) =>
+    new FsNotesService(@"C:\Users\olduh\DendronNotes"));
 
 var app = builder.Build();
 

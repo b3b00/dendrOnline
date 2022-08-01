@@ -1,6 +1,8 @@
-﻿using Htmx;
+﻿using BackEnd;
+using Htmx;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Primitives;
 
 namespace TreeMeX.Pages;
 
@@ -9,30 +11,39 @@ public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
 
-    public string PostContent { get; set; }  = "**this is the initial content**";
+    public string PostContent { get; set; }  = "*empty*";
+
+    public List<string> Notes { get; set; } = new List<string>();
 
     public IndexModel(ILogger<IndexModel> logger)
     {
         _logger = logger;
+        
     }
 
     public IActionResult OnGet()
     {
-        if (Request.IsHtmx())
+        var notesService = HttpContext.RequestServices.GetService<INotesService>();
+        Notes = notesService.GetNotes();
+        
+        if (!Request.IsHtmx())
         {
-            var content = Request.Query["PostContent"].First();
-            this.PostContent = content;
-            // var rnd = new Random();
-            //
-            // return Content($@"<div style=""color:red;margin auto 0"">{rnd.Next(100)}</div>");
-            return Partial("_Preview",this);
+            return Page();
         }
-
-        return Page();
+        
+        
+        StringValues note = default;
+        if (Request.Query.TryGetValue("note", out note))
+        {
+            PostContent = notesService.GetContent(note.First());
+        }
+        
+        return Partial("_Preview", this);
     }
 
     public IActionResult OnPost(string PostContent)
     {
+        var notesService = HttpContext.RequestServices.GetService<INotesService>();
         if (!Request.IsHtmx())
         {
             return Page();
