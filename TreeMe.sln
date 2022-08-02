@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Htmx.TagHelpers", "..\Htmx.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Westwind.AspNetCore.Markdown", "..\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown.csproj", "{2A34C94B-1B94-44C2-A42C-E59CF9F32F63}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{CA26A732-A2FD-44CA-8875-7E7EF55011E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{2A34C94B-1B94-44C2-A42C-E59CF9F32F63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A34C94B-1B94-44C2-A42C-E59CF9F32F63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A34C94B-1B94-44C2-A42C-E59CF9F32F63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA26A732-A2FD-44CA-8875-7E7EF55011E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA26A732-A2FD-44CA-8875-7E7EF55011E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA26A732-A2FD-44CA-8875-7E7EF55011E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA26A732-A2FD-44CA-8875-7E7EF55011E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

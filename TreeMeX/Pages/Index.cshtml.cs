@@ -14,6 +14,18 @@ public class IndexModel : PageModel
     public string PostContent { get; set; }  = "*empty*";
 
     public List<string> Notes { get; set; } = new List<string>();
+    
+    public bool UpdateEditor { get; set; }
+    
+    public INoteHierarchy NoteHierarchy { get; set; }
+    
+    public string CurrentNote { get; set; }
+
+
+    private INotesService NotesService => HttpContext.RequestServices.GetService<INotesService>();
+    
+    
+    
 
     public IndexModel(ILogger<IndexModel> logger)
     {
@@ -21,13 +33,29 @@ public class IndexModel : PageModel
         
     }
 
+
+    private void UpdateNotes()
+    {
+        Notes = NotesService.GetNotes();
+        NoteHierarchy = NotesService.GetHierarchy(Notes);
+    }
+    
+    public IActionResult OnPostSave(string PostContent, string CurrentNote)
+    {
+        NotesService.SetContent(CurrentNote,PostContent);
+        UpdateNotes();
+        UpdateEditor = false;
+        return Page();
+    }
+    
     public IActionResult OnGet()
     {
-        var notesService = HttpContext.RequestServices.GetService<INotesService>();
-        Notes = notesService.GetNotes();
-        
+        UpdateNotes();
+        UpdateEditor = false;
         if (!Request.IsHtmx())
         {
+            CurrentNote = "root";
+            PostContent = NotesService.GetContent("root");
             return Page();
         }
         
@@ -35,7 +63,9 @@ public class IndexModel : PageModel
         StringValues note = default;
         if (Request.Query.TryGetValue("note", out note))
         {
-            PostContent = notesService.GetContent(note.First());
+            CurrentNote = note.First();
+            PostContent = NotesService.GetContent(note.First());
+            UpdateEditor = true;
         }
         
         return Partial("_Preview", this);

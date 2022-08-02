@@ -5,11 +5,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-       <meta name="htmx-config" 
-              historyCacheSize="20"
-              indicatorClass="htmx-indicator"
-              includeAspNetAntiforgeryToken="true"
-              />
+    
+    <meta name="htmx-config" content='{"indicatorClass":"htmx-indicator","historyCacheSize":20,"antiForgery":{"formFieldName":"__RequestVerificationToken","headerName":"RequestVerificationToken","requestToken":"<token>"}}' />
     <title>@ViewData["Title"] - TreeMeX</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
@@ -39,8 +36,8 @@
         </div>
     </nav>
 </header>
-<div class="container">
-    <main role="main" class="pb-3">
+<div>
+    <main role="main" >
         @RenderBody()
     </main>
 </div>

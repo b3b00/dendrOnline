@@ -1,0 +1,23 @@
+@using BackEnd
+@using System.Reflection.Metadata
+@model BackEnd.INoteHierarchy
+
+
+
+@if (Model.IsLeaf)
+{
+    <a style="display:block;" class="treemargin" href="#" hx-get="@Url.Page("Index")?note=@Model.Name" hx-target="#xContent">@Model.ShortName</a>
+}
+else
+{
+    <details class="treemargin">
+        <summary>
+            <a href="#" hx-get="@Url.Page("Index")?note=@Model.Name" hx-target="#xContent">@Model.ShortName</a>
+        </summary>
+        
+        @foreach (var note in (Model as NodeNote).Child)
+        {
+            <partial name="Hierarchy" model="@note"/>
+        }
+    </details>
+}

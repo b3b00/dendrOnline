@@ -1,6 +1,6 @@
 namespace BackEnd;
 
-public class FsNotesService : INotesService
+public class FsNotesService : AsbtractNotesService
 {
     
     public string RootDirectory { get; set; }
@@ -10,21 +10,29 @@ public class FsNotesService : INotesService
         RootDirectory = rootDirectory;
     }
     
-    public string GetContent(string noteName)
+    public override string GetContent(string noteName)
     {
-        var content = File.ReadAllText(Path.Combine(RootDirectory,"notes", noteName+".md"));
+        string content = "";
+        var path = Path.Combine(RootDirectory, "notes", noteName + ".md");
+        if (File.Exists(path))
+        {
+            content = File.ReadAllText(path);
+        }
         return content;
     }
 
-    public void SetContent(string noteName, string noteContent)
+    public override void SetContent(string noteName, string noteContent)
     {
-        File.WriteAllText(Path.Combine(RootDirectory,noteName),noteContent);
+        File.WriteAllText(Path.Combine(RootDirectory,"notes",noteName+".md"),noteContent);
     }
     //C:\Users\olduh\DendronNotes
-    public List<string> GetNotes()
+    public override List<string> GetNotes()
     {
         var notedir = new DirectoryInfo(Path.Combine(RootDirectory, "notes"));
         var files = notedir.GetFiles("*.md");
-        return files.Select(x => x.Name.Replace(".md", "")).ToList();
+        var list = files.Select(x => x.Name.Replace(".md", "")).ToList();
+        return list;
     }
+
+    
 }

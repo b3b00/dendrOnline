@@ -1,18 +1,18 @@
 namespace BackEnd;
 
-public class GithubNotesService : INotesService
+public class GithubNotesService : AsbtractNotesService
 {
-    public string GetContent(string noteName)
+    public override string GetContent(string noteName)
     {
         throw new NotImplementedException();
     }
 
-    public void SetContent(string noteName, string noteContent)
+    public override void SetContent(string noteName, string noteContent)
     {
         throw new NotImplementedException();
     }
 
-    public List<string> GetNotes()
+    public override List<string> GetNotes()
     {
         throw new NotImplementedException();
     }

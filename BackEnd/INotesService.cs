@@ -8,4 +8,6 @@ public interface INotesService
 
     List<string> GetNotes();
 
+    INoteHierarchy GetHierarchy(List<string> notes);
+
 }
