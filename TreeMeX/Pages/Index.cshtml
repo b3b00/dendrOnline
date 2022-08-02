@@ -13,8 +13,15 @@
     <a href="#" hx-get="" hx-target="#xContent">click HTMX</a>
 </div>
 
+<ul>
+    @foreach (var note in Model.Notes)
+    {
+        <li><a href="#" hx-get="@Url.Page("Index")?note=@note" hx-target="#xContent">@note</a></li>
+    }
+</ul>
+
 @* hx-trigger="keyup changed delay:250ms" *@
-<textarea hx-post="@Url.Page("Index")"  hx-trigger="keyup changed delay:250ms" hx-target="#xContent" asp-for="PostContent" ></textarea>
+<textarea hx-post="@Url.Page("Index")"  hx-trigger="keyup changed delay:250ms" hx-target="#xContent"></textarea>
 <div id="preview">
     
 </div>
