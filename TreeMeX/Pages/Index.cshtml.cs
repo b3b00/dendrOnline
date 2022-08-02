@@ -19,6 +19,8 @@ public class IndexModel : PageModel
     
     public INoteHierarchy NoteHierarchy { get; set; }
     
+    [BindProperty]
+    [HiddenInput] 
     public string CurrentNote { get; set; }
 
 
