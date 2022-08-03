@@ -24,7 +24,12 @@ public class IndexModel : PageModel
     [BindProperty]
     [HiddenInput] 
     public string CurrentNote { get; set; }
+    
+    public User GitHubUser { get; set; }
 
+    public string RepositoryId => HttpContext.Session.GetString("repositoryId");
+    public string RepositoryName => HttpContext.Session.GetString("repositoryName");
+    
 
     private INotesService NotesService => HttpContext.RequestServices.GetService<INotesService>();
     
@@ -40,6 +45,12 @@ public class IndexModel : PageModel
 
     private void UpdateNotes()
     {
+        if (HttpContext.HasRepository())
+        {
+            NotesService.SetRepository(HttpContext.GetRepositoryName(),HttpContext.GetRepositoryId());
+            NotesService.SetAccessToken(HttpContext.GetGithubAccessToken());
+        }
+        
         Notes = NotesService.GetNotes();
         NoteHierarchy = NotesService.GetHierarchy(Notes);
     }
@@ -81,7 +92,7 @@ public class IndexModel : PageModel
         return Partial("_Preview", this);
     }
 
-    public User GitHubUser { get; set; }
+    
 
     public IActionResult OnPost(string PostContent)
     {

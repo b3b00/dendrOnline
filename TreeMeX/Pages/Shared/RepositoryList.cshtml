@@ -1,0 +1,7 @@
+@model  ChooseRepoModel
+
+
+@foreach (var repo in Model.Repositories)
+{
+    <a href="@Url.Page("ChooseRepo")?repo=@repo.id">@repo.name</a><br/> 
+}

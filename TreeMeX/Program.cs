@@ -18,8 +18,11 @@ builder.Services.AddRazorPages(o => {
      o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
  });
 
+// builder.Services.AddScoped<INotesService>((IServiceProvider provider) =>
+//     new FsNotesService(@"C:\Users\olduh\DendronNotes"));
+
 builder.Services.AddScoped<INotesService>((IServiceProvider provider) =>
-    new FsNotesService(@"C:\Users\olduh\DendronNotes"));
+    new GithubNotesService());
 
 builder.Services.AddSession().AddMemoryCache();
 

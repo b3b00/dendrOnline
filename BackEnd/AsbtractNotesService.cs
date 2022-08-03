@@ -4,6 +4,10 @@ namespace BackEnd;
 
 public abstract class AsbtractNotesService : INotesService
 {
+    public abstract void SetRepository(string name, long id);
+
+    public abstract void SetAccessToken(string token);
+    
     public abstract string GetContent(string noteName);
 
     public abstract void SetContent(string noteName, string noteContent);

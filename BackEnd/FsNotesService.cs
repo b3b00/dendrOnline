@@ -9,7 +9,17 @@ public class FsNotesService : AsbtractNotesService
     {
         RootDirectory = rootDirectory;
     }
-    
+
+    public override void SetRepository(string name, long id)
+    {
+        RootDirectory = name;
+    }
+
+    public override void SetAccessToken(string token)
+    {
+        ;
+    }
+
     public override string GetContent(string noteName)
     {
         string content = "";
