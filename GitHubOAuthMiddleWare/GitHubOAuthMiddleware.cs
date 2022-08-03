@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Net;
-using System.Security.Authentication;
+﻿using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
@@ -28,11 +26,7 @@ public static class GitHubOAuthMiddleware
         
         app.Use(async (context, next) =>
         {
-            if (context.Session.TryGetValue(AccessToken, out var accessToken))
-            {
-                // nothing to do , we're logged in !
-            }
-            else
+            if (!context.Session.TryGetValue(AccessToken, out var accessToken))
             {
                 if (context.Request.Path == "/auth")
                 {
