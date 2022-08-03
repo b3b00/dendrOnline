@@ -4,6 +4,9 @@ public interface INotesService
 {
     Task<string> GetContent(string noteName);
 
+
+    Task CreateNote(string name);
+    
     Task SetContent(string noteName, string noteContent);
 
     Task<List<string>> GetNotes();

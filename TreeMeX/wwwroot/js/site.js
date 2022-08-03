@@ -4,5 +4,7 @@
 // // // Write your JavaScript code.
 window.createNote = function(parent) {
     let name = window.prompt("nouvelle note",parent);
-    window.location = "/Index?handler=test&parent="+parent+"&new="+name;
+    if (name !== null && name !== undefined) {
+        window.location = "/Index?handler=newNote&parent=" + parent + "&new=" + name;
+    }
 }

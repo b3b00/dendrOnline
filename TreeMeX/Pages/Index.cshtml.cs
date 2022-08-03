@@ -64,28 +64,27 @@ public class IndexModel : PageModel
     {
         SetClient();
         NotesService.SetContent(CurrentNote,PostContent);
+        
+        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
+        var accessToken = HttpContext.GetGithubAccessToken();
+        client.Credentials = new Credentials(accessToken);
+        var user = await client.User.Current();
+        GitHubUser = user;
+        
         await UpdateNotes();
         UpdateEditor = false;
         return Page();
     }
 
-    public async Task<IActionResult> onPostNewNote(string newNote)
-    {
-        return Page();
-    }
-
-    public async Task<IActionResult> onGetModal(string newNote)
-    {
-        return Partial("NewNote", this);
-    }
+   
 
 
-    public async Task<IActionResult> OnGetTest()
+    public async Task<IActionResult> OnGetNewNote()
     {
         SetClient();
         string parent = Request.Query["parent"].First();
         string newNote = Request.Query["new"].First();
-        await NotesService.SetContent(newNote, "*empty note*");
+        await NotesService.CreateNote(newNote);
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();
         client.Credentials = new Credentials(accessToken);
@@ -130,16 +129,26 @@ public class IndexModel : PageModel
 
     
 
-    public IActionResult OnPost(string PostContent)
+    public async Task<IActionResult> OnPost(string PostContent)
     {
+        SetClient();
         var notesService = HttpContext.RequestServices.GetService<INotesService>();
         if (!Request.IsHtmx())
         {
             return Page();
         }
-
+        
         var content = PostContent; // Request.Query["PostContent"].First();
         this.PostContent = content;
+        
+        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
+        var accessToken = HttpContext.GetGithubAccessToken();
+        client.Credentials = new Credentials(accessToken);
+        var user = await client.User.Current();
+        GitHubUser = user;
+
+        UpdateNotes();
+        
         return Partial("_Preview", this);
     }
 

@@ -23,15 +23,15 @@ public class GithubNotesService : AsbtractNotesService
 
     public override async Task<string> GetContent(string noteName)
     {
-        if (gitHubClient != null)
-        {
-            var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/{noteName}.md");
-            if (contents.Any())
+            if (gitHubClient != null)
             {
-                var content = contents.First();
-                return content.Content;
+                var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/{noteName}.md");
+                if (contents.Any())
+                {
+                    var content = contents.First();
+                    return content.Content;
+                }
             }
-        }
 
         return "";
     }
@@ -40,10 +40,41 @@ public class GithubNotesService : AsbtractNotesService
     {
         if (gitHubClient != null)
         {
-            var request = new CreateFileRequest($"new note : {noteName}", noteContent, "main");
-            var task = await gitHubClient.Repository.Content.CreateFile(RepositoryId, "notes/"+noteName + ".md", request);
-            ;
+            var content = await NoteExists(noteName);
+            if (content.exists)
+            {
+                var request = new UpdateFileRequest($"update {noteName}", noteContent, content.content.Sha);
+                gitHubClient.Repository.Content.UpdateFile(RepositoryId, content.content.Path, request);
+            }
         }
+    }
+
+    public override async Task CreateNote(string noteName)
+    {
+        if (gitHubClient != null)
+        {
+            var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/");
+            var content = await NoteExists(noteName);
+            if (!content.exists)
+            {
+                var request = new CreateFileRequest($"new note : {noteName}", GetHeader(noteName), "main");
+                var task = await gitHubClient.Repository.Content.CreateFile(RepositoryId, "notes/" + noteName + ".md",
+                    request);
+            }
+        }
+    }
+    
+    private async Task<IList<RepositoryContent>> GetNoteFiles()
+    {
+        var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, "notes");
+        return contents.Where(x => x.Name.EndsWith(".md")).ToList();
+    }
+
+    private async Task<(bool exists, RepositoryContent content)> NoteExists(string note)
+    {
+        var contents = await GetNoteFiles();
+        var content = contents.FirstOrDefault(x => x.Name == note + ".md");
+        return (content != null, content);
     }
 
     public override async Task<List<string>> GetNotes()
@@ -52,8 +83,8 @@ public class GithubNotesService : AsbtractNotesService
         {
             try
             {
-                var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, "notes");
-                return contents.Where(x => x.Name.EndsWith(".md")).Select(x => x.Name.Replace(".md", "")).ToList();
+                var contents = await GetNoteFiles(); 
+                    return contents.Select(x => x.Name.Replace(".md", "")).ToList();
             }
             catch (Exception e)
             {
