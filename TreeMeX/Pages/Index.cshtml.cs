@@ -43,13 +43,18 @@ public class IndexModel : PageModel
     }
 
 
-    private async Task UpdateNotes()
+    private void SetClient()
     {
         if (HttpContext.HasRepository())
         {
             NotesService.SetRepository(HttpContext.GetRepositoryName(),HttpContext.GetRepositoryId());
             NotesService.SetAccessToken(HttpContext.GetGithubAccessToken());
         }
+    }
+
+    private async Task UpdateNotes()
+    {
+        SetClient();
         
         Notes = await NotesService.GetNotes();
         NoteHierarchy = NotesService.GetHierarchy(Notes);
@@ -57,12 +62,43 @@ public class IndexModel : PageModel
     
     public async Task<IActionResult> OnPostSave(string PostContent, string CurrentNote)
     {
+        SetClient();
         NotesService.SetContent(CurrentNote,PostContent);
         await UpdateNotes();
         UpdateEditor = false;
         return Page();
     }
-    
+
+    public async Task<IActionResult> onPostNewNote(string newNote)
+    {
+        return Page();
+    }
+
+    public async Task<IActionResult> onGetModal(string newNote)
+    {
+        return Partial("NewNote", this);
+    }
+
+
+    public async Task<IActionResult> OnGetTest()
+    {
+        SetClient();
+        string parent = Request.Query["parent"].First();
+        string newNote = Request.Query["new"].First();
+        await NotesService.SetContent(newNote, "*empty note*");
+        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
+        var accessToken = HttpContext.GetGithubAccessToken();
+        client.Credentials = new Credentials(accessToken);
+        var user = await client.User.Current();
+        this.GitHubUser = user;
+        
+        await UpdateNotes();
+        
+        CurrentNote = "root";
+        PostContent = await NotesService.GetContent(newNote);
+        return Page();
+    }
+
     public async Task<IActionResult> OnGet()
     {
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));

@@ -38,15 +38,27 @@ public class GithubNotesService : AsbtractNotesService
 
     public override async Task SetContent(string noteName, string noteContent)
     {
-        throw new NotImplementedException();
+        if (gitHubClient != null)
+        {
+            var request = new CreateFileRequest($"new note : {noteName}", noteContent, "main");
+            var task = await gitHubClient.Repository.Content.CreateFile(RepositoryId, "notes/"+noteName + ".md", request);
+            ;
+        }
     }
 
     public override async Task<List<string>> GetNotes()
     {
         if (gitHubClient != null)
         {
-            var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId,"notes");
-            return contents.Where(x => x.Name.EndsWith(".md")).Select(x => x.Name.Replace(".md", "")).ToList();
+            try
+            {
+                var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, "notes");
+                return contents.Where(x => x.Name.EndsWith(".md")).Select(x => x.Name.Replace(".md", "")).ToList();
+            }
+            catch (Exception e)
+            {
+                return new List<string>();
+            }
         }
         return new List<string>();
     }
