@@ -3,6 +3,7 @@ using Htmx;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Primitives;
+using Octokit;
 
 namespace TreeMeX.Pages;
 
@@ -50,8 +51,14 @@ public class IndexModel : PageModel
         return Page();
     }
     
-    public IActionResult OnGet()
+    public async Task<IActionResult> OnGet()
     {
+        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
+        var accessToken = HttpContext.Session.GetString(GitHubOAuthMiddleWare.GitHubOAuthMiddleware.AccessToken);
+        client.Credentials = new Credentials(accessToken);
+        var user = await client.User.Current();
+        this.GitHubUser = user;
+        
         UpdateNotes();
         UpdateEditor = false;
         if (!Request.IsHtmx())
@@ -72,6 +79,8 @@ public class IndexModel : PageModel
         
         return Partial("_Preview", this);
     }
+
+    public User GitHubUser { get; set; }
 
     public IActionResult OnPost(string PostContent)
     {

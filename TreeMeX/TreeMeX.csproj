@@ -21,6 +21,8 @@
 <!--      <ProjectReference Include="..\..\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown\Westwind.AspNetCore.Markdown.csproj" />-->
     
       <ProjectReference Include="..\BackEnd\BackEnd.csproj" />
+    
+      <ProjectReference Include="..\GitHubOAuthMiddleWare\GitHubOAuthMiddleWare.csproj" />
     </ItemGroup>
 
 </Project>

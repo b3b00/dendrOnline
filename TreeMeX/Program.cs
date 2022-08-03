@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text;
 using BackEnd;
+using GitHubOAuthMiddleWare;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,47 +55,13 @@ app.Use(async (context, next) =>
     }
 });
 
-app.Use(async (context, next) =>
+app.UseGHOAuth(options =>
 {
-    if (context.Session.TryGetValue("accessToken", out var accessToken))
-    {
-        
-    }
-    else
-    {
-        if (context.Request.Path == "/auth")
-        {
-            // TODO test if coming back from github => get the token => store it in session => redirect to /    
-            HttpClient client = new HttpClient();
-            var code = context.Request.Query["code"].First();
-            var state = context.Request.Query["state"].First();
-            var tokenUrl = builder.Configuration["github:tokenUrl"];
-            var clientId = builder.Configuration["github:clientId"];
-            var clientSecret = builder.Configuration["github:clientSecret"];
-            var csrf = context.Session.GetString("CSRF:State");
-            if (csrf != state)
-            {
-                context.Response.Redirect("/");
-            }
-            var query =
-                $"client_id={clientId}&client_secret={clientSecret}&code={code}&redirect_uri=https://localhost:5003/auth";
-            var token = await client.PostAsync(tokenUrl, new StringContent(query, Encoding.UTF8, "application/x-www-form-urlencoded"));
-            var body = await token.Content.ReadAsStringAsync();
-            Debug.WriteLine(body);
-            // TODO split body to token nd authorization scheme
-        }
-        else
-        {
-            var authUrl = builder.Configuration["github:authorizeUrl"];
-            var clientId = builder.Configuration["github:clientId"];
-            string csrf = "Membership.GeneratePassword(24, 1)";
-            authUrl =
-                $"{authUrl}?redirect_uri=https://localhost:5003/auth&response_type=code&client_id={clientId}&scope=repo&state={csrf}";
-
-            context.Session.SetString("CSRF:State", csrf);
-            context.Response.Redirect(authUrl);
-        }
-    }
-    await next.Invoke();
+    options.TokenEndpoint = app.Configuration["github:tokenUrl"];
+    options.AuthorizationEndpoint = app.Configuration["github:authorizeUrl"];
+    options.ClientId = app.Configuration["github:clientId"];
+    options.ClientSecret = app.Configuration["github:clientSecret"];
+    options.ReturnUrlParameter = app.Configuration["github:startUri"];
+    options.RedirectUri = app.Configuration["github:redirectUri"];
 });
 app.Run();
