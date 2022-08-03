@@ -10,7 +10,7 @@ public class HierarchyTests
     public void TestNoteHierarchy()
     {
         var notesService = new FsNotesService(@"C:\Users\olduh\DendronNotes");
-        var notes = notesService.GetNotes();
+        var notes = notesService.GetNotes().GetAwaiter().GetResult();
         var hierarchy = notesService.GetHierarchy(notes);
     }
 }

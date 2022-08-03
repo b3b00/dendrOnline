@@ -20,7 +20,7 @@ public class FsNotesService : AsbtractNotesService
         ;
     }
 
-    public override string GetContent(string noteName)
+    public override async Task<string> GetContent(string noteName)
     {
         string content = "";
         var path = Path.Combine(RootDirectory, "notes", noteName + ".md");
@@ -31,12 +31,12 @@ public class FsNotesService : AsbtractNotesService
         return content;
     }
 
-    public override void SetContent(string noteName, string noteContent)
+    public override async Task SetContent(string noteName, string noteContent)
     {
         File.WriteAllText(Path.Combine(RootDirectory,"notes",noteName+".md"),noteContent);
     }
     //C:\Users\olduh\DendronNotes
-    public override List<string> GetNotes()
+    public override async Task<List<string>> GetNotes()
     {
         var notedir = new DirectoryInfo(Path.Combine(RootDirectory, "notes"));
         var files = notedir.GetFiles("*.md");

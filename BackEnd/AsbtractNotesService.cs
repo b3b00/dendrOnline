@@ -8,11 +8,11 @@ public abstract class AsbtractNotesService : INotesService
 
     public abstract void SetAccessToken(string token);
     
-    public abstract string GetContent(string noteName);
+    public abstract Task<string> GetContent(string noteName);
 
-    public abstract void SetContent(string noteName, string noteContent);
+    public abstract Task SetContent(string noteName, string noteContent);
 
-    public abstract List<string> GetNotes();
+    public abstract Task<List<string>> GetNotes();
     
     public INoteHierarchy GetHierarchy(List<string> notes)
     {

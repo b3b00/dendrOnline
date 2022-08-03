@@ -2,11 +2,11 @@
 
 public interface INotesService
 {
-    string GetContent(string noteName);
+    Task<string> GetContent(string noteName);
 
-    void SetContent(string noteName, string noteContent);
+    Task SetContent(string noteName, string noteContent);
 
-    List<string> GetNotes();
+    Task<List<string>> GetNotes();
 
     INoteHierarchy GetHierarchy(List<string> notes);
     

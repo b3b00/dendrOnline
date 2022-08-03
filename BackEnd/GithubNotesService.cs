@@ -21,18 +21,33 @@ public class GithubNotesService : AsbtractNotesService
         gitHubClient.Credentials = new Credentials(token);
     }
 
-    public override string GetContent(string noteName)
+    public override async Task<string> GetContent(string noteName)
+    {
+        if (gitHubClient != null)
+        {
+            var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/{noteName}.md");
+            if (contents.Any())
+            {
+                var content = contents.First();
+                return content.Content;
+            }
+        }
+
+        return "";
+    }
+
+    public override async Task SetContent(string noteName, string noteContent)
     {
         throw new NotImplementedException();
     }
 
-    public override void SetContent(string noteName, string noteContent)
+    public override async Task<List<string>> GetNotes()
     {
-        throw new NotImplementedException();
-    }
-
-    public override List<string> GetNotes()
-    {
-        gitHubClient.Repository.Content.GetAllContents();
+        if (gitHubClient != null)
+        {
+            var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId,"notes");
+            return contents.Where(x => x.Name.EndsWith(".md")).Select(x => x.Name.Replace(".md", "")).ToList();
+        }
+        return new List<string>();
     }
 }

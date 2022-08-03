@@ -43,7 +43,7 @@ public class IndexModel : PageModel
     }
 
 
-    private void UpdateNotes()
+    private async Task UpdateNotes()
     {
         if (HttpContext.HasRepository())
         {
@@ -51,14 +51,14 @@ public class IndexModel : PageModel
             NotesService.SetAccessToken(HttpContext.GetGithubAccessToken());
         }
         
-        Notes = NotesService.GetNotes();
+        Notes = await NotesService.GetNotes();
         NoteHierarchy = NotesService.GetHierarchy(Notes);
     }
     
-    public IActionResult OnPostSave(string PostContent, string CurrentNote)
+    public async Task<IActionResult> OnPostSave(string PostContent, string CurrentNote)
     {
         NotesService.SetContent(CurrentNote,PostContent);
-        UpdateNotes();
+        await UpdateNotes();
         UpdateEditor = false;
         return Page();
     }
@@ -71,12 +71,12 @@ public class IndexModel : PageModel
         var user = await client.User.Current();
         this.GitHubUser = user;
         
-        UpdateNotes();
+        await UpdateNotes();
         UpdateEditor = false;
         if (!Request.IsHtmx())
         {
             CurrentNote = "root";
-            PostContent = NotesService.GetContent("root");
+            PostContent = await NotesService.GetContent("root");
             return Page();
         }
         
@@ -85,7 +85,7 @@ public class IndexModel : PageModel
         if (Request.Query.TryGetValue("note", out note))
         {
             CurrentNote = note.First();
-            PostContent = NotesService.GetContent(note.First());
+            PostContent = await NotesService.GetContent(note.First());
             UpdateEditor = true;
         }
         
