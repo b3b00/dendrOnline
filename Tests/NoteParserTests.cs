@@ -1,4 +1,4 @@
-using dendrOnline;
+using BackEnd;
 using SharpFileSystem.FileSystems;
 using Xunit;
 
@@ -11,10 +11,12 @@ public class NoteParserTests
     {
         var fs = new EmbeddedResourceFileSystem(typeof(NoteParserTests).Assembly);
         var content = fs.ReadAllText("/data/header/extractheader.md");
-        var parser = new NoteParser();
-        var note = parser.Parse(content);
+        
+        var note = NoteParser.Parse(content);
         Assert.NotNull(note?.Header);
         var header = note.Header;
         Assert.Equal("f3v7nwkqkzq8hh048ra1lgv",header.Id);
+        Assert.Equal(1659597467981,header.LastUpdatedTS);
+        Assert.Equal("Analyse",header.Title);
     }
 }

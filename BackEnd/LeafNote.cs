@@ -14,9 +14,16 @@ namespace BackEnd
 
         public bool IsLeaf => true;
 
+        public bool Deployed { get; set; } = true;
+
         public string Dump(string tab)
         {
             return $"{tab}{Name}";
+        }
+
+        public void Deploy(string currentNote)
+        {
+            
         }
     }
 }

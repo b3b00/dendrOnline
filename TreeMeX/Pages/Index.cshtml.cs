@@ -65,6 +65,7 @@ public class IndexModel : PageModel
         
         Notes = await NotesService.GetNotes();
         NoteHierarchy = NotesService.GetHierarchy(Notes);
+        NoteHierarchy.Deploy(CurrentNote);
     }
     
     public async Task<IActionResult> OnPostSave(string PostContent, string CurrentNote)
@@ -77,7 +78,7 @@ public class IndexModel : PageModel
         client.Credentials = new Credentials(accessToken);
         var user = await client.User.Current();
         GitHubUser = user;
-        
+        this.PostContent = PostContent;
         await UpdateNotes();
         UpdateEditor = false;
         return Page();
@@ -97,6 +98,7 @@ public class IndexModel : PageModel
         client.Credentials = new Credentials(accessToken);
         var user = await client.User.Current();
         this.GitHubUser = user;
+        CurrentNote = newNote;
         
         await UpdateNotes();
         

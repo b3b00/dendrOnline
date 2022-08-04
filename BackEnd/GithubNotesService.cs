@@ -48,6 +48,10 @@ namespace BackEnd
                 var content = await NoteExists(noteName);
                 if (content.exists)
                 {
+                    var note = NoteParser.Parse(noteContent);
+                    note.Header.LastUpdatedTS = DateTime.Now.ToTimestamp();
+                        
+                    
                     var request = new UpdateFileRequest($"update {noteName}", noteContent, content.content.Sha);
                     gitHubClient.Repository.Content.UpdateFile(RepositoryId, content.content.Path, request);
                 }
@@ -62,7 +66,13 @@ namespace BackEnd
                 var content = await NoteExists(noteName);
                 if (!content.exists)
                 {
-                    var request = new CreateFileRequest($"new note : {noteName}", GetHeader(noteName), "main");
+                    var ts = DateTime.Now.ToTimestamp();
+                    Note note = new Note()
+                    {
+                        Body = "*empty*",
+                        Header = new NoteHeader(noteName)
+                    };
+                    var request = new CreateFileRequest($"new note : {noteName}", note.ToString(), "main");
                     var task = await gitHubClient.Repository.Content.CreateFile(RepositoryId, "notes/" + noteName + ".md",
                         request);
                 }

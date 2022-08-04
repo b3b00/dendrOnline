@@ -17,6 +17,13 @@ namespace BackEnd
 
         public bool IsLeaf => false;
 
+        public bool Deployed { get; set; } = false;
+        public void Deploy(string currentNote)
+        {
+            Deployed = currentNote != null && currentNote.Contains(currentNote);
+            Child.ForEach(x => x.Deploy(currentNote));
+        }
+
         public NodeNote(string name)
         {
             Name = name;

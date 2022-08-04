@@ -23,7 +23,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\BackEnd\BackEnd.csproj" />
-      <ProjectReference Include="..\TreeMeX\TreeMeX.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="data\header\extractheader.md" />
+      <EmbeddedResource Include="data\header\extractheader.md" />
     </ItemGroup>
 
 </Project>

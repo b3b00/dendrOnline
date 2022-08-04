@@ -7,21 +7,20 @@
 {
     @if (Model.IsLeaf)
     {
-        <a style="display:block;" class="treemargin" href="#" hx-get="@Url.Page("Index")?note=@Model.Name" hx-target="#xContent">@Model.ShortName</a> <a href="#" onclick="createNote('@Model.Name')">+++</a>
+        <div style="display: flex;flex-direction: row">
+            <a style="display:block;" class="treemargin" href="#" hx-get="@Url.Page("Index")?note=@Model.Name" hx-target="#xContent">@Model.ShortName</a> 
+            <a href="#" onclick="createNote('@Model.Name')">+++</a>
+        </div>
     }
     else
     {
-        <details class="treemargin">
-            <summary>
+        <details class="treemargin" @(Model.Deployed ? "open=open" : "close=close")>
+            <summary open>
                 <a href="#" hx-get="@Url.Page("Index")?note=@Model.Name" hx-target="#xContent">@Model.ShortName</a> <a href="#" onclick="createNote('@Model.Name')">+++</a>
             </summary>
 
             @foreach (var note in (Model as NodeNote).Child)
             {
-                if (@note == null)
-                {
-                    ;
-                }
                 <partial name="Hierarchy" model="@note"/>
             }
         </details>

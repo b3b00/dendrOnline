@@ -14,7 +14,10 @@ namespace BackEnd
         bool IsLeaf { get; }
 
         string Dump(string tab);
+        
+        bool Deployed { get; set; }
 
 
+        void Deploy(string currentNote);
     }
 }

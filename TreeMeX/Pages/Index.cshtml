@@ -10,9 +10,11 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4" id="NoteTitle" hx-swap-oob="true">@Model.CurrentNote</h1>
-    <h2 class="display-4"><img src="@Model.GitHubUser.AvatarUrl" width="50"/> @Model.GitHubUser.Name </h2>
-    <h3>@Model.RepositoryName [@Model.RepositoryId]</h3>
+    
+    <h1 class="display-4"><img src="@Model.GitHubUser.AvatarUrl" width="50"/> @Model.GitHubUser.Name </h1>
+    <h2>@Model.RepositoryName [@Model.RepositoryId]</h2>
+    <h3 id="NoteTitle" hx-swap-oob="true">@Model.CurrentNote</h3>
+    
 </div>
 <form action="@Url.Page("Index", "Save")" method="post">
     <input type="submit" name="Save" value="save."></input>
