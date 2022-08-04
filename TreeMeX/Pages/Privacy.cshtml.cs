@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
-namespace TreeMeX.Pages;
+namespace dendrOnline.Pages;
 
 public class PrivacyModel : PageModel
 {

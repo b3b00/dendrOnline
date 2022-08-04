@@ -1,16 +1,20 @@
-namespace BackEnd;
+using System;
 
-public interface INoteHierarchy
+namespace BackEnd
 {
-    string Name { get; set; }
 
-    string ShortName => Name.Substring(Math.Max(0,Name.LastIndexOf('.'))).Replace(".","");
-    
-    bool IsNode { get; }
-    
-    bool IsLeaf { get; }
+    public interface INoteHierarchy
+    {
+        string Name { get; set; }
 
-    string Dump(string tab);
-    
-    
+        string ShortName => Name.Substring(Math.Max(0, Name.LastIndexOf('.'))).Replace(".", "");
+
+        bool IsNode { get; }
+
+        bool IsLeaf { get; }
+
+        string Dump(string tab);
+
+
+    }
 }

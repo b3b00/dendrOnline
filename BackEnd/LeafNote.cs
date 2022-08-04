@@ -1,20 +1,22 @@
-namespace BackEnd;
-
-public class LeafNote : INoteHierarchy
+namespace BackEnd
 {
-    public LeafNote(string name)
-    {
-        Name = name;
-    }
-    
-    public string Name { get; set; }
-    
-    public bool IsNode => false;
-    
-    public bool IsLeaf => true;
 
-    public string Dump(string tab)
+    public class LeafNote : INoteHierarchy
     {
-        return $"{tab}{Name}";
+        public LeafNote(string name)
+        {
+            Name = name;
+        }
+
+        public string Name { get; set; }
+
+        public bool IsNode => false;
+
+        public bool IsLeaf => true;
+
+        public string Dump(string tab)
+        {
+            return $"{tab}{Name}";
+        }
     }
 }

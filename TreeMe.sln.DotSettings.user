@@ -2,9 +2,10 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2dd6ca28_002D2ae2_002D4b47_002Da1ce_002D0b89ac4ecb50/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestNoteHierarchy" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::CA26A732-A2FD-44CA-8875-7E7EF55011E0::net6.0::Tests.HierarchyTests.TestNoteHierarchy&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::CA26A732-A2FD-44CA-8875-7E7EF55011E0::net6.0::Tests.NoteParserTests.TestParse&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	
 	
-	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=2a34c94b_002D1b94_002D44c2_002Da42c_002De59cf9f32f63_0023Westwind_002EAspNetCore_002EMarkdown/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=c645e889_002Decd3_002D4356_002Da966_002D9bfef04b531b_0023Htmx/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
+	
+	</wpf:ResourceDictionary>
