@@ -39,13 +39,21 @@ namespace BackEnd
             return content;
         }
 
-        public override async Task CreateNote(string noteName)
+        public override async Task<string> CreateNote(string noteName)
         {
             var path = Path.Combine(RootDirectory, "notes", noteName + ".md");
             if (!File.Exists(path))
             {
-                File.WriteAllText(path, GetHeader(noteName));
+                Note note = new Note()
+                {
+                    Body = "*empty*",
+                    Header = new NoteHeader(noteName)
+                };
+                File.WriteAllText(path, note.ToString());
+                return note.ToString();
             }
+
+            return "";
         }
 
         public override async Task SetContent(string noteName, string noteContent)

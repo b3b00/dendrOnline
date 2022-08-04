@@ -58,7 +58,7 @@ namespace BackEnd
             }
         }
 
-        public override async Task CreateNote(string noteName)
+        public override async Task<string> CreateNote(string noteName)
         {
             if (gitHubClient != null)
             {
@@ -66,7 +66,6 @@ namespace BackEnd
                 var content = await NoteExists(noteName);
                 if (!content.exists)
                 {
-                    var ts = DateTime.Now.ToTimestamp();
                     Note note = new Note()
                     {
                         Body = "*empty*",
@@ -75,8 +74,11 @@ namespace BackEnd
                     var request = new CreateFileRequest($"new note : {noteName}", note.ToString(), "main");
                     var task = await gitHubClient.Repository.Content.CreateFile(RepositoryId, "notes/" + noteName + ".md",
                         request);
+                    return note.ToString();
                 }
             }
+
+            return "";
         }
 
         private async Task<IList<RepositoryContent>> GetNoteFiles()

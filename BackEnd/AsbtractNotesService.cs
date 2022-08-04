@@ -14,7 +14,7 @@ namespace BackEnd
         public abstract void SetAccessToken(string token);
 
         public abstract Task<string> GetContent(string noteName);
-        public abstract Task CreateNote(string name);
+        public abstract Task<string> CreateNote(string name);
 
         public abstract Task SetContent(string noteName, string noteContent);
 

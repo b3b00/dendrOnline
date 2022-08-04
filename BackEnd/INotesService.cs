@@ -9,7 +9,8 @@ namespace BackEnd
         Task<string> GetContent(string noteName);
 
 
-        Task CreateNote(string name);
+        // creates note and returns the default content
+        Task<string> CreateNote(string name);
 
         Task SetContent(string noteName, string noteContent);
 

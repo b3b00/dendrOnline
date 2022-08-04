@@ -92,7 +92,7 @@ public class IndexModel : PageModel
         SetClient();
         string parent = Request.Query["parent"].First();
         string newNote = Request.Query["new"].First();
-        await NotesService.CreateNote(newNote);
+        var newContent = await NotesService.CreateNote(newNote);
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();
         client.Credentials = new Credentials(accessToken);
@@ -102,8 +102,8 @@ public class IndexModel : PageModel
         
         await UpdateNotes();
         
-        CurrentNote = "root";
-        PostContent = await NotesService.GetContent(newNote);
+        CurrentNote = newNote;
+        PostContent = newContent;
         return Page();
     }
 
@@ -119,8 +119,16 @@ public class IndexModel : PageModel
         UpdateEditor = false;
         if (!Request.IsHtmx())
         {
-            CurrentNote = "root";
-            PostContent = await NotesService.GetContent("root");
+            if (Request.Query.ContainsKey("note"))
+            {
+                CurrentNote = Request.Query["note"].First();
+            }
+            else
+            {
+                CurrentNote = "root";
+            }
+            PostContent = await NotesService.GetContent(CurrentNote);
+            UpdateNotes();
             return Page();
         }
         
