@@ -64,6 +64,7 @@ public class IndexModel : PageModel
         SetClient();
         
         Notes = await NotesService.GetNotes();
+        SetClient();
         NoteHierarchy = NotesService.GetHierarchy(Notes);
         NoteHierarchy.Deploy(CurrentNote);
     }
