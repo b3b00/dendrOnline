@@ -1,0 +1,114 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: 
+      - dev
+      - tech/actions 
+      - master
+      - feature/implicit-tokens
+  pull_request:
+    branches: 
+      - dev
+permissions:
+  pull-requests: write
+jobs:  
+  build:
+    env:
+      TESTS_PROJECT: 'Tests/Tests.csproj' # path to test project or solution
+      PUBLISH_NUGET: false # if true a nuget will be published on version change
+      RUN_TESTS: true # if true tests are run and coverage data is published to coveralls and a coverage report is produced.
+      MAIN_CSPROJ: 'TreeMeX/TreeMeX.csproj' # main project (for nuget packaging)
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+          os: [ubuntu-latest]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Clean artifacts and nugets 
+      run: dotnet clean  --configuration Release && dotnet nuget locals all --clear
+    - name: Build with dotnet 
+      run: dotnet build --configuration Release     
+    - name: Test with dotnet
+      uses: b3b00/coverlet-action@1.2.4
+      id: 'coverlet'
+      if: env.RUN_TESTS
+      with:
+        testProject: ${{env.TESTS_PROJECT}}
+        output: 'lcov.info'
+        threshold: 80
+        outputFormat: 'lcov'
+        excludes: '[Tests]*,[GitHubOAuthMiddleWare]*'
+
+    - name: coveralls      
+      uses: coverallsapp/github-action@v1.1.1
+      if: matrix.os == 'windows-latest' && env.RUN_TESTS
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN }} 
+        path-to-lcov: ${{steps.coverlet.outputs.coverageFile}}
+        #base-path: ${{github.workspace}}
+    - name: ReportGenerator
+      uses: danielpalme/ReportGenerator-GitHub-Action@4.8.12
+      with:
+        reports: ${{steps.coverlet.outputs.coverageFile}} 
+        targetdir: 'coveragereport' 
+        reporttypes: 'HtmlInline;MarkdownSummary' 
+        verbosity: 'Info' # The verbosity level of the log messages. Values: Verbose, Info, Warning, Error, Off
+        tag: '${{ github.run_number }}_${{ github.run_id }}' 
+#    - name: Publish coverage summary
+#      uses: marocchino/sticky-pull-request-comment@v2
+#      with:
+#           path: coveragereport/Summary.md    
+    - name: publish nuget
+      if:  ${{success() && matrix.os == 'windows-latest' && env.PUBLISH_NUGET}}
+      id: publish_nuget
+      uses: alirezanet/publish-nuget@v3.0.0
+      with:
+          VERSION_REGEX: <version>(.*)<\/version>  
+          PROJECT_FILE_PATH: ${{env.MAIN_CSPROJ}}
+          NUGET_KEY: ${{secrets.NUGET_KEY}}
+          VERSION_FILE_PATH: ${{env.MAIN_CSPROJ}}
+          INCLUDE_SYMBOLS: true
+    - name: Create Release
+      if: ${{ success() && matrix.os == 'windows-latest' && steps.publish_nuget.outputs.VERSION != ''  && steps.publish_nuget.outputs.VERSION != null }}
+      id: create_release
+      uses: actions/create-release@latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
+      with:
+        tag_name: ${{ steps.publish_nuget.outputs.VERSION }}
+        release_name: Release ${{ steps.publish_nuget.outputs.VERSION }}
+        draft: false
+        prerelease: false   
+    - name: Upload Release nuget Asset
+      if: ${{ success() && matrix.os == 'windows-latest' && steps.create_release.outputs.upload_url != ''  && steps.create_release.outputs.upload_url != null }}
+      id: upload-release-nuget-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.publish_nuget.outputs.PACKAGE_PATH }}
+        asset_name: ${{ steps.publish_nuget.outputs.PACKAGE_NAME }}
+        asset_content_type: application/zip
+    - name: Upload Release symbols nuget Asset
+      if: ${{ success() && matrix.os == 'windows-latest' && steps.create_release.outputs.upload_url != ''  && steps.create_release.outputs.upload_url != null }}
+      id: upload-release-nuget-symbols-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.publish_nuget.outputs.SYMBOLS_PACKAGE_PATH }}
+        asset_name: ${{ steps.publish_nuget.outputs.SYMBOLS_PACKAGE_NAME }}
+        asset_content_type: application/zip
+#    - name: Invoke refresh readme badges
+#      uses: benc-uk/workflow-dispatch@v1
+#      with:
+#        workflow: refresh readme badges
+#        token: ${{ secrets.RELEASE_PAT }}
