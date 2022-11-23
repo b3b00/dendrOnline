@@ -11,11 +11,11 @@ RUN dotnet restore
 
 # Copy everything else and build
 COPY . .
-RUN dotnet publish --no-restore -c Release -o out ./src/Treeme
+RUN dotnet publish --no-restore -c Release -o out ./TreeMeX
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
-WORKDIR /app
-COPY --from=build-env /app/out .
-ENTRYPOINT ["./StreamBadgerLogin"]
+WORKDIR /
+COPY --from=build-env /out .
+ENTRYPOINT ["./TreeMeX"]
 
