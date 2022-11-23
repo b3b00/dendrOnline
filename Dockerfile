@@ -3,8 +3,8 @@ WORKDIR ./
 
 # Copy csproj and restore as distinct layers
 COPY TreeMe.sln .
-COPY BackEnd/BackEnd.csproj ./src/BackEnd/
-COPY GitHubOAuthMiddleWare/GitHubOAuthMiddleWare.csproj ./GitHubOAuthMiddleWare/
+COPY BackEnd/BackEnd.csproj ./BackEnd/BackEnd.csproj
+COPY GitHubOAuthMiddleWare/GitHubOAuthMiddleWare.csproj ./GitHubOAuthMiddleWare/GitHubOAuthMiddleWare.csproj
 COPY TreeMeX/TreeMeX.csproj ./TreeMeX/TreeMeX.csproj
 COPY Tests/Tests.csproj ./Tests/Tests.csproj
 RUN dotnet restore
