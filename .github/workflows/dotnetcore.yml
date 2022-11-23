@@ -3,14 +3,11 @@ name: Build
 on:
   workflow_dispatch:
   push:
-    branches: 
-      - dev
-      - tech/actions 
-      - master
-      - feature/implicit-tokens
+    branches:       
+      - main             
   pull_request:
     branches: 
-      - dev
+      - main
 permissions:
   pull-requests: write
 jobs:  
