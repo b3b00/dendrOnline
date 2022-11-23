@@ -1,12 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
-WORKDIR /app
+WORKDIR ./
 
 # Copy csproj and restore as distinct layers
-COPY ./TreeMe.sln .
-COPY ./BackEnd/BackEnd.csproj ./src/BackEnd/
-COPY ./GitHubOAuthMiddleWare/GitHubOAuthMiddleWare.csproj ./GitHubOAuthMiddleWare/
-COPY ./TreeMeX/TreeMeX.csproj ./TreeMeX/TreeMeX.csproj
-COPY ./Tests/Tests.csproj ./Tests/Tests.csproj
+COPY TreeMe.sln .
+COPY BackEnd/BackEnd.csproj ./src/BackEnd/
+COPY GitHubOAuthMiddleWare/GitHubOAuthMiddleWare.csproj ./GitHubOAuthMiddleWare/
+COPY TreeMeX/TreeMeX.csproj ./TreeMeX/TreeMeX.csproj
+COPY Tests/Tests.csproj ./Tests/Tests.csproj
 RUN dotnet restore
 
 # Copy everything else and build
