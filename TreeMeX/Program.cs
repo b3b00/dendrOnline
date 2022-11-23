@@ -1,7 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using BackEnd;
 using GitHubOAuthMiddleWare;
 using Microsoft.AspNetCore.Antiforgery;
@@ -12,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 // builder.Services.AddRazorPages();
@@ -49,6 +48,7 @@ app.UseAuthorization();
 app.UseAuthentication();
 app.UseSession();
 
+
 app.Use(async (context, next) =>
 {
     var initialBody = context.Request.Body;
@@ -72,4 +72,6 @@ app.UseGHOAuth(options =>
     options.ReturnUrlParameter = app.Configuration["github:startUri"];
     options.RedirectUri = app.Configuration["github:redirectUri"];
 });
-app.Run();
+
+
+app.Run("http://*:"+Environment.GetEnvironmentVariable("PORT"));

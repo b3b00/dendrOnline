@@ -14,7 +14,7 @@ COPY . .
 RUN dotnet publish --no-restore -c Release -o out ./TreeMeX
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:5.0
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /
 COPY --from=build-env /out .
 ENTRYPOINT ["./TreeMeX"]
