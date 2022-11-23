@@ -32,7 +32,7 @@ jobs:
     - name: Build with dotnet 
       run: dotnet build --configuration Release      
     - name : deploy railway
-      uses: devtomio/action-railway@v1.1.4
+      uses: bervProject/railway-deploy@main
       with:
         railway_token: ${{ secrets.RAILWAY_TOKEN }}
     
