@@ -30,17 +30,7 @@ jobs:
     - name: Clean artifacts and nugets 
       run: dotnet clean  --configuration Release && dotnet nuget locals all --clear
     - name: Build with dotnet 
-      run: dotnet build --configuration Release     
-    - name: Test with dotnet
-      uses: b3b00/coverlet-action@1.2.4
-      id: 'coverlet'
-      if: env.RUN_TESTS
-      with:
-        testProject: ${{env.TESTS_PROJECT}}
-        output: 'lcov.info'
-        threshold: 10
-        outputFormat: 'lcov'
-        excludes: '[Tests]*,[GitHubOAuthMiddleWare]*'
+      run: dotnet build --configuration Release      
     - name : deploy railway
       uses: devtomio/action-railway@v1.1.4
       with:
