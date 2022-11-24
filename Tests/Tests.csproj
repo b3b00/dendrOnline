@@ -23,8 +23,8 @@
         </PackageReference>
     </ItemGroup>
 
+
     <ItemGroup>
-      <ProjectReference Include="..\..\sharpfilesystem\SharpCoreFileSystem\SharpCoreFileSystem.csproj" />
       <ProjectReference Include="..\BackEnd\BackEnd.csproj" />
     </ItemGroup>
 
