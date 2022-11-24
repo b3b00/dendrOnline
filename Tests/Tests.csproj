@@ -25,7 +25,7 @@
     </ItemGroup>
 
 
-    <ItemGroup>
+    <ItemGroup>      
       <ProjectReference Include="..\BackEnd\BackEnd.csproj" />
     </ItemGroup>
 
@@ -33,15 +33,10 @@
       <None Remove="data\header\extractheader.md" />
       <EmbeddedResource Include="data\header\extractheader.md" />
       <None Remove="data\repository\notes\perso.topic1.item1.md" />
-      <EmbeddedResource Include="data\repository\notes\perso.topic1.item1.md" />
       <None Remove="data\repository\notes\perso.topic1.item2.md" />
-      <EmbeddedResource Include="data\repository\notes\perso.topic1.item2.md" />
       <None Remove="data\repository\notes\perso.topic2.item1.md" />
-      <EmbeddedResource Include="data\repository\notes\perso.topic2.item1.md" />
       <None Remove="data\repository\notes\perso.topic2.item2.md" />
-      <EmbeddedResource Include="data\repository\notes\perso.topic2.item2.md" />
       <None Remove="data\repository\notes\root.md" />
-      <EmbeddedResource Include="data\repository\notes\root.md" />
     </ItemGroup>
 
 </Project>

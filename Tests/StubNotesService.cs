@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using BackEnd;
 using SharpFileSystem;
@@ -16,15 +15,13 @@ public class StubNotesService : AsbtractNotesService
         
         public IFileSystem FileSystem { get; set; }
 
-        public StubNotesService(Assembly assembly, string rootDirectory)
+
+        public StubNotesService(IFileSystem fileSystem, string rootDirectory)
         {
-            var eFs = new EmbeddedResourceFileSystem(assembly);
-            var memFs = new MemoryFileSystem();
-            var mergeFS = new MergedFileSystem(eFs, memFs);
-            FileSystem = eFs;
+            FileSystem = fileSystem;
             RootDirectory = rootDirectory;
         }
-
+       
         public override void SetRepository(string name, long id)
         {
             RootDirectory = name;
@@ -74,11 +71,10 @@ public class StubNotesService : AsbtractNotesService
             }
         }
 
-        //C:\Users\olduh\DendronNotes
         public override async Task<List<string>> GetNotes()
         {
-            var notedir = RootDirectory+"/notes";
-            var files = FileSystem.GetEntities(FileSystemPath.Root).ToList();
+            var notedir = RootDirectory+"/notes/";
+            var files = FileSystem.GetEntitiesRecursive(FileSystemPath.Parse(notedir)).ToList();
             var list = files.Select(x => x.EntityName.Replace(".md", "")).ToList();
             return list;
         }
