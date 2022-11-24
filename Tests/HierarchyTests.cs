@@ -9,8 +9,9 @@ public class HierarchyTests
     [Fact]
     public void TestNoteHierarchy()
     {
-        var notesService = new FsNotesService(@"C:\Users\olduh\DendronNotes");
+        var notesService = new StubNotesService(typeof(HierarchyTests).Assembly, "/data/repository");
         var notes = notesService.GetNotes().GetAwaiter().GetResult();
-        var hierarchy = notesService.GetHierarchy(notes);
+        ;
+
     }
 }

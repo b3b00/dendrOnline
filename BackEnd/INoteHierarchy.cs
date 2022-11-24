@@ -19,5 +19,7 @@ namespace BackEnd
 
 
         void Deploy(string currentNote);
+
+        public INoteHierarchy Filter(string filter);
     }
 }

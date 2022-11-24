@@ -73,5 +73,11 @@ app.UseGHOAuth(options =>
     options.RedirectUri = app.Configuration["github:redirectUri"];
 });
 
-
-app.Run("http://*:"+Environment.GetEnvironmentVariable("PORT"));
+if (app.Environment.IsDevelopment())
+{
+    app.Run();
+}
+else
+{
+    app.Run("http://*:" + Environment.GetEnvironmentVariable("PORT"));
+}

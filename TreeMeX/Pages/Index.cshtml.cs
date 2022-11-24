@@ -20,6 +20,9 @@ public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
 
+    [BindProperty(SupportsGet = true)]
+    public string NoteQuery { get; set; }
+    
     public string PostContent { get; set; }  = "*empty*";
 
     public List<string> Notes { get; set; } = new List<string>();
@@ -65,8 +68,19 @@ public class IndexModel : PageModel
         
         Notes = await NotesService.GetNotes();
         SetClient();
-        NoteHierarchy = NotesService.GetHierarchy(Notes);
+        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery);
         NoteHierarchy.Deploy(CurrentNote);
+    }
+
+    public async Task<IActionResult> OnPostFilterTree()
+    {
+        SetClient();
+        
+        Notes = await NotesService.GetNotes();
+        SetClient();
+        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery);
+        NoteHierarchy.Deploy(CurrentNote);
+        return Partial("Hierarchy", NoteHierarchy);
     }
     
     public async Task<IActionResult> OnPostSave(string PostContent, string CurrentNote)

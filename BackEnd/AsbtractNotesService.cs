@@ -34,7 +34,7 @@ namespace BackEnd
             return b.ToString();
         }
 
-        public INoteHierarchy GetHierarchy(List<string> notes)
+        public INoteHierarchy GetHierarchy(List<string> notes, string filter)
         {
             var ordered = notes.OrderBy(x => x.Length).ToList();
             ordered.Reverse();
@@ -51,8 +51,14 @@ namespace BackEnd
                 }
             }
 
+            
             root.Name = "root";
             Debug.WriteLine(root.Dump(""));
+            if (!string.IsNullOrEmpty(filter))
+            {
+                root = root.Filter(filter) as NodeNote;
+            }
+
             return root;
         }
     }

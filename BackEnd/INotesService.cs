@@ -16,7 +16,7 @@ namespace BackEnd
 
         Task<List<string>> GetNotes();
 
-        INoteHierarchy GetHierarchy(List<string> notes);
+        INoteHierarchy GetHierarchy(List<string> notes, string filter);
 
         void SetRepository(string name, long id);
 

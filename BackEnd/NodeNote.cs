@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -62,6 +63,21 @@ namespace BackEnd
 
                 }
             }
+        }
+
+        public INoteHierarchy Filter(string filter)
+        {
+
+            var filteredChildren = Child.Select(x => x.Filter(filter)).Where(x => x != null);
+
+            if (Name.Contains(filter, StringComparison.InvariantCultureIgnoreCase) || filteredChildren.Any())
+            {
+                NodeNote node = new NodeNote(Name);
+                node.Child.AddRange(filteredChildren);
+                return node;
+            }
+
+            return null;
         }
 
         public string Dump(string tab)

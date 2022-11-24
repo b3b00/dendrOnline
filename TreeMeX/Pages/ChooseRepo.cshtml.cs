@@ -46,8 +46,7 @@ public class ChooseRepoModel : PageModel
         }
         else
         {
-           
-            var repos = (await client.Repository.GetAllForCurrent()).Where(x => x.Name.Contains(Query));
+            var repos = (await client.Repository.GetAllForCurrent()).Where(x => x.Name.Contains(Query,StringComparison.InvariantCultureIgnoreCase));
             Repositories = repos.Select(x => (x.Id, x.Name)).ToList();
             return Partial("RepositoryList",this);
         }

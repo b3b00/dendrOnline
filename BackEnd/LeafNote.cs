@@ -1,3 +1,5 @@
+using System;
+
 namespace BackEnd
 {
 
@@ -24,6 +26,15 @@ namespace BackEnd
         public void Deploy(string currentNote)
         {
             
+        }
+
+        public INoteHierarchy Filter(string filter)
+        {
+            if (Name.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return this;
+            }
+            return null;
         }
     }
 }

@@ -11,7 +11,6 @@
         <PackageReference Include="GitHubActionsTestLogger" Version="2.0.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
         <PackageReference Include="NFluent" Version="3.0.0.277-beta" />
-        <PackageReference Include="SharpCoreFileSystem" Version="1.0.4" />
         <PackageReference Include="xunit" Version="2.4.2" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25,12 +24,23 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\sharpfilesystem\SharpCoreFileSystem\SharpCoreFileSystem.csproj" />
       <ProjectReference Include="..\BackEnd\BackEnd.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="data\header\extractheader.md" />
       <EmbeddedResource Include="data\header\extractheader.md" />
+      <None Remove="data\repository\notes\perso.topic1.item1.md" />
+      <EmbeddedResource Include="data\repository\notes\perso.topic1.item1.md" />
+      <None Remove="data\repository\notes\perso.topic1.item2.md" />
+      <EmbeddedResource Include="data\repository\notes\perso.topic1.item2.md" />
+      <None Remove="data\repository\notes\perso.topic2.item1.md" />
+      <EmbeddedResource Include="data\repository\notes\perso.topic2.item1.md" />
+      <None Remove="data\repository\notes\perso.topic2.item2.md" />
+      <EmbeddedResource Include="data\repository\notes\perso.topic2.item2.md" />
+      <None Remove="data\repository\notes\root.md" />
+      <EmbeddedResource Include="data\repository\notes\root.md" />
     </ItemGroup>
 
 </Project>
