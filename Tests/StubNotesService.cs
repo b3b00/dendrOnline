@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using BackEnd;
 using SharpFileSystem;
 using SharpFileSystem.FileSystems;
-using File = System.IO.File;
 
 namespace Tests;
 

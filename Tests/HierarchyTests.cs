@@ -6,7 +6,7 @@ namespace Tests;
 
 public class HierarchyTests
 {
-    [Fact]
+    //[Fact]
     public void TestNoteHierarchy()
     {
         var notesService = new StubNotesService(typeof(HierarchyTests).Assembly, "/data/repository");
