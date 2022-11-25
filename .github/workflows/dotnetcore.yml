@@ -38,7 +38,7 @@ jobs:
       with:
         testProject: ${{env.TESTS_PROJECT}}
         output: 'lcov.info'
-        threshold: 80
+        threshold: 30
         outputFormat: 'lcov'
         excludes: '[Tests]*'
     - name : deploy railway
