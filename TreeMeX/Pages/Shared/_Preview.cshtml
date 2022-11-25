@@ -6,8 +6,8 @@
 @addTagHelper *, Htmx.TagHelpers
 
 @if (Model.UpdateEditor) { 
-    <textarea hx-post="@Url.Page("Index")" style="width: 30%" hx-trigger="keyup changed delay:250ms" hx-target="#preview" id="editor" hx-swap-oob="true" asp-for="PostContent">@Model.PostContent</textarea>
-    <h1 class="display-4" id="NoteTitle" hx-swap-oob="true">@Model.CurrentNote</h1>
+    <textarea hx-post="@Url.Page("Index")" style="width: 100%" hx-trigger="keyup changed delay:250ms" hx-target="#preview" id="editor" hx-swap-oob="true" asp-for="PostContent">@Model.PostContent</textarea>
+    <h1 class="display-4" id="NoteTitle" hx-swap-oob="true">@Model.CurrentNoteShortName</h1>
 }
 <div id="preview" style="border: black dashed 2px;width: 100%">
     <input type="hidden" name="CurrentNote" value="@Model.CurrentNote" asp-for="CurrentNote"/>

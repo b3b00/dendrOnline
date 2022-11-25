@@ -8,6 +8,7 @@
     <ItemGroup>
       <PackageReference Include="Htmx" Version="0.0.19" />
       <PackageReference Include="Htmx.TagHelpers" Version="0.0.19" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.9.0" />
     </ItemGroup>
 

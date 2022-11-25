@@ -34,6 +34,8 @@ public class IndexModel : PageModel
     [BindProperty]
     [HiddenInput] 
     public string CurrentNote { get; set; }
+
+    public string CurrentNoteShortName => CurrentNote.Split(new[] { '.' }).Last();
     
     public User GitHubUser { get; set; }
 

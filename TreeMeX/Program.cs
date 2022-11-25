@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using BackEnd;
+using dendrOnline;
 using GitHubOAuthMiddleWare;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
@@ -65,12 +66,12 @@ app.Use(async (context, next) =>
 
 app.UseGHOAuth(options =>
 {
-    options.TokenEndpoint = app.Configuration["github:tokenUrl"];
-    options.AuthorizationEndpoint = app.Configuration["github:authorizeUrl"];
-    options.ClientId = app.Configuration["github:clientId"];
-    options.ClientSecret = app.Configuration["github:clientSecret"];
-    options.ReturnUrlParameter = app.Configuration["github:startUri"];
-    options.RedirectUri = app.Configuration["github:redirectUri"];
+    options.TokenEndpoint = app.Configuration[Constants.TokenUrlParameter];
+    options.AuthorizationEndpoint = app.Configuration[Constants.AuthorizeUrlParameter];
+    options.ClientId = app.Configuration[Constants.ClientIdParameter];
+    options.ClientSecret = app.Configuration[Constants.ClientSecretParameter];
+    options.ReturnUrlParameter = app.Configuration[Constants.StartUrlParameter];
+    options.RedirectUri = app.Configuration[Constants.RedirectUrlParameter];
 });
 
 if (app.Environment.IsDevelopment())

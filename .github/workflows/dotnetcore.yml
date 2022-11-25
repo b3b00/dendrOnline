@@ -30,7 +30,17 @@ jobs:
     - name: Clean artifacts and nugets 
       run: dotnet clean  --configuration Release && dotnet nuget locals all --clear
     - name: Build with dotnet 
-      run: dotnet build --configuration Release      
+      run: dotnet build --configuration Release
+    - name: Test with dotnet
+      uses: b3b00/coverlet-action@1.2.4
+      id: 'coverlet'
+      if: env.RUN_TESTS
+      with:
+        testProject: ${{env.TESTS_PROJECT}}
+        output: 'lcov.info'
+        threshold: 80
+        outputFormat: 'lcov'
+        excludes: '[Tests]*'
     - name : deploy railway
       uses: bervProject/railway-deploy@main
       with:

@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/TreeMeX.styles.css" asp-append-version="true"/>
+    
     @Html.HtmxAntiforgeryScript()
 </head>
 <body>
@@ -30,6 +31,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-page="/ChooseRepo">Choose your repository</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-page="/logout">Logout</a>
                     </li>
                 </ul>
             </div>

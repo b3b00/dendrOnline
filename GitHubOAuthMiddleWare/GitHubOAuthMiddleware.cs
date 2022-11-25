@@ -26,9 +26,10 @@ public static class GitHubOAuthMiddleware
         
         app.Use(async (context, next) =>
         {
-            if (!context.Session.TryGetValue(AccessToken, out var accessToken))
+            bool existAccessToken = context.Session.TryGetValue(AccessToken, out var accessToken);
+            if (!existAccessToken || accessToken == null || accessToken.Length == 0)
             {
-                if (context.Request.Path == "/auth")
+                if (context.Request.Url() == options.RedirectUri)
                 {
                     // TODO : check if error in query string
                     // TODO test if coming back from github => get the token => store it in session => redirect to /    
@@ -98,7 +99,7 @@ public static class GitHubOAuthMiddleware
                 }
             }
 
-            await next.Invoke();
+                await next.Invoke();
         });
         return app;
     }

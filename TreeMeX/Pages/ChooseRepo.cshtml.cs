@@ -7,9 +7,26 @@ using Htmx;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using Octokit;
 
 namespace dendrOnline.Pages;
+
+public class GhRepository
+{
+    public long Id { get; set; }
+    
+    public string Name { get; set; }
+
+    public GhRepository(long id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
+
+
+}
+
 
 [ValidateAntiForgeryToken]
 public class ChooseRepoModel : PageModel
@@ -20,7 +37,24 @@ public class ChooseRepoModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string Query { get; set; }
     
-    public List<(long id,string name)> Repositories { get; set; }
+    public List<GhRepository> Repositories { get; set; }
+    
+    public async Task GetRepositories(GitHubClient client)
+    {
+        string repositoryList = HttpContext.Session.GetString("repositories");
+        if (string.IsNullOrEmpty(repositoryList))
+        {
+            var repos = await client.Repository.GetAllForCurrent();
+            this.Repositories = repos.Select(x => new GhRepository(x.Id, x.Name)).ToList();
+            repositoryList = JsonConvert.SerializeObject(Repositories);
+            HttpContext.Session.SetString("repositories", repositoryList);
+        }
+        else
+        {
+            Repositories = JsonConvert.DeserializeObject<List<GhRepository>>(repositoryList);
+        }
+    }
+    
     
     public async Task<IActionResult> OnGet()
     {
@@ -39,17 +73,25 @@ public class ChooseRepoModel : PageModel
                 HttpContext.Session.SetString("repositoryName",repo.Name);
                 Response.Redirect("/Index");
             }
-            
-            var repos = await client.Repository.GetAllForCurrent();
-            Repositories = repos.Select(x => (x.Id, x.Name)).ToList();
+
+            await GetRepositories(client);
+
+
             return Page();
         }
         else
         {
-            var repos = (await client.Repository.GetAllForCurrent()).Where(x => x.Name.Contains(Query,StringComparison.InvariantCultureIgnoreCase));
-            Repositories = repos.Select(x => (x.Id, x.Name)).ToList();
+            await GetRepositories(client);
+
+            if (!string.IsNullOrEmpty(Query))
+                Repositories = Repositories
+                    .Where(x => x.Name.Contains(Query, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            }
+
             return Partial("RepositoryList",this);
         }
     }
+
     
-}
+
+
