@@ -88,7 +88,7 @@ public class IndexModel : PageModel
     public async Task<IActionResult> OnPostSave(string PostContent, string CurrentNote)
     {
         SetClient();
-        NotesService.SetContent(CurrentNote,PostContent);
+        await NotesService.SetContent(CurrentNote,PostContent);
         
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();
@@ -145,7 +145,7 @@ public class IndexModel : PageModel
                 CurrentNote = "root";
             }
             PostContent = await NotesService.GetContent(CurrentNote);
-            UpdateNotes();
+            await UpdateNotes();
             return Page();
         }
         
@@ -181,7 +181,7 @@ public class IndexModel : PageModel
         var user = await client.User.Current();
         GitHubUser = user;
 
-        UpdateNotes();
+        await UpdateNotes();
         
         return Partial("_Preview", this);
     }

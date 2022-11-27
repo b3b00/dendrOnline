@@ -33,29 +33,29 @@ public class ChooseRepoModel : PageModel
 {
 
     public User GitHubUser { get; set; }
-    
-    [BindProperty(SupportsGet = true)]
-    public string Query { get; set; }
-    
-    public List<GhRepository> Repositories { get; set; }
-    
+
+    [BindProperty(SupportsGet = true)] public string Query { get; set; } = "";
+
+    public List<GhRepository> Repositories { get; set; } = new List<GhRepository>();
+
     public async Task GetRepositories(GitHubClient client)
     {
-        string repositoryList = HttpContext.Session.GetString("repositories");
+        string repositoryList = HttpContext?.Session?.GetString("repositories");
         if (string.IsNullOrEmpty(repositoryList))
         {
             var repos = await client.Repository.GetAllForCurrent();
             this.Repositories = repos.Select(x => new GhRepository(x.Id, x.Name)).ToList();
             repositoryList = JsonConvert.SerializeObject(Repositories);
-            HttpContext.Session.SetString("repositories", repositoryList);
+            HttpContext?.Session?.SetString("repositories", repositoryList);
         }
         else
         {
-            Repositories = JsonConvert.DeserializeObject<List<GhRepository>>(repositoryList);
+            Repositories = JsonConvert.DeserializeObject<List<GhRepository>>(repositoryList) ??
+                           new List<GhRepository>();
         }
     }
-    
-    
+
+
     public async Task<IActionResult> OnGet()
     {
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
@@ -63,14 +63,14 @@ public class ChooseRepoModel : PageModel
         client.Credentials = new Credentials(accessToken);
         var user = await client.User.Current();
         this.GitHubUser = user;
-        
+
         if (!Request.IsHtmx())
         {
             if (Request.Query.ContainsKey("repo"))
             {
-                HttpContext.Session.SetString("repositoryId",Request.Query["repo"].First());
+                HttpContext.Session.SetString("repositoryId", Request.Query["repo"].First());
                 var repo = await client.Repository.Get(long.Parse(Request.Query["repo"].First()));
-                HttpContext.Session.SetString("repositoryName",repo.Name);
+                HttpContext.Session.SetString("repositoryName", repo.Name);
                 Response.Redirect("/Index");
             }
 
@@ -86,11 +86,11 @@ public class ChooseRepoModel : PageModel
             if (!string.IsNullOrEmpty(Query))
                 Repositories = Repositories
                     .Where(x => x.Name.Contains(Query, StringComparison.InvariantCultureIgnoreCase)).ToList();
-            }
-
-            return Partial("RepositoryList",this);
         }
+
+        return Partial("RepositoryList", this);
     }
+}
 
     
 
