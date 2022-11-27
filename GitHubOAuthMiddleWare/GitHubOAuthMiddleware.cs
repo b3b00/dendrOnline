@@ -29,14 +29,14 @@ public static class GitHubOAuthMiddleware
             bool existAccessToken = context.Session.TryGetValue(AccessToken, out var accessToken);
             if (!existAccessToken || accessToken == null || accessToken.Length == 0)
             {
-                if (context.Request.Url() == options.RedirectUri)
+                if (context.Request.HostAndPath() == options.RedirectUri.Replace("https://","").Replace("http://",""))
                 {
-                    // TODO : check if error in query string
-                    // TODO test if coming back from github => get the token => store it in session => redirect to /    
+                    // check if error in query string
+                    // test if coming back from github => get the token => store it in session => redirect to /    
                     HttpClient client = new HttpClient();
                     var code = context.Request.Query["code"].First();
                     var state = context.Request.Query["state"].First();
-                    var tokenUrl = options.TokenEndpoint;//;
+                    var tokenUrl = options.TokenEndpoint;
                     var clientId = options.ClientId;
                     var clientSecret = options.ClientSecret;
                     var redirectUri = options.RedirectUri;
@@ -45,7 +45,6 @@ public static class GitHubOAuthMiddleware
                     {
                         throw new InvalidOperationException("authentication failure : CSRF suspected.");
                     }
-
                     var query =
                         $"client_id={clientId}&client_secret={clientSecret}&code={code}&redirect_uri={redirectUri}";
                     var response = await client.PostAsync(tokenUrl,
@@ -53,7 +52,6 @@ public static class GitHubOAuthMiddleware
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         var body = await response.Content.ReadAsStringAsync();
-                        
                         var parameters = QueryHelpers.ParseQuery(body);
                         if (parameters.TryGetValue("access_token", out var accessTokenValues))
                         {
@@ -62,9 +60,9 @@ public static class GitHubOAuthMiddleware
                         else
                         {
                             throw new InvalidOperationException(
-                                $"inavlid authentication : missing access token");
+                                $"invalid authentication : missing access token");
                         }
-
+                        
                         if (parameters.TryGetValue("token_type", out var tokenTypeValues))
                         {
                             context.Session.SetString(TokenType, tokenTypeValues.First());

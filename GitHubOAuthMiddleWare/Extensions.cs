@@ -18,12 +18,12 @@ public static class Extensions
 
     public static void SetGithubAccessToken(this HttpContext httpContext, string value)
     {
-        httpContext.Session.SetString(GitHubOAuthMiddleWare.GitHubOAuthMiddleware.AccessToken, value);
+        httpContext.Session.SetString(GitHubOAuthMiddleware.AccessToken, value);
     }
     
     public static string GetGithubTokenType(this HttpContext httpContext)
     {
-        return httpContext.Session.GetString(GitHubOAuthMiddleWare.GitHubOAuthMiddleware.TokenType);
+        return httpContext.Session.GetString(GitHubOAuthMiddleware.TokenType);
     }
 
     public async static Task Logout(this GitHubClient gitHubClient, HttpContext context, string accessToken, string clientId, string logoutUrl)
@@ -46,7 +46,7 @@ public static class Extensions
         ;
     }
 
-    public static string Url(this HttpRequest request) => request.Scheme + "://" + request.Host + request.Path;
-    
-    
+    public static string HostAndPath(this HttpRequest request) => request.Host + request.Path;
+
+   
 }
