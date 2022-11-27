@@ -19,9 +19,15 @@
                 <a href="#" hx-get="@Url.Page("Index")?note=@Model.Name" hx-target="#xContent">@Model.ShortName</a> <a href="#" onclick="createNote('@Model.Name')">+++</a>
             </summary>
 
-            @foreach (var note in (Model as NodeNote).Child)
+            @if (Model is NodeNote node)
             {
-                <partial name="Hierarchy" model="@note"/>
+                @if (node.Child != null && node.Child.Any())
+                {
+                    @foreach (var note in node.Child)
+                    {
+                        <partial name="Hierarchy" model="@note"/>
+                    }
+                }
             }
         </details>
     }
