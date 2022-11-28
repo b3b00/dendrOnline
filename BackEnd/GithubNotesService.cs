@@ -30,11 +30,21 @@ namespace BackEnd
         {
             if (gitHubClient != null)
             {
-                var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/{noteName}.md");
-                if (contents.Any())
+                try
                 {
-                    var content = contents.First();
-                    return content.Content;
+                    var contents =
+                        await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/{noteName}.md");
+                    if (contents.Any())
+                    {
+                        var content = contents.First();
+                        return content.Content;
+                    }
+                }
+                catch(Exception e)
+                {
+                    return @"# root note not found !
+
+This may not be a dendron repository";
                 }
             }
 
