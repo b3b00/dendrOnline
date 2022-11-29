@@ -24,4 +24,20 @@ public static class Extensions
         {
             return httpContext.GetRepositoryId() != -1;
         }
+
+        public static bool? GetBool(this ISession session, string key)
+        {
+            if (session.TryGetValue(key, out byte[] value))
+            {
+                bool storedValue = value[0] == 1;
+                
+                return storedValue;
+            }
+            return null;
+        }
+
+        public static void SetBool(this ISession session, string key, bool value)
+        {
+            session.Set(key, new byte[]{(byte)(value ? 1 : 0)});
+        }
 }

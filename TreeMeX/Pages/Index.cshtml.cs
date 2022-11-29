@@ -25,6 +25,14 @@ public class IndexModel : PageModel
     
     public string PostContent { get; set; }  = "*empty*";
 
+    public bool EditorVisible { get; set; } = true;
+
+    public bool ContentVisible { get; set; } = true;
+
+    public string EditorStyle { get; set; } = "display: inline; width:40%";
+    
+    public string ContentStyle { get; set; } = "margin: auto 0;width: 60%; display: inline";
+    
     public List<string> Notes { get; set; } = new List<string>();
     
     public bool UpdateEditor { get; set; }
@@ -83,6 +91,59 @@ public class IndexModel : PageModel
         NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery);
         NoteHierarchy.Deploy(CurrentNote);
         return Partial("Hierarchy", NoteHierarchy);
+    }
+
+    public async Task<IActionResult> OnGetDisplay()
+    {
+        SetClient();
+        string toggle = Request.Query["toggle"].First();
+        string note = Request.Query["note"].First();
+        ExtractVisibility();
+        CurrentNote = note;
+        if (toggle == "editor")
+        {
+            EditorVisible = !EditorVisible;
+            UpdateEditor = true;
+        }
+        if (toggle == "content")
+        {
+            ContentVisible = !ContentVisible;
+        }
+        HttpContext.Session.SetBool("EditorVisible",EditorVisible);
+        HttpContext.Session.SetBool("ContentVisible",ContentVisible);
+        SetDisplay();
+        PostContent = await NotesService.GetContent(CurrentNote);
+        return Partial("_Preview", this);
+    }
+
+    private void ExtractVisibility()
+    {
+        bool? editorVisibility = HttpContext.Session.GetBool("EditorVisible");
+        EditorVisible = editorVisibility.HasValue ? editorVisibility.Value : true;
+        bool? contentVisibility = HttpContext.Session.GetBool("ContentVisible");
+        ContentVisible = contentVisibility.HasValue ? contentVisibility.Value : true;
+    }
+
+    private void SetDisplay()
+    {
+        
+        if (EditorVisible && ContentVisible)
+        {
+            EditorStyle = "display:inline;width : 40%";
+            ContentStyle = "margin: auto 0;width: 60%; display: inline";
+        }
+        else if (EditorVisible && !ContentVisible) {
+            EditorStyle = "display:inline;width : 100%";
+            ContentStyle = "margin: auto 0;width: 60%; display: none";
+        }
+        else if (!EditorVisible && ContentVisible) {
+            EditorStyle = "display:none;";
+            ContentStyle = "margin: auto 0;width: 100%; display: inline";
+        }
+        else {
+            EditorStyle = "display:none;";
+            ContentStyle = "margin: auto 0;width: 60%; display: none";
+        }
     }
     
     public async Task<IActionResult> OnPostSave(string PostContent, string CurrentNote)
@@ -145,6 +206,7 @@ public class IndexModel : PageModel
                 CurrentNote = "root";
             }
             PostContent = await NotesService.GetContent(CurrentNote);
+            ExtractVisibility();
             await UpdateNotes();
             return Page();
         }
