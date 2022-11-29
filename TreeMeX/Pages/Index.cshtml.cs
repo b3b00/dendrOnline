@@ -45,6 +45,8 @@ public class IndexModel : PageModel
 
     public string CurrentNoteShortName => CurrentNote.Split(new[] { '.' }).Last();
     
+    public string CurrentNoteDescription { get; set; }
+    
     public User GitHubUser { get; set; }
 
     public string RepositoryId => HttpContext.Session.GetString("repositoryId");
@@ -206,6 +208,8 @@ public class IndexModel : PageModel
                 CurrentNote = "root";
             }
             PostContent = await NotesService.GetContent(CurrentNote);
+            var parsed = NoteParser.Parse(PostContent);
+            CurrentNoteDescription = parsed.Header.Description;
             ExtractVisibility();
             await UpdateNotes();
             return Page();
@@ -217,6 +221,13 @@ public class IndexModel : PageModel
         {
             CurrentNote = note.First();
             PostContent = await NotesService.GetContent(note.First());
+            var parsed = NoteParser.Parse(PostContent);
+            var description = parsed.Header.Description;
+            CurrentNoteDescription = description.Substring(1,description.Length-2);
+            if (string.IsNullOrEmpty(CurrentNoteDescription))
+            {
+                CurrentNoteDescription = CurrentNote;
+            }
             UpdateEditor = true;
         }
         
