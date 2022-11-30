@@ -229,6 +229,8 @@ public class IndexModel : PageModel
             {
                 CurrentNoteDescription = CurrentNote;
             }
+
+            UpdatePreview = true;
             UpdateEditor = true;
         }
         
