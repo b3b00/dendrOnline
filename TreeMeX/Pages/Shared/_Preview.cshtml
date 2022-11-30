@@ -6,7 +6,10 @@
 @addTagHelper *, Htmx.TagHelpers
 
 
-<h3 class="display-4" id="NoteTitle" hx-swap-oob="true">@Model.CurrentNoteDescription</h3>
+@if (Model.UpdatePreview)
+{
+    <h3 class="display-4" id="NoteTitle" hx-swap-oob="true">@Model.CurrentNoteDescription</h3>
+}
 
 @if (Model.UpdateEditor)
 {

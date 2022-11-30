@@ -54,9 +54,8 @@ public class IndexModel : PageModel
     
 
     private INotesService NotesService => HttpContext.RequestServices.GetService<INotesService>();
-    
-    
-    
+    public bool UpdatePreview { get; set; }
+
 
     public IndexModel(ILogger<IndexModel> logger)
     {
@@ -148,7 +147,7 @@ public class IndexModel : PageModel
         }
     }
     
-    public async Task<IActionResult> OnPostSave(string PostContent, string CurrentNote)
+    public async Task<IActionResult> OnPostSave(string postContent, string CurrentNote)
     {
         SetClient();
         await NotesService.SetContent(CurrentNote,PostContent);
@@ -158,11 +157,12 @@ public class IndexModel : PageModel
         client.Credentials = new Credentials(accessToken);
         var user = await client.User.Current();
         GitHubUser = user;
-        this.PostContent = PostContent;
+        this.PostContent = postContent;
         await UpdateNotes();
         UpdateEditor = false;
-        var parsed = NoteParser.Parse(PostContent);
+        var parsed = NoteParser.Parse(postContent);
         CurrentNoteDescription = parsed.Header.TrimmedDescription;
+        UpdatePreview = false;
         return Page();
     }
 
@@ -257,8 +257,8 @@ public class IndexModel : PageModel
         client.Credentials = new Credentials(accessToken);
         var user = await client.User.Current();
         GitHubUser = user;
-        CurrentNoteDescription = note.Header.TrimmedDescription; 
-        
+        CurrentNoteDescription = note.Header.TrimmedDescription;
+        UpdatePreview = true;
         await UpdateNotes();
         
         return Partial("_Preview", this);
