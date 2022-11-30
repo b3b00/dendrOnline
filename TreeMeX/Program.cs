@@ -20,13 +20,10 @@ var builder = WebApplication.CreateBuilder(args);
 // don't do this in production
 builder.Services.AddRazorPages(o => {
     
-     o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+     //o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
  });
 
-// builder.Services.AddScoped<INotesService>((IServiceProvider provider) =>
-//     new FsNotesService(@"C:\Users\olduh\DendronNotes"));
-
-builder.Services.AddScoped<INotesService>((IServiceProvider provider) =>
+builder.Services.AddScoped<INotesService>((provider) =>
     new GithubNotesService());
 
 builder.Services.AddSession().AddMemoryCache();
@@ -80,5 +77,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.Run("http://*:" + Environment.GetEnvironmentVariable("PORT"));
+    var port = Environment.GetEnvironmentVariable("PORT");
+    Console.WriteLine("DendrOnline is listening to http://*:" + port);
+    app.Run("http://*:" + port);
 }
