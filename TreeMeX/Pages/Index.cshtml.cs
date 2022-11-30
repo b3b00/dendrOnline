@@ -161,6 +161,8 @@ public class IndexModel : PageModel
         this.PostContent = PostContent;
         await UpdateNotes();
         UpdateEditor = false;
+        var parsed = NoteParser.Parse(PostContent);
+        CurrentNoteDescription = parsed.Header.TrimmedDescription;
         return Page();
     }
 
@@ -209,7 +211,7 @@ public class IndexModel : PageModel
             }
             PostContent = await NotesService.GetContent(CurrentNote);
             var parsed = NoteParser.Parse(PostContent);
-            CurrentNoteDescription = parsed.Header.Description;
+            CurrentNoteDescription = parsed.Header.TrimmedDescription;
             ExtractVisibility();
             await UpdateNotes();
             return Page();
@@ -222,8 +224,7 @@ public class IndexModel : PageModel
             CurrentNote = note.First();
             PostContent = await NotesService.GetContent(note.First());
             var parsed = NoteParser.Parse(PostContent);
-            var description = parsed.Header.Description;
-            CurrentNoteDescription = description.Substring(1,description.Length-2);
+            CurrentNoteDescription = parsed.Header.TrimmedDescription;
             if (string.IsNullOrEmpty(CurrentNoteDescription))
             {
                 CurrentNoteDescription = CurrentNote;
@@ -245,15 +246,19 @@ public class IndexModel : PageModel
             return Page();
         }
         
-        var content = PostContent; // Request.Query["PostContent"].First();
+        var content = PostContent; 
         this.PostContent = content;
+
+        var note = NoteParser.Parse(content);
+        
         
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();
         client.Credentials = new Credentials(accessToken);
         var user = await client.User.Current();
         GitHubUser = user;
-
+        CurrentNoteDescription = note.Header.TrimmedDescription; 
+        
         await UpdateNotes();
         
         return Partial("_Preview", this);

@@ -5,14 +5,36 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    
-    <meta name="htmx-config" content='{"indicatorClass":"htmx-indicator","historyCacheSize":20,"antiForgery":{"formFieldName":"__RequestVerificationToken","headerName":"RequestVerificationToken","requestToken":"<token>"}}' />
+    <meta name="htmx-config" content='{"indicatorClass":"htmx-indicator","historyCacheSize":20,"antiForgery":{"formFieldName":"__RequestVerificationToken","headerName":"RequestVerificationToken","requestToken":"<token>"}}' /> 
     <title>@ViewData["Title"] - DendrOnline</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/TreeMeX.styles.css" asp-append-version="true"/>
     
-    @Html.HtmxAntiforgeryScript()
+    <script>
+    document.addEventListener("htmx:configRequest", (evt) => {
+        let httpVerb = evt.detail.verb.toUpperCase();
+        if (httpVerb === 'GET') return;
+        
+        let antiForgery = htmx.config.antiForgery;
+        console.log("antiforgery",antiForgery);
+        if (antiForgery) {
+            if (evt.detail.parameters[antiForgery.formFieldName])
+                return;
+            
+            if (antiForgery.headerName) {
+                console.log(`set header ${antiforgery.headerName} = ${antiForgery.requestToken}`)
+                evt.detail.headers[antiForgery.headerName]
+                    = antiForgery.requestToken;
+            } else {
+                console.log(`set parameter ${antiforgery.formFieldName} = ${antiForgery.requestToken}`)
+                 evt.detail.parameters[antiForgery.formFieldName]
+                    = antiForgery.requestToken;
+            }
+        }
+    });
+    
+    </script>
 </head>
 <body>
 @Html.AntiForgeryToken()
@@ -43,6 +65,7 @@
 <div>
     <main role="main" >
         @RenderBody()
+        @Html.AntiForgeryToken()
     </main>
 </div>
 <footer class="border-top footer text-muted">

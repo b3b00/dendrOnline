@@ -42,6 +42,7 @@ namespace BackEnd
                 }
                 catch(Exception e)
                 {
+                    // TODO : better error reporting
                     return @"# root note not found !
 
 This may not be a dendron repository";

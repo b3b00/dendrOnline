@@ -8,80 +8,17 @@
 @{
     ViewData["Title"] = "Home page";
 }
-<!--
-<script>
 
-function setDisplay(id, display, width) {
-    
-    let element = document.getElementById(id);
-    if (element) {
-        if (display)
-            element.style.display = display;
-        if (width)
-            element.style.width = width;
-    }
-    
-}
-
-
-function set(editorVisible, contentVisible) {
-    
-    
-    
-    if (editorVisible && contentVisible) {
-        setDisplay('editor','inline','40%');
-        setDisplay('xContent','inline','60%');
-    }
-    else if (editorVisible && !contentVisible) {
-        setDisplay('editor','inline','100%');
-        setDisplay('xContent','none','60%');
-    }
-    else if (!editorVisible && contentVisible) {
-        setDisplay('editor','none','40%');
-        setDisplay('xContent','inline','100%');
-    }
-    else {
-        setDisplay('editor','none','40%');
-        setDisplay('xContent','none','60%');
-    }
-    
-}
-
-
-function Toggle (id) {
-    
-    let state = getState();
-    
-    if (id === 'editor') {
-        state.editorVisible = !state.editorVisible;        
-    }
-    if (id == 'xContent') {
-        state.contentVisible = !state.contentVisible;
-    }
-    set(state.editorVisible, state.contentVisible);
-    
-}
-
-function getState() {
-    let editor = document.getElementById('editor');
-    let content = document.getElementById('xContent');
-    
-    let editorVisible = editor.style.display != 'none';
-    let contentVisible = content.style.display != 'none';
-    
-    return {editorVisible,contentVisible};
-}
-
-</script> -->
 
 <div class="text-center">
     
     <h1 class="display-4"><img src="@Model.GitHubUser.AvatarUrl" width="50"/> @Model.GitHubUser.Name </h1>
     <h2>@Model.RepositoryName</h2>
-    <h3 id="NoteTitle" hx-swap-oob="true">@Model.CurrentNoteShortName</h3>
+    <h3 id="NoteTitle" hx-swap-oob="true" class="display-4">@Model.CurrentNoteDescription</h3>
     
 </div>
 <form action="@Url.Page("Index", "Save")" method="post">
+    @Html.AntiForgeryToken()
     <input type="submit" name="Save" value="save."></input>
     <div style="display: flex;flex-direction: row" hx-get="@Url.Page("Index/?{@Model.}", "Save")"
          hx-trigger="keyup[key=='F7'] from:body" asp-for="PostContent">

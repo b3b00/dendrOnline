@@ -5,10 +5,13 @@
 @addTagHelper *, Westwind.AspNetCore.Markdown
 @addTagHelper *, Htmx.TagHelpers
 
+
+<h3 class="display-4" id="NoteTitle" hx-swap-oob="true">@Model.CurrentNoteDescription</h3>
+
 @if (Model.UpdateEditor)
 {
     <textarea hx-post="@Url.Page("Index")" style="@Model.EditorStyle" hx-trigger="keyup changed delay:250ms" hx-target="#preview" id="editor" hx-swap-oob="true" asp-for="PostContent">@Model.PostContent</textarea>
-    <h1 class="display-4" id="NoteTitle" hx-swap-oob="true">@Model.CurrentNoteDescription</h1>
+    
     
     <div id="displayToggler" hx-swap-oob="true">
         <button href="#" hx-get="@Url.Page("Index", "Display")&toggle=editor&note=@Model.CurrentNote" hx-target="#xContent" style="cursor: pointer;padding: 10px">
@@ -17,8 +20,7 @@
         <button href="#" hx-get="@Url.Page("Index", "Display")&toggle=content&note=@Model.CurrentNote" hx-target="#xContent" style="cursor: pointer;padding: 10px">
             PREVIEW
         </button>
-    </div>    
-    
+    </div>
 }
 
 
