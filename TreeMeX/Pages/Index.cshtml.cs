@@ -150,7 +150,7 @@ public class IndexModel : PageModel
     public async Task<IActionResult> OnPostSave(string postContent, string CurrentNote)
     {
         SetClient();
-        await NotesService.SetContent(CurrentNote,PostContent);
+        await NotesService.SetContent(CurrentNote,postContent);
         
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();
