@@ -19,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 // this is to make demos easier
 // don't do this in production
 builder.Services.AddRazorPages(o => {
-    //o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+    o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
  });
 
 builder.Services.AddScoped<INotesService>((provider) =>
