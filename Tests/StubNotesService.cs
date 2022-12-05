@@ -32,6 +32,15 @@ public class StubNotesService : AsbtractNotesService
             ;
         }
 
+        public override async Task DeleteNote(string note)
+        {
+            var path = GetNotePath(note);
+            if (FileSystem.Exists(path))
+            {
+                FileSystem.Delete(path);
+            }
+        }
+
         private string GetNotePath(string noteName)
         {
             var path = Path.Combine(RootDirectory,"notes",$"{noteName}.md");

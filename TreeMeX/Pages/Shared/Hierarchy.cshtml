@@ -9,14 +9,17 @@
     {
         <div style="display: flex;flex-direction: row">
             <a style="display:block;" class="treemargin" href="#" hx-get="@Url.Page("Index")?note=@Model.Name" hx-target="#xContent">@Model.ShortName</a> 
-            <a href="#" onclick="createNote('@Model.Name')">+++</a>
+            <a href="#" onclick="createNote('@Model.Name')"><i style="margin-left:5px;color: Dodgerblue;"  class="fa-solid fa-square-plus"></i></a>
+            <i hx-target="#tree" hx-delete="/Index?note=@Model.Name" style="margin-left:5px; color: Tomato;cursor:pointer" class="fa-solid fa-square-minus"></i>
         </div>
     }
     else
     {
         <details class="treemargin" @(Model.Deployed ? "open=open" : "close=close")>
             <summary open>
-                <a href="#" hx-get="@Url.Page("Index")?note=@Model.Name" hx-target="#xContent">@Model.ShortName</a> <a href="#" onclick="createNote('@Model.Name')">+++</a>
+                <a href="#" hx-get="@Url.Page("Index")?note=@Model.Name" hx-target="#xContent">@Model.ShortName</a> 
+                <a href="#" onclick="createNote('@Model.Name')"><i style="margin-left:5px;color: Dodgerblue;" class="fa-solid fa-square-plus"></i></a> 
+                <i hx-target="#tree" hx-delete="/Index?note=@Model.Name" style="margin-left:5px; color: Tomato;cursor:pointer" class="fa-solid fa-square-minus"></i>
             </summary>
 
             @if (Model is NodeNote node)

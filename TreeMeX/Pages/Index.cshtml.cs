@@ -237,7 +237,13 @@ public class IndexModel : PageModel
         return Partial("_Preview", this);
     }
 
-    
+    public async Task<IActionResult> OnDelete(string note)
+    {
+        SetClient();
+        NotesService.DeleteNote(note);
+        await UpdateNotes();
+        return Partial("Hierarchy", NoteHierarchy);
+    }
 
     public async Task<IActionResult> OnPost(string PostContent)
     {

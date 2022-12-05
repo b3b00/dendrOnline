@@ -10,11 +10,12 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/TreeMeX.styles.css" asp-append-version="true"/>
+    <script src="https://kit.fontawesome.com/a5f446fe93.js" crossorigin="anonymous"></script>   
     
     <script>
     document.addEventListener("htmx:configRequest", (evt) => {
         let httpVerb = evt.detail.verb.toUpperCase();
-        if (httpVerb === 'GET') return;
+       // if (httpVerb === 'GET') return;
         
         let antiForgery = htmx.config.antiForgery;
         console.log("antiforgery",antiForgery);

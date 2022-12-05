@@ -121,5 +121,18 @@ This may not be a dendron repository";
             }
             return new List<string>();
         }
+
+        public override async Task DeleteNote(string note) 
+        {
+            if (gitHubClient != null)
+            {
+                var content = await NoteExists(note);
+                if (content.exists)
+                {
+                    var request = new DeleteFileRequest($"delete note {note}", content.content.Sha);
+                    await gitHubClient.Repository.Content.DeleteFile(RepositoryId, $"notes/{note}.md", request);
+                }
+            }
+        }
     }
 }

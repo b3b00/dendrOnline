@@ -27,6 +27,15 @@ namespace BackEnd
             ;
         }
 
+        public async override Task DeleteNote(string note)
+        {
+            var path = Path.Combine(RootDirectory, "note", note + ".md");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
         public override async Task<string> GetContent(string noteName)
         {
             string content = "";

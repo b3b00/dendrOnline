@@ -22,5 +22,6 @@ namespace BackEnd
 
         void SetAccessToken(string token);
 
+        Task DeleteNote(string note);
     }
 }

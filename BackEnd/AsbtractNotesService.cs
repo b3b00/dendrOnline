@@ -61,5 +61,7 @@ namespace BackEnd
 
             return root;
         }
+
+        public abstract Task DeleteNote(string note);
     }
 }
