@@ -5,7 +5,7 @@ using dendrOnline;
 using GitHubOAuthMiddleWare;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -18,9 +18,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // this is to make demos easier
 // don't do this in production
-builder.Services.AddRazorPages(o => {
-    o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
- });
+// builder.Services.AddRazorPages(o => {
+//     o.Conventions.ConfigureFilter(new AutoValidateAntiforgeryTokenAttribute());
+//  });
 
 builder.Services.AddScoped<INotesService>((provider) =>
     new GithubNotesService());
@@ -69,6 +69,12 @@ app.UseGHOAuth(options =>
     options.ClientSecret = app.Configuration[Constants.ClientSecretParameter];
     options.ReturnUrlParameter = app.Configuration[Constants.StartUrlParameter];
     options.RedirectUri = app.Configuration[Constants.RedirectUrlParameter];
+});
+
+app.MapGet("/health", async context =>
+{
+    context.Response.StatusCode = 200;
+    await context.Response.WriteAsync("OK");
 });
 
 if (app.Environment.IsDevelopment())
