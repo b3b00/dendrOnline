@@ -64,11 +64,15 @@ app.Use(async (context, next) =>
 app.UseGHOAuth(options =>
 {
     options.TokenEndpoint = app.Configuration[Constants.TokenUrlParameter];
+
     options.AuthorizationEndpoint = app.Configuration[Constants.AuthorizeUrlParameter];
     options.ClientId = app.Configuration[Constants.ClientIdParameter];
     options.ClientSecret = app.Configuration[Constants.ClientSecretParameter];
     options.ReturnUrlParameter = app.Configuration[Constants.StartUrlParameter];
     options.RedirectUri = app.Configuration[Constants.RedirectUrlParameter];
+
+Console.WriteLine($"{Constants.RedirectUrlParameter} :: {options.RedirectUri}")
+
 });
 
 app.MapGet("/health", async context =>
