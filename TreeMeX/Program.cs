@@ -1,4 +1,4 @@
-using System;
+deusing System;
 using System.IO;
 using BackEnd;
 using dendrOnline;
@@ -71,7 +71,7 @@ app.UseGHOAuth(options =>
     options.ReturnUrlParameter = app.Configuration[Constants.StartUrlParameter];
     options.RedirectUri = app.Configuration[Constants.RedirectUrlParameter];
 
-Console.WriteLine($"{Constants.RedirectUrlParameter} :: {options.RedirectUri}")
+Console.WriteLine($"{Constants.RedirectUrlParameter} :: {options.RedirectUri}");
 
 });
 
