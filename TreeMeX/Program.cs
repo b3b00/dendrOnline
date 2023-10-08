@@ -5,7 +5,7 @@ using dendrOnline;
 using GitHubOAuthMiddleWare;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -14,13 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
-// builder.Services.AddRazorPages();
+builder.Services.AddRazorPages();
 
 // this is to make demos easier
 // don't do this in production
-builder.Services.AddRazorPages(o => {
-    o.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
- });
+// builder.Services.AddRazorPages(o => {
+//     o.Conventions.ConfigureFilter(new AutoValidateAntiforgeryTokenAttribute());
+//  });
 
 builder.Services.AddScoped<INotesService>((provider) =>
     new GithubNotesService());
@@ -64,11 +64,21 @@ app.Use(async (context, next) =>
 app.UseGHOAuth(options =>
 {
     options.TokenEndpoint = app.Configuration[Constants.TokenUrlParameter];
+
     options.AuthorizationEndpoint = app.Configuration[Constants.AuthorizeUrlParameter];
     options.ClientId = app.Configuration[Constants.ClientIdParameter];
     options.ClientSecret = app.Configuration[Constants.ClientSecretParameter];
     options.ReturnUrlParameter = app.Configuration[Constants.StartUrlParameter];
     options.RedirectUri = app.Configuration[Constants.RedirectUrlParameter];
+
+Console.WriteLine($"{Constants.RedirectUrlParameter} :: {options.RedirectUri}");
+
+});
+
+app.MapGet("/health", async context =>
+{
+    context.Response.StatusCode = 200;
+    await context.Response.WriteAsync("OK");
 });
 
 if (app.Environment.IsDevelopment())
