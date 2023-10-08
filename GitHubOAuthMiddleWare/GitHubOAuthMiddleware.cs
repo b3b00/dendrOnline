@@ -34,7 +34,6 @@ public static class GitHubOAuthMiddleware
     {
         GitHubOptions options = new GitHubOptions();
         configuration(options);
-        Console.WriteLine(options);
         app.Use(async (context, next) =>
         {
             Console.WriteLine(options);
