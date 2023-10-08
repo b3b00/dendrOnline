@@ -41,8 +41,3 @@ jobs:
         threshold: 30
         outputFormat: 'lcov'
         excludes: '[Tests]*'
-    - name : deploy railway
-      uses: bervProject/railway-deploy@main
-      with:
-        railway_token: ${{ secrets.RAILWAY_TOKEN }}
-    
