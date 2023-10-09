@@ -79,5 +79,8 @@ public class StubNotesService : AsbtractNotesService
             return list;
         }
 
-
+        public override async Task DeleteNote(string noteName)
+        {
+            
+        }
 }
