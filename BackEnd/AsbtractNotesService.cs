@@ -9,7 +9,16 @@ namespace BackEnd
 
     public abstract class AsbtractNotesService : INotesService
     {
+        public long UserId { get; set; }
+        
+        public string UserName { get; set; }
+        
         public abstract void SetRepository(string name, long id);
+        public void SetUser(string name, long id)
+        {
+            UserId = id;
+            UserName = name;
+        }
 
         public abstract void SetAccessToken(string token);
 
@@ -19,6 +28,7 @@ namespace BackEnd
         public abstract Task SetContent(string noteName, string noteContent);
 
         public abstract Task<List<string>> GetNotes();
+        public abstract Task DeleteNote(string noteName);
 
 
         public string GetHeader(string noteName)

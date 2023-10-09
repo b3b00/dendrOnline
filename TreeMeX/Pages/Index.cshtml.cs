@@ -69,6 +69,7 @@ public class IndexModel : PageModel
         if (HttpContext.HasRepository())
         {
             NotesService.SetRepository(HttpContext.GetRepositoryName(),HttpContext.GetRepositoryId());
+            NotesService.SetUser(HttpContext.GetUserName(),HttpContext.GetUserId());
             NotesService.SetAccessToken(HttpContext.GetGithubAccessToken());
         }
     }
@@ -237,7 +238,37 @@ public class IndexModel : PageModel
         return Partial("_Preview", this);
     }
 
-    
+    public async Task<IActionResult> OnDelete()
+    {
+        SetClient();
+        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
+        var accessToken = HttpContext.GetGithubAccessToken();
+        client.Credentials = new Credentials(accessToken);
+        var user = await client.User.Current();
+        this.GitHubUser = user;
+        
+        
+        UpdateEditor = false;
+        if (!Request.IsHtmx())
+        {
+        }
+        else
+        {
+            if (Request.Query.TryGetValue("note", out var noteName))
+            {
+                var notesService = HttpContext.RequestServices.GetService<INotesService>();
+                if (notesService != null)
+                {
+                    notesService.SetAccessToken(accessToken);
+                    await notesService.DeleteNote(noteName);
+                    await UpdateNotes();
+                    return Page();
+                }
+            }
+        }
+
+        return new NoContentResult();
+    }
 
     public async Task<IActionResult> OnPost(string PostContent)
     {

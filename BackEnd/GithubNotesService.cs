@@ -14,6 +14,11 @@ namespace BackEnd
         private long RepositoryId { get; set; }
 
         private string RepositoryName { get; set; }
+
+        private long UserId { get; set; }
+
+        private string UserName { get; set; }
+
         public override void SetRepository(string name, long id)
         {
             RepositoryId = id;
@@ -40,7 +45,7 @@ namespace BackEnd
                         return content.Content;
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     // TODO : better error reporting
                     return @"# root note not found !
@@ -61,9 +66,10 @@ This may not be a dendron repository";
                 {
                     var note = NoteParser.Parse(noteContent);
                     note.Header.LastUpdatedTS = DateTime.Now.ToTimestamp();
-                        
-                    
-                    var request = new UpdateFileRequest($"update {noteName}", noteContent, content.content.Sha);
+
+
+                    var request = new UpdateFileRequest($"DendrOnline : update {noteName}", noteContent,
+                        content.content.Sha);
                     gitHubClient.Repository.Content.UpdateFile(RepositoryId, content.content.Path, request);
                 }
             }
@@ -82,8 +88,10 @@ This may not be a dendron repository";
                         Body = "*empty*",
                         Header = new NoteHeader(noteName)
                     };
-                    var request = new CreateFileRequest($"new note : {noteName}", note.ToString(), "main");
-                    var task = await gitHubClient.Repository.Content.CreateFile(RepositoryId, "notes/" + noteName + ".md",
+                    var request =
+                        new CreateFileRequest($"DendrOnline : new note : {noteName}", note.ToString(), "main");
+                    var task = await gitHubClient.Repository.Content.CreateFile(RepositoryId,
+                        "notes/" + noteName + ".md",
                         request);
                     return note.ToString();
                 }
@@ -119,7 +127,22 @@ This may not be a dendron repository";
                     return new List<string>();
                 }
             }
+
             return new List<string>();
+        }
+
+        public override async Task DeleteNote(string noteName)
+        {
+            if (gitHubClient != null)
+            {
+                var content = await NoteExists(noteName);
+                if (content.exists)
+                {
+                    var deleteRequest =
+                        new DeleteFileRequest($"DendrOnline : delete note {noteName}", content.content.Sha);
+                    await gitHubClient.Repository.Content.DeleteFile(RepositoryId,$"notes/{noteName}.md" , deleteRequest);
+                }
+            }
         }
     }
 }

@@ -16,10 +16,14 @@ namespace BackEnd
 
         Task<List<string>> GetNotes();
 
+        Task DeleteNote(string noteName);
+
         INoteHierarchy GetHierarchy(List<string> notes, string filter);
 
         void SetRepository(string name, long id);
 
+        void SetUser(string name, long id);
+        
         void SetAccessToken(string token);
 
     }

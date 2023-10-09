@@ -19,6 +19,16 @@ public static class Extensions
 
             return -1;
         }
+        
+        public static string GetUserName(this HttpContext httpContext)
+        {
+            return httpContext.Session.GetString("userName");
+        }
+        
+        public static long GetUserId(this HttpContext httpContext)
+        {
+            return (long)httpContext.Session.GetInt32("userId")!;
+        }
 
         public static bool HasRepository(this HttpContext httpContext)
         {

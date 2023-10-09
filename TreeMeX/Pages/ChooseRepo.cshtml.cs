@@ -71,6 +71,8 @@ public class ChooseRepoModel : PageModel
                 HttpContext.Session.SetString("repositoryId", Request.Query["repo"].First());
                 var repo = await client.Repository.Get(long.Parse(Request.Query["repo"].First()));
                 HttpContext.Session.SetString("repositoryName", repo.Name);
+                HttpContext.Session.SetInt32("userId", user.Id);
+                HttpContext.Session.SetString("userName", user.Name);
                 Response.Redirect("/Index");
             }
 

@@ -16,6 +16,8 @@ namespace BackEnd
         string Dump(string tab);
         
         bool Deployed { get; set; }
+        
+        bool Selected { get; set; }
 
 
         void Deploy(string currentNote);

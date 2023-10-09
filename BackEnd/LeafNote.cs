@@ -18,6 +18,8 @@ namespace BackEnd
 
         public bool Deployed { get; set; } = true;
 
+        public bool Selected { get; set; } = false;
+        
         public string Dump(string tab)
         {
             return $"{tab}{Name}";

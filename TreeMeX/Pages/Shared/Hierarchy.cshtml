@@ -9,7 +9,8 @@
     {
         <div style="display: flex;flex-direction: row">
             <a style="display:block;" class="treemargin" href="#" hx-get="@Url.Page("Index")?note=@Model.Name" hx-target="#xContent">@Model.ShortName</a> 
-            <a href="#" onclick="createNote('@Model.Name')">+++</a>
+            <a href="#" onclick="createNote('@Model.Name')" class="fa-square-plus">+++</a>
+            <a href="#" hx-delete="@Url.Page("Index")?note=@Model.Name" class="fa-trash">---</a> 
         </div>
     }
     else

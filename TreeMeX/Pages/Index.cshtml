@@ -6,7 +6,7 @@
 @addTagHelper *, Westwind.AspNetCore.Markdown
 @addTagHelper *, Htmx.TagHelpers
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = Model?.CurrentNoteDescription ?? "";
 }
 
 

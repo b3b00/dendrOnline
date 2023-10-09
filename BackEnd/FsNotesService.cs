@@ -74,6 +74,13 @@ namespace BackEnd
             return list;
         }
 
-
+        public override async Task DeleteNote(string noteName)
+        {
+            var path = Path.Combine(RootDirectory, "notes", noteName + ".md");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
     }
 }

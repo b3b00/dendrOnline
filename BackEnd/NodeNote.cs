@@ -19,6 +19,8 @@ namespace BackEnd
         public bool IsLeaf => false;
 
         public bool Deployed { get; set; } = false;
+        
+        public bool Selected { get; set; } = false;
         public void Deploy(string currentNote)
         {
             Deployed = currentNote != null && currentNote.Contains(currentNote);
