@@ -19,6 +19,9 @@ namespace dendrOnline.Pages;
 public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
+    
+    [BindProperty(SupportsGet = true)]
+    public string NodeName { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public string NoteQuery { get; set; }
@@ -219,12 +222,14 @@ public class IndexModel : PageModel
             return Page();
         }
         
-        
-        StringValues note = default;
-        if (Request.Query.TryGetValue("note", out note))
+        var route = RouteData;
+        var items = route.Values;
+        var note = route?.Values["NoteName"]?.ToString();
+        if (!string.IsNullOrEmpty(note))
         {
-            CurrentNote = note.First();
-            PostContent = await NotesService.GetContent(note.First());
+            
+            CurrentNote = note;
+            PostContent = await NotesService.GetContent(note);
             var parsed = NoteParser.Parse(PostContent);
             CurrentNoteDescription = parsed.Header.TrimmedDescription;
             if (string.IsNullOrEmpty(CurrentNoteDescription))
