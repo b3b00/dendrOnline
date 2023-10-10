@@ -206,9 +206,9 @@ public class IndexModel : PageModel
         UpdateEditor = false;
         if (!Request.IsHtmx())
         {
-            if (Request.Query.ContainsKey("note"))
+            if (!string.IsNullOrEmpty(NoteName))
             {
-                CurrentNote = Request.Query["note"].First();
+                CurrentNote = NoteName;
             }
             else
             {
@@ -274,7 +274,6 @@ public class IndexModel : PageModel
                     NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
                     NoteHierarchy.Deploy(CurrentNote);
                     return Partial("Hierarchy", NoteHierarchy);
-                    
                 }
             }
         }
