@@ -21,7 +21,7 @@ public class IndexModel : PageModel
     private readonly ILogger<IndexModel> _logger;
     
     [BindProperty(SupportsGet = true)]
-    public string NodeName { get; set; }
+    public string NoteName { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public string NoteQuery { get; set; }
@@ -83,7 +83,8 @@ public class IndexModel : PageModel
         
         Notes = await NotesService.GetNotes();
         SetClient();
-        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery);
+        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
+        var selected = NoteHierarchy.GetSelectedNode();
         NoteHierarchy.Deploy(CurrentNote);
     }
 
@@ -93,7 +94,7 @@ public class IndexModel : PageModel
         
         Notes = await NotesService.GetNotes();
         SetClient();
-        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery);
+        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
         NoteHierarchy.Deploy(CurrentNote);
         return Partial("Hierarchy", NoteHierarchy);
     }
@@ -217,19 +218,16 @@ public class IndexModel : PageModel
             var parsed = NoteParser.Parse(PostContent);
             CurrentNoteDescription = parsed.Header.TrimmedDescription;
             ExtractVisibility();
-            SetDisplay();
+            SetDisplay();            
             await UpdateNotes();
             return Page();
         }
         
-        var route = RouteData;
-        var items = route.Values;
-        var note = route?.Values["NoteName"]?.ToString();
-        if (!string.IsNullOrEmpty(note))
+        if (!string.IsNullOrEmpty(NoteName))
         {
             
-            CurrentNote = note;
-            PostContent = await NotesService.GetContent(note);
+            CurrentNote = NoteName;
+            PostContent = await NotesService.GetContent(NoteName);
             var parsed = NoteParser.Parse(PostContent);
             CurrentNoteDescription = parsed.Header.TrimmedDescription;
             if (string.IsNullOrEmpty(CurrentNoteDescription))
@@ -273,7 +271,7 @@ public class IndexModel : PageModel
                     
                     Notes = await NotesService.GetNotes();
                     SetClient();
-                    NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery);
+                    NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
                     NoteHierarchy.Deploy(CurrentNote);
                     return Partial("Hierarchy", NoteHierarchy);
                     
