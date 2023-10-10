@@ -214,6 +214,7 @@ public class IndexModel : PageModel
             var parsed = NoteParser.Parse(PostContent);
             CurrentNoteDescription = parsed.Header.TrimmedDescription;
             ExtractVisibility();
+            SetDisplay();
             await UpdateNotes();
             return Page();
         }
@@ -234,7 +235,9 @@ public class IndexModel : PageModel
             UpdatePreview = true;
             UpdateEditor = true;
         }
-        
+
+        ExtractVisibility();
+        SetDisplay();
         return Partial("_Preview", this);
     }
 
@@ -262,7 +265,13 @@ public class IndexModel : PageModel
                     notesService.SetAccessToken(accessToken);
                     await notesService.DeleteNote(noteName);
                     await UpdateNotes();
-                    return Page();
+                    
+                    Notes = await NotesService.GetNotes();
+                    SetClient();
+                    NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery);
+                    NoteHierarchy.Deploy(CurrentNote);
+                    return Partial("Hierarchy", NoteHierarchy);
+                    
                 }
             }
         }
