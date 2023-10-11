@@ -287,6 +287,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPost(string PostContent)
     {
+        IsNoteDirty = true;
         SetClient();
         var notesService = HttpContext.RequestServices.GetService<INotesService>();
         if (!Request.IsHtmx())
@@ -294,7 +295,7 @@ public class IndexModel : PageModel
             return Page();
         }
 
-        IsNoteDirty = true;
+        
         var content = PostContent; 
         this.PostContent = content;
 
