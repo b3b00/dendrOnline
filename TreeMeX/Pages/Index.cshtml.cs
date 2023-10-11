@@ -45,6 +45,8 @@ public class IndexModel : PageModel
     [BindProperty]
     [HiddenInput] 
     public string CurrentNote { get; set; }
+    
+    public bool IsNoteDirty { get; set; }
 
     public string CurrentNoteShortName => CurrentNote.Split(new[] { '.' }).Last();
     
@@ -154,6 +156,7 @@ public class IndexModel : PageModel
     
     public async Task<IActionResult> OnPostSave(string postContent, string CurrentNote)
     {
+        IsNoteDirty = false;
         SetClient();
         await NotesService.SetContent(CurrentNote,postContent);
         
@@ -196,6 +199,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnGet()
     {
+        IsNoteDirty = false;
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();
         client.Credentials = new Credentials(accessToken);
@@ -289,7 +293,8 @@ public class IndexModel : PageModel
         {
             return Page();
         }
-        
+
+        IsNoteDirty = true;
         var content = PostContent; 
         this.PostContent = content;
 

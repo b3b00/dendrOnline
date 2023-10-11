@@ -41,15 +41,7 @@
         </div>
 
         <div style="display: flex; flex-direction: column; width: 80%; flex-wrap: wrap">
-            <div id="displayToggler"  hx-swap-oob="true">
-                <button href="#" hx-get="@Url.Page("Index", "Display")&toggle=editor&note=@Model.CurrentNote" hx-target="#xContent" style="cursor: pointer;padding: 10px">
-                    <span class="material-symbols-outlined">Edit</span>
-                </button>
-                <button href="#" hx-get="@Url.Page("Index", "Display")&toggle=content&note=@Model.CurrentNote" hx-target="#xContent" style="cursor: pointer;padding: 10px">
-                    <span class="material-symbols-outlined">Visibility</span>
-                </button>
-                <button type="submit" name="Save" style="cursor: pointer;padding: 10px"><span class="material-symbols-outlined">Save</span></button> 
-            </div>
+        <partial name="ToolBar" model="@Model"/>
             <div style="width: 100%;display: flex;flex-direction: row">
                 <textarea hx-post="@Url.Page("Index")" style="width: 40%;display:inline" hx-trigger="keyup changed delay:250ms" hx-target="#xContent" id="editor" hx-swap-oob="true" asp-for="PostContent" name="PostContent"></textarea>
 
