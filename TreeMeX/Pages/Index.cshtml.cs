@@ -100,6 +100,33 @@ public class IndexModel : PageModel
         return Partial("Hierarchy", NoteHierarchy);
     }
 
+    public async Task<IActionResult> OnGetUndo()
+    {
+        IsNoteDirty = false;
+        UpdateEditor = true;
+        SetClient();
+        var notesService = HttpContext.RequestServices.GetService<INotesService>();
+        CurrentNote = Request.Query["note"].First();
+        var content = await notesService.GetContent(CurrentNote);
+         
+        this.PostContent = content;
+
+        var note = NoteParser.Parse(content);
+        
+        
+        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
+        var accessToken = HttpContext.GetGithubAccessToken();
+        client.Credentials = new Credentials(accessToken);
+        var user = await client.User.Current();
+        GitHubUser = user;
+        CurrentNoteDescription = note.Header.TrimmedDescription;
+        UpdatePreview = true;
+        
+        await UpdateNotes();
+        
+        return Partial("_Preview", this);
+    }
+
     public async Task<IActionResult> OnGetDisplay()
     {
         SetClient();
