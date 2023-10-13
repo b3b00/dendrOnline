@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using Octokit;
 
 namespace dendrOnline.Pages;
@@ -21,7 +20,7 @@ public class IndexModel : PageModel
     private readonly ILogger<IndexModel> _logger;
     
     [BindProperty(SupportsGet = true)]
-    public string NodeName { get; set; }
+    public string NoteName { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public string NoteQuery { get; set; }
@@ -45,6 +44,8 @@ public class IndexModel : PageModel
     [BindProperty]
     [HiddenInput] 
     public string CurrentNote { get; set; }
+    
+    public bool IsNoteDirty { get; set; }
 
     public string CurrentNoteShortName => CurrentNote.Split(new[] { '.' }).Last();
     
@@ -83,7 +84,8 @@ public class IndexModel : PageModel
         
         Notes = await NotesService.GetNotes();
         SetClient();
-        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery);
+        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
+        var selected = NoteHierarchy.GetSelectedNode();
         NoteHierarchy.Deploy(CurrentNote);
     }
 
@@ -93,9 +95,44 @@ public class IndexModel : PageModel
         
         Notes = await NotesService.GetNotes();
         SetClient();
-        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery);
+        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
         NoteHierarchy.Deploy(CurrentNote);
         return Partial("Hierarchy", NoteHierarchy);
+    }
+
+    public async Task<IActionResult> OnGetUndo()
+    {
+        IsNoteDirty = false;
+        UpdateEditor = true;
+        SetClient();
+        var notesService = HttpContext.RequestServices.GetService<INotesService>();
+        CurrentNote = Request.Query["note"].First();
+        var content = await notesService.GetContent(CurrentNote);
+         
+        var editedNotes = HttpContext.GetEditedNotes();
+        if (editedNotes != null && editedNotes.ContainsKey(CurrentNote))
+        {
+            editedNotes.Remove(CurrentNote);
+            HttpContext.SetEditedNotes(editedNotes);
+        }
+        
+        
+        this.PostContent = content;
+
+        var note = NoteParser.Parse(content);
+        
+        
+        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
+        var accessToken = HttpContext.GetGithubAccessToken();
+        client.Credentials = new Credentials(accessToken);
+        var user = await client.User.Current();
+        GitHubUser = user;
+        CurrentNoteDescription = note.Header.TrimmedDescription;
+        UpdatePreview = true;
+        
+        await UpdateNotes();
+        
+        return Partial("_Preview", this);
     }
 
     public async Task<IActionResult> OnGetDisplay()
@@ -153,6 +190,7 @@ public class IndexModel : PageModel
     
     public async Task<IActionResult> OnPostSave(string postContent, string CurrentNote)
     {
+        IsNoteDirty = false;
         SetClient();
         await NotesService.SetContent(CurrentNote,postContent);
         
@@ -195,19 +233,21 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnGet()
     {
+        IsNoteDirty = false;
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();
         client.Credentials = new Credentials(accessToken);
         var user = await client.User.Current();
         this.GitHubUser = user;
         
-        await UpdateNotes();
+        
         UpdateEditor = false;
         if (!Request.IsHtmx())
         {
-            if (Request.Query.ContainsKey("note"))
+            if (!string.IsNullOrEmpty(NoteName))
             {
-                CurrentNote = Request.Query["note"].First();
+                CurrentNote = NoteName;
+                await UpdateNotes();
             }
             else
             {
@@ -217,19 +257,28 @@ public class IndexModel : PageModel
             var parsed = NoteParser.Parse(PostContent);
             CurrentNoteDescription = parsed.Header.TrimmedDescription;
             ExtractVisibility();
-            SetDisplay();
+            SetDisplay();            
             await UpdateNotes();
             return Page();
         }
         
-        var route = RouteData;
-        var items = route.Values;
-        var note = route?.Values["NoteName"]?.ToString();
-        if (!string.IsNullOrEmpty(note))
+        if (!string.IsNullOrEmpty(NoteName))
         {
             
-            CurrentNote = note;
-            PostContent = await NotesService.GetContent(note);
+            CurrentNote = NoteName;
+            await UpdateNotes();
+
+            var editedNotes = HttpContext.GetEditedNotes();
+            if (editedNotes != null && editedNotes.TryGetValue(CurrentNote, out var content))
+            {
+                PostContent = content;
+                IsNoteDirty = true;
+            }
+            else
+            {
+                IsNoteDirty = false;
+                PostContent = await NotesService.GetContent(NoteName);
+            }
             var parsed = NoteParser.Parse(PostContent);
             CurrentNoteDescription = parsed.Header.TrimmedDescription;
             if (string.IsNullOrEmpty(CurrentNoteDescription))
@@ -273,10 +322,9 @@ public class IndexModel : PageModel
                     
                     Notes = await NotesService.GetNotes();
                     SetClient();
-                    NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery);
+                    NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
                     NoteHierarchy.Deploy(CurrentNote);
                     return Partial("Hierarchy", NoteHierarchy);
-                    
                 }
             }
         }
@@ -286,18 +334,28 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPost(string PostContent)
     {
+        IsNoteDirty = true;
         SetClient();
         var notesService = HttpContext.RequestServices.GetService<INotesService>();
         if (!Request.IsHtmx())
         {
             return Page();
         }
+
+         CurrentNote = Request.Path.Value.Substring(1);
         
         var content = PostContent; 
         this.PostContent = content;
 
+        var editedNotes = HttpContext.GetEditedNotes();
+        if (editedNotes == null)
+        {
+            editedNotes = new Dictionary<string,string>();
+        }
+        editedNotes[CurrentNote] = content;
+        HttpContext.SetEditedNotes(editedNotes);
+
         var note = NoteParser.Parse(content);
-        
         
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();

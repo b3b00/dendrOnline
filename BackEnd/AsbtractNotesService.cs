@@ -44,7 +44,7 @@ namespace BackEnd
             return b.ToString();
         }
 
-        public INoteHierarchy GetHierarchy(List<string> notes, string filter)
+        public INoteHierarchy GetHierarchy(List<string> notes, string filter, string currentNote)
         {
             var ordered = notes.OrderBy(x => x.Length).ToList();
             ordered.Reverse();
@@ -55,7 +55,7 @@ namespace BackEnd
                 {
                     Debug.WriteLine($"add note {note}");
 
-                    root.AddChild(note);
+                    root.AddChild(note,currentNote);
 
                     Debug.WriteLine(root.Dump(""));
                 }

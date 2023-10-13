@@ -19,6 +19,7 @@ namespace BackEnd
         
         bool Selected { get; set; }
 
+        INoteHierarchy GetSelectedNode();
 
         void Deploy(string currentNote);
 

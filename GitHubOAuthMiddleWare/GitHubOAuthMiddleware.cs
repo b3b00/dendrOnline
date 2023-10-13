@@ -36,15 +36,11 @@ public static class GitHubOAuthMiddleware
         configuration(options);
         app.Use(async (context, next) =>
         {
-            Console.WriteLine(options);
             bool existAccessToken = context.Session.TryGetValue(AccessToken, out var accessToken);
-            Console.WriteLine($"existing token ? {existAccessToken}");
             if (!existAccessToken || accessToken == null || accessToken.Length == 0)
             {
-                Console.WriteLine($"no access token @ {context.Request.HostAndPath()}");
                 if (context.Request.HostAndPath() == options.RedirectUri.Replace("https://","").Replace("http://",""))
                 {
-                    Console.WriteLine($"{context.Request.HostAndPath()} is redircet uri {options.RedirectUri}");
                     // check if error in query string
                     // test if coming back from github => get the token => store it in session => redirect to /    
                     HttpClient client = new HttpClient();
@@ -56,7 +52,6 @@ public static class GitHubOAuthMiddleware
                     var redirectUri = options.RedirectUri;
                     var csrf = context.Session.GetString("CSRF:State");
                     
-                    Console.WriteLine($"testing CSRF : {csrf}//{state}");
                     
                     if (csrf != state)
                     {
@@ -64,19 +59,15 @@ public static class GitHubOAuthMiddleware
                     }
                     var query =
                         $"client_id={clientId}&client_secret={clientSecret}&code={code}&redirect_uri={redirectUri}";
-                    Console.WriteLine($"getting access token @ {query}");
                     
                     var response = await client.PostAsync(tokenUrl,
                         new StringContent(query, Encoding.UTF8, "application/x-www-form-urlencoded"));
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
-                        Console.WriteLine("access toke nrequest OK");
                         var body = await response.Content.ReadAsStringAsync();
                         var parameters = QueryHelpers.ParseQuery(body);
-                        Console.WriteLine($"access token response {parameters}");
                         if (parameters.TryGetValue("access_token", out var accessTokenValues))
                         {
-                            Console.WriteLine($"token = [{accessTokenValues.First()}");
                             context.Session.SetString(AccessToken, accessTokenValues.First());
                         }
                         else
@@ -94,7 +85,6 @@ public static class GitHubOAuthMiddleware
                             throw new InvalidOperationException(
                                 $"inavlid authentication : missing token type");
                         }
-                        Console.WriteLine($"redirecting to {options.ReturnUrlParameter}");
                         context.Response.Redirect(options.ReturnUrlParameter);
                         return;
                     }
@@ -112,7 +102,6 @@ public static class GitHubOAuthMiddleware
                     string csrf = GenerateStatePassword(48);
                     authUrl =
                         $"{authUrl}?redirect_uri={redirectUri}&response_type=code&client_id={clientId}&scope=repo&state={csrf}";
-                    Console.WriteLine($"no token : redirecting to {authUrl}");    
                     context.Session.SetString("CSRF:State", csrf);
                     context.Response.Redirect(authUrl);
                     return;

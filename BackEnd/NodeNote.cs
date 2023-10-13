@@ -21,6 +21,25 @@ namespace BackEnd
         public bool Deployed { get; set; } = false;
         
         public bool Selected { get; set; } = false;
+        public INoteHierarchy GetSelectedNode()
+        {
+            if (Selected)
+            {
+                return this;
+            }
+
+            foreach (var node in Child)
+            {
+                var selection = node.GetSelectedNode();
+                if (selection != null)
+                {
+                    return selection;
+                }
+            }
+
+            return null;
+        }
+
         public void Deploy(string currentNote)
         {
             Deployed = currentNote != null && currentNote.Contains(currentNote);
@@ -33,7 +52,7 @@ namespace BackEnd
             Child = new List<INoteHierarchy>();
         }
 
-        public void AddChild(string name)
+        public void AddChild(string name, string currentNote)
         {
 
             var subName = name;
@@ -47,7 +66,9 @@ namespace BackEnd
                 {
                     if ((!Child.Any() || Child.All(x => x.Name != name)))
                     {
-                        Child.Add(new LeafNote(name));
+                        var leaf = new LeafNote(name);
+                        leaf.Selected = name == currentNote;
+                        Child.Add(leaf);
                     }
                 }
                 else
@@ -59,9 +80,10 @@ namespace BackEnd
                     if (sub == null)
                     {
                         sub = new NodeNote(FqnSubName);
+                        sub.Selected = FqnSubName == currentNote;
                         Child.Add(sub);
                     }
-                    (sub as NodeNote)?.AddChild(name);
+                    (sub as NodeNote)?.AddChild(name,currentNote);
 
                 }
             }
@@ -85,7 +107,7 @@ namespace BackEnd
         public string Dump(string tab)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(tab).AppendLine(Name);
+            builder.Append(tab).Append(Name).AppendLine(Selected ? "*":"");
             foreach (var sub in Child)
             {
                 builder.AppendLine(sub.Dump(tab + "  "));

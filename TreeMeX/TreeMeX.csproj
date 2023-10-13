@@ -16,8 +16,7 @@
       <Content Include="Pages\ChooseRepo.cshtml.cs">
         <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-      <Content Include="Pages\Shared\_Layout2.txt.css" />
+      </Content>      
     </ItemGroup>
 
     <ItemGroup><!--      <ProjectReference Include="..\..\Htmx.Net\src\Htmx.TagHelpers\Htmx.TagHelpers.csproj" />-->

@@ -22,7 +22,16 @@ namespace BackEnd
         
         public string Dump(string tab)
         {
-            return $"{tab}{Name}";
+            return $"{tab}{Name} {(Selected ? "*" : "")}";
+        }
+
+        public INoteHierarchy GetSelectedNode()
+        {
+            if (Selected)
+            {
+                return this;
+            }
+            return null;
         }
 
         public void Deploy(string currentNote)

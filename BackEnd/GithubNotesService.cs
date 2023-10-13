@@ -72,6 +72,14 @@ This may not be a dendron repository";
                         content.content.Sha);
                     gitHubClient.Repository.Content.UpdateFile(RepositoryId, content.content.Path, request);
                 }
+                else
+                {
+                    var request =
+                        new CreateFileRequest($"DendrOnline : new note : {noteName}", noteContent, "main");
+                    var task = await gitHubClient.Repository.Content.CreateFile(RepositoryId,
+                        "notes/" + noteName + ".md",
+                        request);
+                }
             }
         }
 
