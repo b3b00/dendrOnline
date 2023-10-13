@@ -14,6 +14,8 @@ public static class GitHubOAuthMiddleware
         
     public static string TokenType = "tokenType";
 
+    public static string CsrfState = "CSRF:State";
+
     public class GitHubOptions : OAuthOptions
     {
         public string RedirectUri { get; set; }
@@ -50,7 +52,7 @@ public static class GitHubOAuthMiddleware
                     var clientId = options.ClientId;
                     var clientSecret = options.ClientSecret;
                     var redirectUri = options.RedirectUri;
-                    var csrf = context.Session.GetString("CSRF:State");
+                    var csrf = context.Session.GetString(CsrfState);
                     
                     
                     if (csrf != state)
@@ -102,7 +104,7 @@ public static class GitHubOAuthMiddleware
                     string csrf = GenerateStatePassword(48);
                     authUrl =
                         $"{authUrl}?redirect_uri={redirectUri}&response_type=code&client_id={clientId}&scope=repo&state={csrf}";
-                    context.Session.SetString("CSRF:State", csrf);
+                    context.Session.SetString(CsrfState, csrf);
                     context.Response.Redirect(authUrl);
                     return;
                 }
