@@ -85,7 +85,6 @@ public class IndexModel : PageModel
         Notes = await NotesService.GetNotes();
         SetClient();
         NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
-        var selected = NoteHierarchy.GetSelectedNode();
         NoteHierarchy.Deploy(CurrentNote);
     }
 

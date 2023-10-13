@@ -76,7 +76,7 @@ This may not be a dendron repository";
                 {
                     var request =
                         new CreateFileRequest($"DendrOnline : new note : {noteName}", noteContent, "main");
-                    var task = await gitHubClient.Repository.Content.CreateFile(RepositoryId,
+                        await gitHubClient.Repository.Content.CreateFile(RepositoryId,
                         "notes/" + noteName + ".md",
                         request);
                 }
