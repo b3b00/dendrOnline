@@ -109,6 +109,14 @@ public class IndexModel : PageModel
         CurrentNote = Request.Query["note"].First();
         var content = await notesService.GetContent(CurrentNote);
          
+        var editedNotes = HttpContext.GetEditedNotes();
+        if (editedNotes != null && editedNotes.ContainsKey(CurrentNote))
+        {
+            editedNotes.Remove(CurrentNote);
+            HttpContext.SetEditedNotes(editedNotes);
+        }
+        
+        
         this.PostContent = content;
 
         var note = NoteParser.Parse(content);
@@ -259,7 +267,18 @@ public class IndexModel : PageModel
             
             CurrentNote = NoteName;
             await UpdateNotes();
-            PostContent = await NotesService.GetContent(NoteName);
+
+            var editedNotes = HttpContext.GetEditedNotes();
+            if (editedNotes != null && editedNotes.TryGetValue(CurrentNote, out var content))
+            {
+                PostContent = content;
+                IsNoteDirty = true;
+            }
+            else
+            {
+                IsNoteDirty = false;
+                PostContent = await NotesService.GetContent(NoteName);
+            }
             var parsed = NoteParser.Parse(PostContent);
             CurrentNoteDescription = parsed.Header.TrimmedDescription;
             if (string.IsNullOrEmpty(CurrentNoteDescription))
@@ -323,12 +342,20 @@ public class IndexModel : PageModel
             return Page();
         }
 
+         CurrentNote = Request.Path.Value.Substring(1);
         
         var content = PostContent; 
         this.PostContent = content;
 
+        var editedNotes = HttpContext.GetEditedNotes();
+        if (editedNotes == null)
+        {
+            editedNotes = new Dictionary<string,string>();
+        }
+        editedNotes[CurrentNote] = content;
+        HttpContext.SetEditedNotes(editedNotes);
+
         var note = NoteParser.Parse(content);
-        
         
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();

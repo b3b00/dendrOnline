@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 
 namespace dendrOnline;
@@ -29,11 +31,39 @@ public static class Extensions
         {
             return (long)httpContext.Session.GetInt32("userId")!;
         }
+        
+        public static Dictionary<string,string> GetEditedNotes(this HttpContext httpContext)
+        {
+            return httpContext.Session.GetObject<Dictionary<string, string>>("editedNotes");
+        }
+        
+        public static void SetEditedNotes(this HttpContext httpContext, Dictionary<string,string> editedNotes)
+        {
+            httpContext.Session.SetObject<Dictionary<string, string>>("editedNotes",editedNotes);
+        }
+        
+        public static T? GetObject<T>(this ISession session, string key) {
+            var rawData = session.GetString(key);
+            if (!string.IsNullOrEmpty(rawData))
+            {
+                var data = JsonSerializer.Deserialize<T>(rawData);
+                return data;
+            }
+
+            return default;
+        }
+        
+        public static void SetObject<T>(this ISession session, string key, T value) {
+            var rawData = JsonSerializer.Serialize(value);
+            session.SetString(key,rawData);
+        }
 
         public static bool HasRepository(this HttpContext httpContext)
         {
             return httpContext.GetRepositoryId() != -1;
         }
+        
+        
 
         public static bool? GetBool(this ISession session, string key)
         {
