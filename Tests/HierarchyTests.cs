@@ -15,7 +15,7 @@ public class HierarchyTests
         var notes = notesService.GetNotes().GetAwaiter().GetResult();
         Check.That(notes).CountIs(5);
         ;
-        var hTopic1 = notesService.GetHierarchy(notes, "topic1","perso.topic1.item2");
+        var hTopic1 = notesService.GetHierarchy(notes, "topic1","perso.topic1.item2",null);
         Check.That(hTopic1.Dump("  ")).IsEqualTo(@"  root
     perso
       perso.topic1
@@ -25,7 +25,7 @@ public class HierarchyTests
 
 ");
             
-        var hTopic2 = notesService.GetHierarchy(notes, "topic2","perso.topic1.item1.md");
+        var hTopic2 = notesService.GetHierarchy(notes, "topic2","perso.topic1.item1.md",null);
         Check.That(hTopic2.Dump("  ")).IsEqualTo(@"  root
     perso
       perso.topic2

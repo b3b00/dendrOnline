@@ -59,6 +59,7 @@ public class IndexModel : PageModel
 
     private INotesService NotesService => HttpContext.RequestServices.GetService<INotesService>();
     public bool UpdatePreview { get; set; }
+    public bool UpdateHierarchy { get; set; }
 
 
     public IndexModel(ILogger<IndexModel> logger)
@@ -81,10 +82,8 @@ public class IndexModel : PageModel
     private async Task UpdateNotes()
     {
         SetClient();
-        
         Notes = await NotesService.GetNotes();
-        SetClient();
-        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
+        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName, HttpContext.GetEditedNotes()?.Keys?.ToList());
         NoteHierarchy.Deploy(CurrentNote);
     }
 
@@ -94,7 +93,7 @@ public class IndexModel : PageModel
         
         Notes = await NotesService.GetNotes();
         SetClient();
-        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
+        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName, HttpContext.GetEditedNotes()?.Keys?.ToList());
         NoteHierarchy.Deploy(CurrentNote);
         return Partial("Hierarchy", NoteHierarchy);
     }
@@ -103,6 +102,7 @@ public class IndexModel : PageModel
     {
         IsNoteDirty = false;
         UpdateEditor = true;
+        UpdateHierarchy = true;
         SetClient();
         var notesService = HttpContext.RequestServices.GetService<INotesService>();
         CurrentNote = Request.Query["note"].First();
@@ -145,6 +145,7 @@ public class IndexModel : PageModel
         {
             EditorVisible = !EditorVisible;
             UpdateEditor = true;
+            UpdateHierarchy = true;
         }
         if (toggle == "content")
         {
@@ -204,6 +205,16 @@ public class IndexModel : PageModel
         var parsed = NoteParser.Parse(postContent);
         CurrentNoteDescription = parsed.Header.TrimmedDescription;
         UpdatePreview = false;
+        var editedNotes = HttpContext.GetEditedNotes();
+        if (editedNotes != null && editedNotes.ContainsKey(CurrentNote))
+        {
+            editedNotes.Remove(CurrentNote);
+            HttpContext.SetEditedNotes(editedNotes);
+        }
+        Notes = await NotesService.GetNotes();
+        SetClient();
+        NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,CurrentNote, HttpContext.GetEditedNotes()?.Keys?.ToList());
+        NoteHierarchy.Deploy(CurrentNote);
         return Page();
     }
 
@@ -227,6 +238,15 @@ public class IndexModel : PageModel
         
         CurrentNote = newNote;
         PostContent = newContent;
+        IsNoteDirty = true;
+        var editedNotes = HttpContext.GetEditedNotes();
+        if (editedNotes == null)
+        {
+            editedNotes = new Dictionary<string, string>();
+        }
+
+        editedNotes[CurrentNote] = newContent;
+        HttpContext.SetEditedNotes(editedNotes);
         return Page();
     }
 
@@ -287,6 +307,7 @@ public class IndexModel : PageModel
 
             UpdatePreview = true;
             UpdateEditor = true;
+            UpdateHierarchy = true;
         }
 
         ExtractVisibility();
@@ -305,6 +326,7 @@ public class IndexModel : PageModel
         
         
         UpdateEditor = false;
+        UpdateHierarchy = true;
         if (!Request.IsHtmx())
         {
         }
@@ -319,9 +341,16 @@ public class IndexModel : PageModel
                     await notesService.DeleteNote(noteName);
                     await UpdateNotes();
                     
+                    var editedNotes = HttpContext.GetEditedNotes();
+                    if (editedNotes != null && editedNotes.ContainsKey(noteName))
+                    {
+                        editedNotes.Remove(noteName);
+                        HttpContext.SetEditedNotes(editedNotes);
+                    }
+                    
                     Notes = await NotesService.GetNotes();
                     SetClient();
-                    NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName);
+                    NoteHierarchy = NotesService.GetHierarchy(Notes,NoteQuery,NoteName, HttpContext.GetEditedNotes()?.Keys?.ToList());
                     NoteHierarchy.Deploy(CurrentNote);
                     return Partial("Hierarchy", NoteHierarchy);
                 }
@@ -354,6 +383,8 @@ public class IndexModel : PageModel
         editedNotes[CurrentNote] = content;
         HttpContext.SetEditedNotes(editedNotes);
 
+        
+        
         var note = NoteParser.Parse(content);
         
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
@@ -363,6 +394,7 @@ public class IndexModel : PageModel
         GitHubUser = user;
         CurrentNoteDescription = note.Header.TrimmedDescription;
         UpdatePreview = true;
+        UpdateHierarchy = true;
         await UpdateNotes();
         
         return Partial("_Preview", this);

@@ -20,6 +20,8 @@ namespace BackEnd
 
         public bool Selected { get; set; } = false;
         
+        public bool Edited { get; set; } = false;
+        
         public string Dump(string tab)
         {
             return $"{tab}{Name} {(Selected ? "*" : "")}";

@@ -18,6 +18,8 @@ namespace BackEnd
         bool Deployed { get; set; }
         
         bool Selected { get; set; }
+        
+        bool Edited { get; set; }
 
         INoteHierarchy GetSelectedNode();
 

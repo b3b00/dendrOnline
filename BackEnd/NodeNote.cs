@@ -21,6 +21,8 @@ namespace BackEnd
         public bool Deployed { get; set; } = false;
         
         public bool Selected { get; set; } = false;
+
+        public bool Edited { get; set; } = false;
         public INoteHierarchy GetSelectedNode()
         {
             if (Selected)
@@ -52,7 +54,7 @@ namespace BackEnd
             Child = new List<INoteHierarchy>();
         }
 
-        public void AddChild(string name, string currentNote)
+        public void AddChild(string name, string currentNote, List<string>? editedNotes)
         {
 
             var subName = name;
@@ -68,6 +70,7 @@ namespace BackEnd
                     {
                         var leaf = new LeafNote(name);
                         leaf.Selected = name == currentNote;
+                        leaf.Edited = editedNotes !=null && editedNotes.Contains(name);
                         Child.Add(leaf);
                     }
                 }
@@ -81,9 +84,10 @@ namespace BackEnd
                     {
                         sub = new NodeNote(FqnSubName);
                         sub.Selected = FqnSubName == currentNote;
+                        sub.Edited = editedNotes !=null && editedNotes.Contains(FqnSubName);
                         Child.Add(sub);
                     }
-                    (sub as NodeNote)?.AddChild(name,currentNote);
+                    (sub as NodeNote)?.AddChild(name,currentNote,editedNotes);
 
                 }
             }

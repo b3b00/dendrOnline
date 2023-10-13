@@ -18,7 +18,7 @@ namespace BackEnd
 
         Task DeleteNote(string noteName);
 
-        INoteHierarchy GetHierarchy(List<string> notes, string filter, string currentNote);
+        INoteHierarchy GetHierarchy(List<string> notes, string filter, string currentNote, List<string> editedNotes);
 
         void SetRepository(string name, long id);
 
