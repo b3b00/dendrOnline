@@ -10,7 +10,7 @@
     @if (Model.IsLeaf)
     {
         <div style="display: flex;flex-direction: row;@back">
-            <a style="display:block;" class="treemargin" href="#" hx-get="@Url.Page("Index")/@Model.Name" hx-target="#xContent" >@Model.ShortName</a> 
+            <a style="display:block;" class="treemargin" href="#" hx-get="/Index/@Model.Name" hx-target="#xContent" >@Model.ShortName</a> 
             <a href="#" onclick="createNote('@Model.Name')" ><span class="material-symbols-outlined">Add_Box</span></a>
             <a href="#" hx-delete="@Url.Page("Index")?note=@Model.Name" hx-target="#tree" ><span class="material-symbols-outlined">Delete</span></a>
         </div>

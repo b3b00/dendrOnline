@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using Octokit;
 
 namespace dendrOnline.Pages;
@@ -206,13 +205,14 @@ public class IndexModel : PageModel
         var user = await client.User.Current();
         this.GitHubUser = user;
         
-        await UpdateNotes();
+        
         UpdateEditor = false;
         if (!Request.IsHtmx())
         {
             if (!string.IsNullOrEmpty(NoteName))
             {
                 CurrentNote = NoteName;
+                await UpdateNotes();
             }
             else
             {
@@ -231,6 +231,7 @@ public class IndexModel : PageModel
         {
             
             CurrentNote = NoteName;
+            await UpdateNotes();
             PostContent = await NotesService.GetContent(NoteName);
             var parsed = NoteParser.Parse(PostContent);
             CurrentNoteDescription = parsed.Header.TrimmedDescription;

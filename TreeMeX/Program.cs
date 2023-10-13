@@ -71,7 +71,6 @@ app.UseGHOAuth(options =>
     options.ReturnUrlParameter = app.Configuration[Constants.StartUrlParameter];
     options.RedirectUri = app.Configuration[Constants.RedirectUrlParameter];
 
-Console.WriteLine($"{Constants.RedirectUrlParameter} :: {options.RedirectUri}");
 
 });
 
