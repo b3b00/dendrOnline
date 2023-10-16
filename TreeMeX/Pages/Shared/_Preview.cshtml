@@ -14,8 +14,10 @@
 
 @if (Model.UpdateEditor)
 {
-    <textarea hx-post="@Url.Page("Index")" style="@Model.EditorStyle" hx-trigger="keyup changed delay:250ms" hx-target="#preview" id="editor" hx-swap-oob="true" asp-for="PostContent">@Model.PostContent</textarea>
-    
+    <div id="editor">
+        <partial name="ToolBar" model="@Model"/>
+        <textarea hx-post="@Url.Page("Index")" style="@Model.EditorStyle" hx-trigger="keyup changed delay:250ms" hx-target="#preview" id="noteEditor" hx-swap-oob="true" asp-for="PostContent">@Model.PostContent</textarea>
+    </div>
     
 }
 @if (Model.UpdateHierarchy)
@@ -25,7 +27,7 @@
     </div>
 }
 
-<partial name="ToolBar" model="@Model"/>
+
 
 <div id="preview" style="@Model.ContentStyle">
     <input type="hidden" name="CurrentNote" value="@Model.CurrentNote" asp-for="CurrentNote"/>

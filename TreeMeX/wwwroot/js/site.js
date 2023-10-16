@@ -8,3 +8,19 @@ window.createNote = function(parent) {
         window.location = "/Index?handler=newNote&parent=" + parent + "&new=" + name;
     }
 }
+
+window.showTab = function (tabName) {
+
+    var tabs = ["hierarchy","preview","editor"];
+    for (let i = 0; i < tabs.length; i++) {
+        let tab = tabs[i];
+        var t = document.getElementById(tab);
+        if (tab == tabName) {
+            t.style.display = "block";
+        }
+        else {
+            t.style.display = "none";
+        }
+
+    }
+}

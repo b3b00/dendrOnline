@@ -22,7 +22,7 @@
     
     <div style="display: flex;flex-direction: row" hx-get="@Url.Page("Index/?{@Model.}", "Save")"
          hx-trigger="keyup[key=='F7'] from:body" asp-for="PostContent">
-        <div style="width: 20%" id="hierarchy">
+        <div style="width: 100%" id="hierarchy">
             <input type="text"
                    asp-for="NoteQuery"
                    id="notequery"
@@ -40,8 +40,8 @@
                 </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; width: 80%; flex-wrap: wrap">
-        <partial name="ToolBar" model="@Model"/>
+        <div style="display: flex; flex-direction: column; width: 100%; flex-wrap: wrap">
+        @* <partial name="ToolBar" model="@Model"/> *@
             <div style="width: 100%;display: flex;flex-direction: row">
                 <textarea hx-post="@Url.Page("Index")" style="width: 40%;display:inline" hx-trigger="keyup changed delay:250ms" hx-target="#xContent" id="editor" hx-swap-oob="true" asp-for="PostContent" name="PostContent"></textarea>
 
