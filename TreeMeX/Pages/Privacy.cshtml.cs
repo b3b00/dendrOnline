@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using TreeMeX.Pages;
 
 namespace dendrOnline.Pages;
 
-public class PrivacyModel : PageModel
+public class PrivacyModel : BaseModel
 {
     private readonly ILogger<PrivacyModel> _logger;
 

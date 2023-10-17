@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Octokit;
+using TreeMeX.Pages;
 
 namespace dendrOnline.Pages;
 
@@ -29,7 +30,7 @@ public class GhRepository
 
 
 [ValidateAntiForgeryToken]
-public class ChooseRepoModel : PageModel
+public class ChooseRepoModel : BaseModel
 {
 
     public User GitHubUser { get; set; }

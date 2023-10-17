@@ -9,11 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Octokit;
+using TreeMeX.Pages;
 
 namespace dendrOnline.Pages;
 
 [ValidateAntiForgeryToken]
-public class LogoutModel : PageModel
+public class LogoutModel : BaseModel
 {
     private readonly IConfiguration _configuration;
 

@@ -11,11 +11,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Octokit;
+using TreeMeX.Pages;
 
 namespace dendrOnline.Pages;
 
 [ValidateAntiForgeryToken]
-public class IndexModel : PageModel
+public class IndexModel : BaseModel
 {
     private readonly ILogger<IndexModel> _logger;
     
