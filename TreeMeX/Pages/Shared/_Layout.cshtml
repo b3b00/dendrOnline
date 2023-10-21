@@ -57,7 +57,7 @@
                     </li>
                     @if (Model.IsRepositoryLoaded) {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="Tree" asp-route-NoteName="@Model.NoteName"><span class="material-symbols-outlined">Account_Tree</span>Notes tree</a>
+                            <a class="nav-link text-dark"  href="/Tree/@Model.NoteName"><span class="material-symbols-outlined">Account_Tree</span>Notes tree</a>
                         </li>
                     }
                     @if (!string.IsNullOrEmpty(Model.NoteName))

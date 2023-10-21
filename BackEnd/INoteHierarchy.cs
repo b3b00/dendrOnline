@@ -20,6 +20,7 @@ namespace BackEnd
         bool Selected { get; set; }
         
         bool Edited { get; set; }
+        INoteHierarchy NoteHierarchy { get; set; }
 
         INoteHierarchy GetSelectedNode();
 

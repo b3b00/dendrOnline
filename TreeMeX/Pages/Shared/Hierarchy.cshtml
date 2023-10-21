@@ -30,7 +30,7 @@
                 {
                     @foreach (var note in node.Child)
                     {
-                        <partial name="Hierarchy" model="@note"/>
+                        <partial name="Shared/Hierarchy" model="@Model.NoteHierarchy"/>
                     }
                 }
             }

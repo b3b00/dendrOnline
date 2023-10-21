@@ -22,6 +22,8 @@ public class BaseModel : PageModel
     public string CurrentNoteDescription { get; set; }
 
     public bool IsRepositoryLoaded => !string.IsNullOrEmpty(RepositoryName);
+    
+    public INoteHierarchy NoteHierarchy { get; set; }
 
     protected INotesService NotesService => HttpContext.RequestServices.GetService<INotesService>();
 
