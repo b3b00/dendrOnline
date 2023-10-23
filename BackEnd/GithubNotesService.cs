@@ -15,9 +15,9 @@ namespace BackEnd
 
         private string RepositoryName { get; set; }
 
-        private long UserId { get; set; }
+        private new long UserId { get; set; }
 
-        private string UserName { get; set; }
+        private new string UserName { get; set; }
 
         public override void SetRepository(string name, long id)
         {

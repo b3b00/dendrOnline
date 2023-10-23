@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR ./
 
 # Copy csproj and restore as distinct layers ....
@@ -14,7 +14,7 @@ COPY . .
 RUN dotnet publish --no-restore -c Release -o out ./TreeMeX
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /
 COPY --from=build-env /out .
 ENTRYPOINT ["./TreeMeX"]

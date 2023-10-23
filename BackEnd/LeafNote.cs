@@ -10,6 +10,8 @@ namespace BackEnd
             Name = name;
         }
 
+        public INoteHierarchy NoteHierarchy { get; set; }
+        
         public string Name { get; set; }
 
         public bool IsNode => false;
@@ -18,9 +20,9 @@ namespace BackEnd
 
         public bool Deployed { get; set; } = true;
 
-        public bool Selected { get; set; } = false;
+        public bool Selected { get; set; } 
         
-        public bool Edited { get; set; } = false;
+        public bool Edited { get; set; } 
         
         public string Dump(string tab)
         {

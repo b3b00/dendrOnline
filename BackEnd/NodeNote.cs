@@ -23,6 +23,8 @@ namespace BackEnd
         public bool Selected { get; set; } = false;
 
         public bool Edited { get; set; } = false;
+        public INoteHierarchy NoteHierarchy { get; set; }
+
         public INoteHierarchy GetSelectedNode()
         {
             if (Selected)
