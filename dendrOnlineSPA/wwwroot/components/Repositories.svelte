@@ -20,8 +20,11 @@
 <div>
     {#if $repositories.length > 0}
         {#each $repositories as repository}            
-                <li class="w3-display-container" on:click={setRepository(repository)}>
+                <li class="w3-display-container">
+                    
+                    <a href="/notes/{repository.id} " on:click={setRepository(repository)}>
                     {repository.id} - {repository.name}
+                    </a>
                 </li>            
         {/each}
     {/if}

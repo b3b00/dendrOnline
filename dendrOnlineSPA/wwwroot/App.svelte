@@ -1,5 +1,5 @@
 <script>
-	import Repositories from 'components/Repositories.svelte'
+	import Repositories from './components/Repositories.svelte'
 </script>
 
 <style>
