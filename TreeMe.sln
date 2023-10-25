@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubOAuthMiddleWare", "GitHubOAuthMiddleWare\GitHubOAuthMiddleWare.csproj", "{1C99C402-A02A-4979-B3A9-C2F2970749BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dendron", "dendron\dendron.csproj", "{AB84C785-408E-4F5A-8906-099B1991EDA4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dendrOnlineSPA", "dendrOnlineSPA\dendrOnlineSPA.csproj", "{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}"
 EndProject
 Global
@@ -38,10 +36,6 @@ Global
 		{1C99C402-A02A-4979-B3A9-C2F2970749BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C99C402-A02A-4979-B3A9-C2F2970749BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C99C402-A02A-4979-B3A9-C2F2970749BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB84C785-408E-4F5A-8906-099B1991EDA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB84C785-408E-4F5A-8906-099B1991EDA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB84C785-408E-4F5A-8906-099B1991EDA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB84C785-408E-4F5A-8906-099B1991EDA4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
