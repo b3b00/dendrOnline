@@ -11,3 +11,5 @@ out/*
 **/.vs
 **/.fleet
 **/appsettings.Development.json
+bundle.js*
+bundle.css*
