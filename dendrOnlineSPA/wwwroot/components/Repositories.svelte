@@ -22,7 +22,7 @@
         {#each $repositories as repository}            
                 <li class="w3-display-container">
                     
-                    <a href="/notes/{repository.id} " on:click={setRepository(repository)}>
+                    <a href="#/tree/{repository.id} " on:click={setRepository(repository)}>
                     {repository.id} - {repository.name}
                     </a>
                 </li>            
