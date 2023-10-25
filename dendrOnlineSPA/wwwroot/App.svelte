@@ -1,5 +1,30 @@
 <script>
 	import Repositories from './components/Repositories.svelte'
+	import Tree from './components/Tree.svelte'
+	import Edit from './components/Edit.svelte'
+	import View from './components/View.svelte'
+	import Home from './components/Home.svelte'
+	import NotFound from "./components/NotFound.svelte";
+	
+	import Router from 'svelte-spa-router'
+
+	const routes = {
+		// Exact path
+		'/': Home,
+
+		// Using named parameters, with last being optional
+		'/repositories': Repositories,
+
+		// Wildcard parameter
+		'/edit/:note': Edit,
+		'/view/:note' : View,
+		'/tree/:repository' : Tree,
+
+		// Catch-all
+		// This is optional, but if present it must be the last
+		'*': NotFound,
+	}
+	
 </script>
 
 <style>
@@ -12,10 +37,5 @@
 <main>
 	
 	<h1>Dendr-Online</h1>
-	<li><a href="/repositories">repositories</a></li>
-	<li><a href="/notes/518439052/perso">hierarchy - perso</a></li>
-	<li><a href="/notes/518439052/dendron">hierarchy - dendron</a></li>
-	<li><a href="/user">user</a></li>	
-	
-	<Repositories></Repositories>
+	<Router {routes}/>
 </main>
