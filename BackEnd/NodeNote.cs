@@ -2,20 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace BackEnd
 {
 
     public class NodeNote : INoteHierarchy
     {
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
+        [JsonPropertyName("child")]
         public List<INoteHierarchy> Child { get; set; }
 
+        [JsonIgnore]
         public bool IsRoot => string.IsNullOrWhiteSpace(Name);
 
+        [JsonIgnore]
         public bool IsNode => true;
 
+        [JsonIgnore]
         public bool IsLeaf => false;
 
         public bool Deployed { get; set; } = false;

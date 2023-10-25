@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace BackEnd
 {
@@ -10,12 +11,16 @@ namespace BackEnd
             Name = name;
         }
 
+        [JsonIgnore]
         public INoteHierarchy NoteHierarchy { get; set; }
         
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
+        [JsonIgnore]
         public bool IsNode => false;
 
+        [JsonIgnore]
         public bool IsLeaf => true;
 
         public bool Deployed { get; set; } = true;

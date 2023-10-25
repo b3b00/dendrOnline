@@ -1,8 +1,11 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace BackEnd
 {
 
+    [JsonDerivedType(typeof(NodeNote))]
+    [JsonDerivedType(typeof(LeafNote))]
     public interface INoteHierarchy
     {
         string Name { get; set; }

@@ -1,7 +1,0 @@
-@model  dendrOnline.Pages.ChooseRepoModel
-
-
-@foreach (var repo in Model.Repositories)
-{
-    <a href="@Url.Page("ChooseRepo")?repo=@repo.Id">@repo.Name</a><br/> 
-}
