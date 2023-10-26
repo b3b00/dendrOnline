@@ -16,6 +16,8 @@ namespace BackEnd
 
         Task<List<string>> GetNotes();
 
+        Task<Note> GetNote(string noteName);
+        
         Task DeleteNote(string noteName);
 
         INoteHierarchy GetHierarchy(List<string> notes, string filter, string currentNote, List<string> editedNotes);

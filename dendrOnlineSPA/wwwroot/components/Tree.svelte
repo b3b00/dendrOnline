@@ -2,11 +2,16 @@
 
     import {repositories, repository} from '../scripts/dendronStore.js';
     import { onMount } from 'svelte';
-    
-    let currentRepository = {};
+    import { DendronClient} from "../scripts/dendronClient.js";
 
+    let currentRepository = {};
+    
+    let currentTree = {};
+    
     onMount(async () => {
         currentRepository = $repository; 
+        let tree = await DendronClient.GetTree(currentRepository.id);
+        currentTree = tree;
     });
     
 </script>

@@ -3,20 +3,17 @@
     import {setRepository, repositories, setRepositories} from '../scripts/dendronStore.js';
     import {push, pop, replace} from 'svelte-spa-router'
     import { onMount } from 'svelte';
+    import {DendronClient} from "../scripts/dendronClient.js";
 
     let allRepositories = [];
     
     let filteredRepositories = [];
 
     onMount(async () => {
-        const res = await fetch('/repositories');
-        if (res.status >= 200 && res.status <= 299) {            
-            allRepositories = await res.json()
-            setRepository(allRepositories);
-            filteredRepositories = allRepositories;
-        } else {
-            let body = await res.json();
-        }
+
+        let allRepositories = await DendronClient.GetRepositories();
+        setRepositories(allRepositories);
+        filteredRepositories = allRepositories;
     });
     
 </script>

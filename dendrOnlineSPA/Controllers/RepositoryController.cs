@@ -47,15 +47,23 @@ public class RepositoryController : DendronController
         return await GetRepositories(client);
     }
 
-    [HttpGet("/notes/{repositoryId}/{filter?}")]
-    public async Task<INoteHierarchy> GetNotesHierarchy(long repositoryId,string filter)
+    [HttpGet("/notes/{repositoryId}")]
+    public async Task<INoteHierarchy> GetNotesHierarchy(long repositoryId)
     {
         HttpContext.SetRepositoryId(repositoryId);
         var notes = await NotesService.GetNotes();
-        var hierarchy = NotesService.GetHierarchy(notes, filter, HttpContext.GetCurrentNote(), HttpContext.GetEditedNotes().Keys.ToList());
+        var hierarchy = NotesService.GetHierarchy(notes, null, HttpContext.GetCurrentNote(), HttpContext.GetEditedNotes().Keys.ToList());
         var json = JsonSerializer.Serialize(hierarchy);
         return hierarchy;
     }
+
+    [HttpGet("/note/{repositoryId}/{noteId}")]
+    public async Task<Note> GetNote(string repositoryId, string noteId)
+    {
+        var note = await NotesService.GetNote(noteId);
+        return note;
+    }
+    
     
     public async Task<IList<GhRepository>> GetRepositories(GitHubClient client)
     {
