@@ -1,7 +1,7 @@
 
 <script>
     import {setRepository, repositories, setRepositories} from '../scripts/dendronStore.js';
-    import {push, pop, replace} from 'svelte-spa-router'
+    import {push} from 'svelte-spa-router'
     import { onMount } from 'svelte';
     import {DendronClient} from "../scripts/dendronClient.js";
 

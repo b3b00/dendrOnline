@@ -4,12 +4,14 @@
     }
 </style>
 <script>
+    import {push} from 'svelte-spa-router'
+    import {setNoteId} from '../scripts/dendronStore.js';
     export let node = {};
 </script>
 
     {#if node.isNode}
         <details class="treemargin" style="text-align: left">
-    <summary>{node.name}></summary>
+    <summary ><a href="#/edit/{node.name}">{node.name}</a></summary>
 
         {#each node.child as subNode}
             <svelte:self node={subNode}/>
@@ -17,7 +19,7 @@
 
         </details>
     {:else}
-        <div class="treemargin">{node.name}</div>
+        <div><a href="#/edit/{node.name}">{node.name}</a></div>
     {/if}
 
 

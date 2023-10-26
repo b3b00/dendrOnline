@@ -25,7 +25,7 @@ export const DendronClient = {
     },
     
     GetNote: async(repositoryId, noteId) => {
-        const res = await fetch(`/note/${repositoryId}/`);
+        const res = await fetch(`/note/${repositoryId}/${noteId}`);
         if (res.status >= 200 && res.status <= 299) {
             let note = await res.json()
             return note;

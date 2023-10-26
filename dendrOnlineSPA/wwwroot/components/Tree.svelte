@@ -19,7 +19,5 @@
 </script>
 <div>
     <a href="#/">home</a>
-    tree for <b>{currentRepository.name}</b> <i>[{currentRepository.id}]</i> to come
-
     <TreeNode node="{currentTree}"/>
 </div>
