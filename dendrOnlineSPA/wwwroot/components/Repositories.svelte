@@ -9,6 +9,16 @@
     
     let filteredRepositories = [];
 
+    let filter = "";
+    
+    $:{
+        allRepositories = $repositories;
+        filter=filter;
+        filteredRepositories = allRepositories.filter(
+            x => x.name.toLowerCase().includes(filter.toLowerCase())
+        );
+    }
+    
     onMount(async () => {
 
         let allRepositories = await DendronClient.GetRepositories();
@@ -19,6 +29,7 @@
 </script>
 
 <div>
+    <input type="text" bind:value = {filter}/>
     {#if filteredRepositories.length > 0}
         {#each filteredRepositories as repository}            
                 <li class="w3-display-container">

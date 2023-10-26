@@ -15,13 +15,13 @@ namespace BackEnd
         [JsonPropertyName("child")]
         public List<INoteHierarchy> Child { get; set; }
 
-        [JsonIgnore]
+        
         public bool IsRoot => string.IsNullOrWhiteSpace(Name);
 
-        [JsonIgnore]
+        
         public bool IsNode => true;
 
-        [JsonIgnore]
+        
         public bool IsLeaf => false;
 
         public bool Deployed { get; set; } = false;

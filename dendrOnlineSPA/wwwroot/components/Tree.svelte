@@ -3,6 +3,7 @@
     import {repositories, repository} from '../scripts/dendronStore.js';
     import { onMount } from 'svelte';
     import { DendronClient} from "../scripts/dendronClient.js";
+    import TreeNode from "./TreeNode.svelte";
 
     let currentRepository = {};
     
@@ -11,6 +12,7 @@
     onMount(async () => {
         currentRepository = $repository; 
         let tree = await DendronClient.GetTree(currentRepository.id);
+        console.log(tree);
         currentTree = tree;
     });
     
@@ -18,4 +20,6 @@
 <div>
     <a href="#/">home</a>
     tree for <b>{currentRepository.name}</b> <i>[{currentRepository.id}]</i> to come
+
+    <TreeNode node="{currentTree}"/>
 </div>
