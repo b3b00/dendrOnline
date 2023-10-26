@@ -2,8 +2,8 @@ import { writable } from 'svelte/store';
 
 
 export const repository = writable({
-    id:-1,
-    name:""
+    id:undefined,
+    name:undefined
 });
 
 export function setRepository(repo) {
