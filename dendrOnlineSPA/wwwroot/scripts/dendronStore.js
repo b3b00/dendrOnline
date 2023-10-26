@@ -6,13 +6,13 @@ export const repository = writable({
     name:""
 });
 
-export function setRepository(repository) {
-    repository.update(r => { return repository  });
+export function setRepository(repo) {
+    repository.update(r => { return repo });
 }
 
 
 export const repositories = writable([]);
 
-export function setRepositories(repositories) {
-    repositories.update(r => { return repositories  });
+export function setRepositories(repos) {
+    repositories.update(r => { return repos  });
 }
