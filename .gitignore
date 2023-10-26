@@ -13,3 +13,4 @@ out/*
 **/appsettings.Development.json
 bundle.js*
 bundle.css*
+**/node_modules/**
