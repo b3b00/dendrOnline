@@ -36,7 +36,7 @@
                     
                     <span style="cursor: pointer" on:click={() => {                            
                             setRepository(repository);
-                            push("#/tree/{repository.id}");
+                            push(`#/tree/${repository.id}`);
                     }}>
                     {repository.id} - {repository.name}
                     </span>

@@ -2,12 +2,23 @@
 
     import {repositories, repository} from '../scripts/dendronStore.js';
     import { onMount } from 'svelte';
+    import NoteNode from "./NoteNode.svelte";
     import { DendronClient} from "../scripts/dendronClient.js";
     import TreeNode from "./TreeNode.svelte";
+    import TreeView from "./TreeView.svelte";
 
+    export let params = {}
+    
     let currentRepository = {};
     
     let currentTree = {};
+    
+    let childAccessor = (x) => {
+        if (x.child != undefined && x.child != null && Array.isArray(x.child)) {
+            return x.child;
+        }
+        return [];
+    }
     
     onMount(async () => {
         currentRepository = $repository; 
@@ -19,5 +30,5 @@
 </script>
 <div>
     <a href="#/">home</a>
-    <TreeNode node="{currentTree}"/>
+    <TreeView root={currentTree} childAccessor={childAccessor} nodeTemplate={NoteNode} filter={(x) => x}></TreeView>
 </div>
