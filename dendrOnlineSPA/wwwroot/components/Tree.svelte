@@ -1,12 +1,12 @@
 <script>
 
-    import {repositories, repository} from '../scripts/dendronStore.js';
+    import {repositories, repository, tree, setTree} from '../scripts/dendronStore.js';
     import { onMount } from 'svelte';
     import NoteNode from "./NoteNode.svelte";
     import { DendronClient} from "../scripts/dendronClient.js";
     import TreeNode from "./TreeNode.svelte";
     import TreeView from "./TreeView.svelte";
-
+    
     
     let currentRepository = {};
     
@@ -19,15 +19,28 @@
         return [];
     }
     
+    $: {
+        currentTree = currentTree;
+    }
+    
     onMount(async () => {
-        currentRepository = $repository; 
-        let tree = await DendronClient.GetTree(currentRepository.id);
+        
+        
+        currentRepository = $repository;
+        currentTree = $tree;
+        if (currentTree === null || currentTree === undefined || currentTree == {} || !currentTree.hasOwnProperty('name')) {            
+            currentTree = await DendronClient.GetTree(currentRepository.id);
+            setTree(currentTree);
+        }
         console.log(tree);
-        currentTree = tree;
+
     });
     
 </script>
 <div>
-    <a href="#/">home</a>
+i{#if (currentTree) }
     <TreeView root={currentTree} childAccessor={childAccessor} nodeTemplate={NoteNode} filter={(x) => x}></TreeView>
+    {:else}
+    <i>Loading...</i>
+    {/if}
 </div>

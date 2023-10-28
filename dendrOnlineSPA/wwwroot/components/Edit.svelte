@@ -1,7 +1,7 @@
 <script>
 
     import { onMount } from 'svelte';
-    import {editedNotes, setNote, setNoteId} from "../scripts/dendronStore.js";
+    import {editedNotes, updateNote, setNoteId,loadedNotes, setLoadedNote} from "../scripts/dendronStore.js";
     import {repository} from "../scripts/dendronStore.js";
     import {DendronClient} from "../scripts/dendronClient.js";
     import View from "./View.svelte";
@@ -24,15 +24,15 @@
         // else simply display it
         id = params.note
         setNoteId(id);
-        if ($editedNotes[id]) {
-            note = $editedNotes[id];
+        if ($loadedNotes[id]) {
+            note = $loadedNotes[id];
             content = note.body;
         }
         else {
             note = await DendronClient.GetNote($repository,id);
             content = note.body;
             console.log(note);
-            setNote(id,note);            
+            setLoadedNote(id,note);            
         }
         
     });

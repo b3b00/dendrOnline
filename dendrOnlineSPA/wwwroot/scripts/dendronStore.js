@@ -25,11 +25,26 @@ export function setNoteId(id) {
 
 export const editedNotes = writable({});
 
-export function setNote(id,content) {
+export function updateNote(id,content) {
     editedNotes.update(r => {
         r[id] = content;
         return r;
     });
+}
+
+export const loadedNotes = writable({});
+
+export function setLoadedNote(id,content) {
+    loadedNotes.update(r => {
+        r[id] = content;
+        return r;
+    });
+}
+
+export const tree = writable({});
+
+export function setTree(currentTree) {
+    tree.update(r => {  return currentTree  });
 }
 
 

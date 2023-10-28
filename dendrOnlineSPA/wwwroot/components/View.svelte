@@ -1,7 +1,7 @@
 <script>
 
     import { onMount } from 'svelte';
-    import {editedNotes, setNote, setNoteId} from "../scripts/dendronStore.js";
+    import {editedNotes, setNoteId} from "../scripts/dendronStore.js";
     import {repository} from "../scripts/dendronStore.js";
     import {DendronClient} from "../scripts/dendronClient.js";
     import SvelteMarkdown from 'svelte-markdown'
