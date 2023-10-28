@@ -16,12 +16,21 @@
     let child;
     let isNode;
     
+    
+    $: {
+        node = node;
+        console.log('TreeViewNode.reactive > node :',node);
+        child = childAccessor(node);
+        console.log(`TreeViewNode.reactive > ${node.name} child :`,child);
+        isNode = child && Array.isArray(child) && child.length > 0;
+        console.log(`TreeViewNode.reactive > ${node.name} isNode ${node.name} : ${isNode}`)
+    }
     onMount(async () => {
         console.log('TreeViewNode.mount > node :',node);
         child = childAccessor(node);
-        console.log('TreeViewNode.mount > child :',child);
+        console.log('TreeViewNode.mount > ${node.name} child :',child);
         isNode = child && Array.isArray(child) && child.length > 0;
-        console.log('TreeViewNode.mount > isNode :',isNode)
+        console.log(`TreeViewNode.mount > ${node.name} > isNode  : ${isNode}`)
     })
     
 </script>

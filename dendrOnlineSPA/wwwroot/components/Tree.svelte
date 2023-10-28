@@ -7,7 +7,6 @@
     import TreeNode from "./TreeNode.svelte";
     import TreeView from "./TreeView.svelte";
 
-    export let params = {}
     
     let currentRepository = {};
     

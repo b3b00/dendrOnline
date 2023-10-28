@@ -25,9 +25,9 @@
         }        
     }
 
-    onMount(async () => {
-        console.log('TreeView.mount:',root);
+    onMount(async () => {        
         currentRoot = root;
+        console.log('TreeView.mount:',currentRoot);
     })
 
 </script>
