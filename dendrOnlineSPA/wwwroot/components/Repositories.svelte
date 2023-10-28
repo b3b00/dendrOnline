@@ -34,12 +34,12 @@
         {#each filteredRepositories as repository}            
                 <li class="w3-display-container">
                     
-                    <span style="cursor: pointer" on:click={() => {                            
+                    <div aria-hidden="true" style="cursor: pointer" on:click={() => {                            
                             setRepository(repository);
                             push(`#/tree/${repository.id}`);
                     }}>
                     {repository.id} - {repository.name}
-                    </span>
+                    </div>
                 </li>            
         {/each}
     {/if}
