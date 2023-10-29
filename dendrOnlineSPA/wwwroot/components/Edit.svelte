@@ -1,8 +1,8 @@
 <style>
-    draft  {
+    .draft  {
         color: red;
     }
-    normal  {
+    .normal  {
         color : black;
     }
 </style>
