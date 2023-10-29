@@ -21,17 +21,19 @@
         search = search;
         if (filter) {
             currentRoot = filter(root);
-            console.log('TreeView.reactive',currentRoot);
         }        
     }
 
     onMount(async () => {        
         currentRoot = root;
-        console.log('TreeView.mount:',currentRoot);
     })
 
 </script>
 
 <!-- TODO : add filter -->
+{#if (currentRoot) }
 <input type="text" bind:value={search}/>
 <TreeViewNode node={currentRoot} nodeTemplate={nodeTemplate} childAccessor={childAccessor}/>
+    {:else}
+    <p>loading...</p>
+    {/if}

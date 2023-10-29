@@ -1,10 +1,26 @@
+<style>
+    draft  {
+        color: red;
+    }
+    normal  {
+        color : black;
+    }
+</style>
 <script>
 
     import { onMount } from 'svelte';
-    import {editedNotes, updateNote, setNoteId,loadedNotes, setLoadedNote} from "../scripts/dendronStore.js";
+    import {
+        getTitle,
+        updateNote,
+        setNoteId,
+        setLoadedNote,
+        getNote,
+        isDraftNote
+    } from "../scripts/dendronStore.js";
     import {repository} from "../scripts/dendronStore.js";
     import {DendronClient} from "../scripts/dendronClient.js";
     import View from "./View.svelte";
+    import {get} from "svelte/store";
     export let params = {}
 
     let id = "";
@@ -18,35 +34,39 @@
             title:""
         },
     body:""};
+
+    let title = "";
+
+    let titleStyle = "normal"
+    
+    let update = function() {        
+        updateNote(id,content);
+        title = getTitle(note.header.description)+" *";
+        titleStyle = "draft";   
+    }
     
     onMount(async () => {
-        // TODO : if note ! loaded => load it
-        // else simply display it
         id = params.note
         setNoteId(id);
-        if ($loadedNotes[id]) {
-            note = $loadedNotes[id];
+        var n = getNote(id);
+        if (n) {
+            note = n.note;
+            title = getTitle(note.header.description)+(n.draft ? " *" : "");
+            titleStyle = n.draft ? "draft" : "normal";
             content = note.body;
         }
         else {
             note = await DendronClient.GetNote($repository,id);
             content = note.body;
-            console.log(note);
-            setLoadedNote(id,note);            
-        }
-        
+            setLoadedNote(id,note);
+            title = getTitle(note.header.description)+(isDraftNote(note.header.title) ? " *" : "");
+            titleStyle = isDraftNote(note.header.title) ? "draft" : "normal";
+        }        
     });
 </script>
 <div>
-    <a href="#/">home</a>
+    <h1 class="{titleStyle}">{title}</h1>
     <br>
-    <a href="#/tree">tree</a>
-    <br>
-    <a href="#/view/{id}">View</a>
-
-    <br>
-    <h1>{note.header.description}</h1>
-    <br>
-    <textarea bind:value={content}></textarea>
+    <textarea bind:value={content} on:change={update}></textarea>
     <br>
 </div>

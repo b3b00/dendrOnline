@@ -32,15 +32,13 @@
             currentTree = await DendronClient.GetTree(currentRepository.id);
             setTree(currentTree);
         }
-        console.log(tree);
-
     });
     
 </script>
 <div>
-i{#if (currentTree) }
+{#if (currentTree) }
     <TreeView root={currentTree} childAccessor={childAccessor} nodeTemplate={NoteNode} filter={(x) => x}></TreeView>
-    {:else}
+{:else}
     <i>Loading...</i>
     {/if}
 </div>

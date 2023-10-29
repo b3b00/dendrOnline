@@ -1,7 +1,22 @@
+<style>
+    draft  {
+        color: red;
+    }
+    normal  {
+        color : black;
+    }
+</style>
+
 <script>
 
     import { onMount } from 'svelte';
-    import {editedNotes, setNoteId} from "../scripts/dendronStore.js";
+    import {
+        getTitle, 
+        setNoteId,
+        isDraftNote,
+        setLoadedNote,
+        getNote,
+    } from "../scripts/dendronStore.js";
     import {repository} from "../scripts/dendronStore.js";
     import {DendronClient} from "../scripts/dendronClient.js";
     import SvelteMarkdown from 'svelte-markdown'
@@ -10,6 +25,10 @@
     let id = "";
 
     let content = "";
+    
+    let title = "";
+    
+    let titleStyle = "normal"
 
     let note = {
         header:{
@@ -24,34 +43,25 @@
         // else simply display it
         id = params.note
         setNoteId(id);
-        if ($editedNotes[id]) {
-            console.log(`note >${id}< found in store`);
-            console.log($editedNotes[id]);
-            console.log($editedNotes[id].body);
-            note = $editedNotes[id];
+        var n = getNote(id);
+        if (n) {
+            note = n.note;
+            title = getTitle(note.header.description)+(n.draft ? " *" : "");
+            titleStyle = n.draft ? "draft" : "normal";
             content = note.body;
         }
         else {
-            console.log(`note >${id}< not found in store => requesting back`);
             note = await DendronClient.GetNote($repository,id);
             content = note.body;
-            console.log(note);
-            console.log(note.body);
-            console.log(note);
-            setNote(id,note);
+            setLoadedNote(id,note);
+            title = getTitle(note.header.description)+(isDraftNote(note.header.title) ? " *" : "");
+            titleStyle = isDraftNote(note.header.title) ? "draft" : "normal";
         }
 
     });
 </script>
 <div>
-    <a href="#/">home</a>
-    <br>
-    <a href="#/tree">tree</a>
-    <br>
-    <a href="#/edit/{id}">Edit</a>
-
-    <br>
-    <h1>{note.header.description}</h1>
+    <h1 class="{titleStyle}">{title}</h1>
     <br>
     <SvelteMarkdown source={content}/>
     <br>
