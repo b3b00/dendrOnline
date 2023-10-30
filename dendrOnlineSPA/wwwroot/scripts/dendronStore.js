@@ -27,45 +27,32 @@ export const noteId = writable("");
 
 
 export function getTitle(description) {
-    return description.substring(1,description.length-1);
+    if (description.startsWith("'")) {
+        description = description.substring(1);
+    }
+    if (description.endsWith("'")) {
+        description = description.substring(0,description.length-1);
+    }
+    return description;
 }
 export function setNoteId(id) {
-    noteId.update(r => { return id  });
+    noteId.update((r) => { return id  });
 }
 
 export const draftNotes = writable({});
 
 export function updateNote(id,content) {
-    draftNotes.update(r => {
+    draftNotes.update((r) => {
         r[id] = content;
         return r;
     });
 }
 
-export function isDraftNote(id) {        
-    return draftNotes.hasOwnProperty(id)
-}
-
-export function getNote(id) {
-    if (isDraftNote(id)) {
-        return {
-            isDraft: true,
-            note : draftNotes[id]
-        }
-    }
-    else if (loadedNotes.hasOwnProperty(id)) {
-        return {
-            isDraft: true,
-            note : draftNotes[id]
-        }
-    }
-    return null;
-}
 
 export const loadedNotes = writable({});
 
 export function setLoadedNote(id,content) {
-    loadedNotes.update(r => {
+    loadedNotes.update((r) => {
         r[id] = content;
         return r;
     });

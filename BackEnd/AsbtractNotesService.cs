@@ -28,6 +28,7 @@ namespace BackEnd
         {
             string content = await GetContent(noteName);
             var note = NoteParser.Parse(content);
+            note.Header.Title = noteName;
             return note;
         }
         public abstract Task<string> CreateNote(string name);

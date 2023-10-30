@@ -17,7 +17,6 @@ export const DendronClient = {
         const res = await fetch(`/notes/${repositoryId}`);
         if (res.status >= 200 && res.status <= 299) {
             let tree = await res.json()
-            console.log(tree);
             return tree;
         } else {
             return {};
