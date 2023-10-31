@@ -39,6 +39,25 @@ export const DendronClient = {
     
     DeleteNote: async (repositoryId, noteId) => {
         return true;
+    },
+    
+    SaveNote: async(repositoryId, note) => {
+        const res = await fetch(`/note/${repositoryId}/${note.header.title}`,{
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify(note), // body data type must match "Content-Type" header
+        });
+        if (res.status >= 200 && res.status <= 299) {
+            let note = await res.json()
+            return note;
+        } else {
+            return {};
+        }
     }
+    
+    
     
 }

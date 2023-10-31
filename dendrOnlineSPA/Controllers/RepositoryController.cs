@@ -63,7 +63,14 @@ public class RepositoryController : DendronController
         var note = await NotesService.GetNote(noteId);
         return note;
     }
-    
+
+
+    [HttpPut("/note/{repositoryId}/{noteId}")]
+    public async Task<Note> SaveNote(string repositoryId,string noteId, [FromBody] Note note)
+    {
+        await NotesService.SetContent(noteId, note.ToString());
+        return await GetNote(repositoryId, note.Header.Title);
+    }
     
     public async Task<IList<GhRepository>> GetRepositories(GitHubClient client)
     {
