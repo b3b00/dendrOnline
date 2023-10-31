@@ -6,6 +6,8 @@
     import Home from './components/Home.svelte'
     import NotFound from "./components/NotFound.svelte";
     import {noteId, repository} from "./scripts/dendronStore.js";
+    import Fa from 'svelte-fa/src/fa.svelte';
+    import { faList, faPen, faEye, faFolderTree } from '@fortawesome/free-solid-svg-icons/index.js';
 
     import Router from 'svelte-spa-router'
 
@@ -51,13 +53,13 @@
 
     <nav>
         <ul>
-            <li><a href="#/repositories"><span class="material-icons">Lists</span>Repositories</a></li>
+            <li><a href="#/repositories" ><Fa icon="{faList}"></Fa><span style="margin-left: 5px">Repositories</span></a></li>
             {#if $repository.id}
-            <li><a href="#/tree/{$repository.id}"><span class="material-icons">Account_Tree</span>Tree</a></li>
+                <li><a href="#/tree/{$repository.id}"><Fa icon="{faFolderTree}"></Fa><span style="margin-left: 5px">Tree</span></a></li>
                 {/if}
             {#if $noteId}
-                <li><a href="#/edit/{$noteId}"><span class="material-icons">Edit</span>Edit</a></li>
-                <li><a href="#/view/{$noteId}"><span class="material-icons">Visibility</span>View</a></li>
+                <li><a href="#/edit/{$noteId}"><Fa icon="{faPen}"></Fa><span style="margin-left: 5px">Edit</span></a></li>
+                <li><a href="#/view/{$noteId}"><Fa icon="{faEye}"></Fa><span style="margin-left: 5px">View</span></a></li>
             {/if}
         </ul>
     </nav>

@@ -48,6 +48,13 @@ export function updateNote(id,content) {
     });
 }
 
+export function unDraft(id) {
+    draftNotes.update((r) => {
+        delete r[id];
+        return r;
+    } )
+}
+
 
 export const loadedNotes = writable({});
 

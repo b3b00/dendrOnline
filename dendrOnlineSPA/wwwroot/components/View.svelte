@@ -38,18 +38,22 @@
         body:""};
 
     let getNoteFromStore = function(id) {
+        console.log(`View.getNoteFromSvelte(${id})`)
         if ($draftNotes.hasOwnProperty(id)) {
+            console.log(`View.getNoteFromSvelte(${id}) - found in draft notes`,$draftNotes[id]);
             return {
                 isDraft: true,
                 note : $draftNotes[id]
             }
         }
         else if (loadedNotes.hasOwnProperty(id)) {
+            console.log(`View.getNoteFromSvelte(${id}) - found in loaded notes`,$loadedNotes[id]);
             return {
                 isDraft: false,
                 note : $loadedNotes[id]
             }
         }
+        console.log(`View.getNoteFromSvelte(${id}) - not found `);
         return null;
     } 
     
@@ -59,14 +63,18 @@
         var n = getNoteFromStore(id);
       
         if (n) {
+            console.log(`View.onMount(${id}) - found note`,n);
             note = n.note;
             title = getTitle(note.header.description)+(n.isDraft ? " *" : "");
+            console.log(`View.onMount(${id}) - title=${title}`,n);
             titleStyle = n.isDraft ? "draft" : "normal";
+            console.log(`View.onMount(${id}) - style=${titleStyle}`,n);
             content = note.body;
         }
         else {
-            
+            console.log(`View.onMount(${id}) [2] - not found`);
             note = await DendronClient.GetNote($repository,id);
+            console.log(`View.onMount(${id}) [2] - found note`,n);
             content = note.body;
             setLoadedNote(id,note);
             title = getTitle(note.header.description)+($draftNotes.hasOwnProperty(note.header.title) ? " *" : "");
