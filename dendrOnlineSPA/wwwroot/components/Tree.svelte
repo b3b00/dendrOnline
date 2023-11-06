@@ -18,7 +18,36 @@
         }
         return [];
     }
-    
+
+    let nodefilter = (node, search) => {
+        if (search === undefined || search === null || search == '') {
+            return node;
+        }
+        var child = childAccessor(node);
+        if (child.length > 0) {
+            var filtered = child.filter(x => nodefilter(x, search)).filter(x => x!= null);
+            if ( node.name.includes(search)) {
+                return node;
+            }
+            else if (filtered.length > 0) {
+                console.log(`accepting ${node.name} with ${filtered.length} child`,filtered);
+                return {name:node.name,
+                    id:node.id,
+                    child:filtered
+                };
+            }
+            console.log(`reject node ${node.name} // ${search}`);
+            return null;
+        }
+        else {
+            if (node.name.includes(search)) {
+                return node;
+            }
+            console.log(`reject leaf ${node.name} // ${search}`);
+            return null;
+        }
+    }
+
     $: {
         currentTree = currentTree;
     }
@@ -36,8 +65,8 @@
     
 </script>
 <div>
-{#if (currentTree) }
-    <TreeView root={currentTree} childAccessor={childAccessor} nodeTemplate={NoteNode} filter={(x) => x}></TreeView>
+{#if (currentTree !== undefined && currentTree !== null) }
+    <TreeView root={currentTree} childAccessor={childAccessor} nodeTemplate={NoteNode} filter={nodefilter}></TreeView>
 {:else}
     <i>Loading...</i>
     {/if}

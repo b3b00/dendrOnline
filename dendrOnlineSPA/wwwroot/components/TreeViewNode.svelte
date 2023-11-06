@@ -35,7 +35,7 @@
             <svelte:component this={nodeTemplate} data={node}/>
         </summary>
 
-        {#each node.child as subNode}
+        {#each node.child as subNode (subNode.name)}
             <svelte:self node={subNode} nodeTemplate={nodeTemplate} childAccessor={childAccessor}/>
         {/each}
 

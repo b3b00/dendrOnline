@@ -20,7 +20,7 @@
     $:{        
         search = search;
         if (filter) {
-            currentRoot = filter(root);
+            currentRoot = filter(root,search);
         }        
     }
 
