@@ -51,23 +51,25 @@
     $: {
         currentTree = currentTree;
     }
-    
+
     onMount(async () => {
-        
-        
+
+
         currentRepository = $repository;
         currentTree = $tree;
-        if (currentTree === null || currentTree === undefined || currentTree == {} || !currentTree.hasOwnProperty('name')) {            
-            currentTree = await DendronClient.GetTree(currentRepository.id);
+        if (currentTree === null || currentTree === undefined || currentTree == {} || !currentTree.hasOwnProperty('name')) {
+            currentTree = DendronClient.GetTree(currentRepository.id);
             setTree(currentTree);
         }
     });
-    
+
 </script>
 <div>
-{#if (currentTree !== undefined && currentTree !== null) }
-    <TreeView root={currentTree} childAccessor={childAccessor} nodeTemplate={NoteNode} filter={nodefilter}></TreeView>
-{:else}
-    <i>Loading...</i>
-    {/if}
+    {#await currentTree}
+        <p>...loading note tree...</p>
+    {:then tree}
+        <TreeView root={tree} childAccessor={childAccessor} nodeTemplate={NoteNode} filter={nodefilter}></TreeView>
+    {:catch error}
+        <p style="color: red">{error.message}</p>
+    {/await}
 </div>
