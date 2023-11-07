@@ -13,7 +13,7 @@
     let currentTree = {};
     
     let childAccessor = (x) => {
-        if (x.child != undefined && x.child != null && Array.isArray(x.child)) {
+        if (x!= null && x !== undefined && x.child != undefined && x.child != null && Array.isArray(x.child)) {
             return x.child;
         }
         return [];
@@ -26,24 +26,24 @@
         var child = childAccessor(node);
         if (child.length > 0) {
             var filtered = child.filter(x => nodefilter(x, search)).filter(x => x!= null);
-            if ( node.name.includes(search)) {
+            if ( node.name.toLowerCase().includes(search.toLowerCase())) {
                 return node;
             }
             else if (filtered.length > 0) {
-                console.log(`accepting ${node.name} with ${filtered.length} child`,filtered);
+                console.log(`accepting ${node.name.toLowerCase()} with ${filtered.length} child`,filtered);
                 return {name:node.name,
                     id:node.id,
                     child:filtered
                 };
             }
-            console.log(`reject node ${node.name} // ${search}`);
+            console.log(`reject node ${node.name.toLowerCase()} // >${search.toLowerCase()}<`);
             return null;
         }
         else {
-            if (node.name.includes(search)) {
+            if (node.name.toLowerCase().includes(search.toLowerCase())) {
                 return node;
             }
-            console.log(`reject leaf ${node.name} // ${search}`);
+            console.log(`reject leaf ${node.name.toLowerCase()} // >${search.toLowerCase()}<`);
             return null;
         }
     }
