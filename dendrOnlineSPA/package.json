@@ -22,7 +22,7 @@
     "sirv-cli": "^2.0.0"
   },
   "dependencies": {
-    "@bolduh/svelte-treeview": "^0.1.0",
+    "@bolduh/svelte-treeview": "^0.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",   
     "svelte-fa": "^3.0.4",
     "svelte-markdown": "^0.4.0",    
