@@ -12,6 +12,8 @@ RUN dotnet restore
 # Copy everything else and build
 COPY . .
 WORKDIR dendrOnlineSPA
+RUN apt-get install -y nodejs
+RUN npm install
 RUN npm run build
 WORKDIR ../
 RUN dotnet publish --no-restore -c Release -o out ./dendrOnlineSPA
