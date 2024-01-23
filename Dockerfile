@@ -4,7 +4,7 @@ WORKDIR /dendrOnlineSPA
 RUN ls -alh
 RUN pwd
 RUN npm install
-#RUN npm run build
+RUN npm run build
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-back-env
 WORKDIR ./
