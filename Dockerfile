@@ -5,7 +5,7 @@ WORKDIR ./
 COPY TreeMe.sln .
 COPY BackEnd/BackEnd.csproj ./BackEnd/BackEnd.csproj
 COPY GitHubOAuthMiddleWare/GitHubOAuthMiddleWare.csproj ./GitHubOAuthMiddleWare/GitHubOAuthMiddleWare.csproj
-COPY TreeMeX/TreeMeX.csproj ./dendrOnlineSPA/dendrOnlineSPA.csproj
+COPY dendrOnlineSPA/dendrOnlineSPA.csproj ./dendrOnlineSPA/dendrOnlineSPA.csproj
 COPY Tests/Tests.csproj ./Tests/Tests.csproj
 RUN dotnet restore
 
