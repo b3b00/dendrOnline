@@ -1,5 +1,5 @@
 FROM node as build-front-env
-WORKDIR ./dendrOnlineSPA
+WORKDIR /dendrOnlineSPA
 RUN ls
 RUN pwd
 RUN npm install
