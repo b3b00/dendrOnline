@@ -15,7 +15,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromMinutes(1);
-});     
+});
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("cors",
+        policy  =>
+        {
+            policy.WithOrigins("*");
+        });
+});
 
 builder.Services.AddScoped<INotesService>((provider) =>
     new GithubNotesService());
@@ -36,6 +44,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseSession();
 app.UseStaticFiles();
+app.UseCors();
 app.UseGHOAuth(options =>
 {
     options.TokenEndpoint = app.Configuration[Constants.TokenUrlParameter];

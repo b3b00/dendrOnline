@@ -41,7 +41,6 @@
     {#await currentTree}
         <p>...loading note tree...</p>
     {:then t}
-        {@debug t}
         <TreeView emptyTreeMessage="y a que dalle !" root={t} nodeTemplate={NoteNode} filter={nodefilter}></TreeView>
     {:catch error}
         <p style="color: red">{error.message}</p>
