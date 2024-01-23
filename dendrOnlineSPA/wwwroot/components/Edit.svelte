@@ -147,10 +147,12 @@
 
     {#if (editTitle)}
         <input type="text" bind:value={note.description}/>
+        <button on:click={() => {editTitle=false;note.header.description=description;updateNote(id, note);title=note.description;}}>update title</button>
         <Fa Icon={faFloppyDisk} on:click={() => {editTitle=false;note.header.description=description;updateNote(id, note);}}></Fa>
     {:else}
         <span>
             <h1 style="display:inline" class="{titleStyle}" on:click={() => {editTitle=true;}}>{title}</h1>
+            <button on:click={() => {editTitle=true;}}>edit title</button>
 <Fa Icon={faPen} on:click={() => {editTitle=true;}}></Fa>       
         </span>
     {/if}

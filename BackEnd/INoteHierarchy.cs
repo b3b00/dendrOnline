@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace BackEnd
@@ -24,6 +25,9 @@ namespace BackEnd
         
         bool Edited { get; set; }
         INoteHierarchy NoteHierarchy { get; set; }
+        
+
+        public List<INoteHierarchy> Children { get; set; }
 
         INoteHierarchy GetSelectedNode();
 

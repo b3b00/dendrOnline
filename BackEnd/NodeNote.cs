@@ -12,8 +12,10 @@ namespace BackEnd
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("child")]
-        public List<INoteHierarchy> Child { get; set; }
+        [JsonPropertyName("id")] public string Id => Name;
+
+        [JsonPropertyName("children")]
+        public List<INoteHierarchy> Children { get; set; }
 
         
         public bool IsRoot => string.IsNullOrWhiteSpace(Name);
@@ -38,7 +40,7 @@ namespace BackEnd
                 return this;
             }
 
-            foreach (var node in Child)
+            foreach (var node in Children)
             {
                 var selection = node.GetSelectedNode();
                 if (selection != null)
@@ -53,13 +55,13 @@ namespace BackEnd
         public void Deploy(string currentNote)
         {
             Deployed = currentNote != null && currentNote.Contains(currentNote);
-            Child.ForEach(x => x.Deploy(currentNote));
+            Children.ForEach(x => x.Deploy(currentNote));
         }
 
         public NodeNote(string name)
         {
             Name = name;
-            Child = new List<INoteHierarchy>();
+            Children = new List<INoteHierarchy>();
         }
 
         public void AddChild(string name, string currentNote, List<string>? editedNotes)
@@ -74,12 +76,12 @@ namespace BackEnd
             {
                 if (!subName.Contains('.'))
                 {
-                    if ((!Child.Any() || Child.All(x => x.Name != name)))
+                    if ((!Children.Any() || Children.All(x => x.Name != name)))
                     {
                         var leaf = new LeafNote(name);
                         leaf.Selected = name == currentNote;
                         leaf.Edited = editedNotes !=null && editedNotes.Contains(name);
-                        Child.Add(leaf);
+                        Children.Add(leaf);
                     }
                 }
                 else
@@ -87,13 +89,13 @@ namespace BackEnd
                     var nextNodeIndex = subName.IndexOf(".");
                     subName = subName.Substring(0, nextNodeIndex);
                     var FqnSubName = (!IsRoot ? Name + "." : "") + subName;
-                    var sub = Child.FirstOrDefault(x => x.Name == FqnSubName);
+                    var sub = Children.FirstOrDefault(x => x.Name == FqnSubName);
                     if (sub == null)
                     {
                         sub = new NodeNote(FqnSubName);
                         sub.Selected = FqnSubName == currentNote;
                         sub.Edited = editedNotes !=null && editedNotes.Contains(FqnSubName);
-                        Child.Add(sub);
+                        Children.Add(sub);
                     }
                     (sub as NodeNote)?.AddChild(name,currentNote,editedNotes);
 
@@ -104,12 +106,12 @@ namespace BackEnd
         public INoteHierarchy Filter(string filter)
         {
 
-            var filteredChildren = Child.Select(x => x.Filter(filter)).Where(x => x != null);
+            var filteredChildren = Children.Select(x => x.Filter(filter)).Where(x => x != null);
 
             if (Name.Contains(filter, StringComparison.InvariantCultureIgnoreCase) || filteredChildren.Any())
             {
                 NodeNote node = new NodeNote(Name);
-                node.Child.AddRange(filteredChildren);
+                node.Children.AddRange(filteredChildren);
                 return node;
             }
 
@@ -120,7 +122,7 @@ namespace BackEnd
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(tab).Append(Name).AppendLine(Selected ? "*":"");
-            foreach (var sub in Child)
+            foreach (var sub in Children)
             {
                 builder.AppendLine(sub.Dump(tab + "  "));
             }
