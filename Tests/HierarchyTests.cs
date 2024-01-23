@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using NFluent;
 using SharpFileSystem;
 using SharpFileSystem.FileSystems;
@@ -8,6 +10,20 @@ namespace Tests;
 
 public class HierarchyTests
 {
+
+    [Fact]
+    public void TestNoteHierarchyJson()
+    {
+        var notesService = GetNotesService();
+        var notes = notesService.GetNotes().GetAwaiter().GetResult();
+        Check.That(notes).CountIs(5);
+        
+        var h =notesService.GetHierarchy(notes, "topic1","perso.topic1.item2",null);
+        var json = JsonSerializer.Serialize<object>(h);
+        Console.WriteLine(json);
+
+    }
+
     [Fact]
     public void TestNoteHierarchy()
     {
@@ -34,9 +50,6 @@ public class HierarchyTests
 
 
 ");
-        
-   
-
     }
 
     private static StubNotesService GetNotesService()

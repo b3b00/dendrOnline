@@ -1,8 +1,12 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2dd6ca28_002D2ae2_002D4b47_002Da1ce_002D0b89ac4ecb50/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestNoteHierarchy" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2dd6ca28_002D2ae2_002D4b47_002Da1ce_002D0b89ac4ecb50/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="TestNoteHierarchy" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::CA26A732-A2FD-44CA-8875-7E7EF55011E0::net6.0::Tests.HierarchyTests.TestNoteHierarchy&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::CA26A732-A2FD-44CA-8875-7E7EF55011E0::net6.0::Tests.NoteParserTests.TestParse&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::CA26A732-A2FD-44CA-8875-7E7EF55011E0::net7.0::Tests.HierarchyTests.TestNoteHierarchyJson&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a593cff1_002D382d_002D4512_002Db83c_002Df842801ea810/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestNoteHierarchyJson" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::CA26A732-A2FD-44CA-8875-7E7EF55011E0::net7.0::Tests.HierarchyTests.TestNoteHierarchyJson&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	

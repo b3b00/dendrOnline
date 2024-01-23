@@ -1,8 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BackEnd
 {
 
+    [JsonDerivedType(typeof(NodeNote))]
+    [JsonDerivedType(typeof(LeafNote))]
     public interface INoteHierarchy
     {
         string Name { get; set; }
@@ -20,6 +24,10 @@ namespace BackEnd
         bool Selected { get; set; }
         
         bool Edited { get; set; }
+        INoteHierarchy NoteHierarchy { get; set; }
+        
+
+        public List<INoteHierarchy> Children { get; set; }
 
         INoteHierarchy GetSelectedNode();
 

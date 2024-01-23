@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BackEnd
 {
@@ -10,17 +12,28 @@ namespace BackEnd
             Name = name;
         }
 
+        [JsonIgnore]
+        public INoteHierarchy NoteHierarchy { get; set; }
+        
+        [JsonPropertyName("name")]
         public string Name { get; set; }
+        
+        [JsonPropertyName("id")] public string Id => Name;
 
+        [JsonIgnore]
         public bool IsNode => false;
 
+        [JsonIgnore]
         public bool IsLeaf => true;
 
         public bool Deployed { get; set; } = true;
 
-        public bool Selected { get; set; } = false;
+        public bool Selected { get; set; } 
         
-        public bool Edited { get; set; } = false;
+        public bool Edited { get; set; } 
+        
+        [JsonPropertyName("children")]
+        public List<INoteHierarchy> Children { get; set; }
         
         public string Dump(string tab)
         {

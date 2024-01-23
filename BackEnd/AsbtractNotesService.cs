@@ -23,6 +23,14 @@ namespace BackEnd
         public abstract void SetAccessToken(string token);
 
         public abstract Task<string> GetContent(string noteName);
+
+        public async Task<Note> GetNote(string noteName)
+        {
+            string content = await GetContent(noteName);
+            var note = NoteParser.Parse(content);
+            note.Header.Title = noteName;
+            return note;
+        }
         public abstract Task<string> CreateNote(string name);
 
         public abstract Task SetContent(string noteName, string noteContent);

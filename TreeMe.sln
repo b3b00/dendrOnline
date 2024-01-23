@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeMeX", "TreeMeX\TreeMeX.csproj", "{26C2B67C-8CF0-4477-BB35-6EC64333F6B6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackEnd", "BackEnd\BackEnd.csproj", "{A7EA754E-2F87-438D-B3CA-4B037E38EDD3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{CA26A732-A2FD-44CA-8875-7E7EF55011E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubOAuthMiddleWare", "GitHubOAuthMiddleWare\GitHubOAuthMiddleWare.csproj", "{1C99C402-A02A-4979-B3A9-C2F2970749BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dendrOnlineSPA", "dendrOnlineSPA\dendrOnlineSPA.csproj", "{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,10 +24,6 @@ Global
 		{13D432A7-0DE7-48DE-BD11-BAD66758B457}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13D432A7-0DE7-48DE-BD11-BAD66758B457}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13D432A7-0DE7-48DE-BD11-BAD66758B457}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26C2B67C-8CF0-4477-BB35-6EC64333F6B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26C2B67C-8CF0-4477-BB35-6EC64333F6B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26C2B67C-8CF0-4477-BB35-6EC64333F6B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26C2B67C-8CF0-4477-BB35-6EC64333F6B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A7EA754E-2F87-438D-B3CA-4B037E38EDD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A7EA754E-2F87-438D-B3CA-4B037E38EDD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7EA754E-2F87-438D-B3CA-4B037E38EDD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -40,5 +36,9 @@ Global
 		{1C99C402-A02A-4979-B3A9-C2F2970749BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C99C402-A02A-4979-B3A9-C2F2970749BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C99C402-A02A-4979-B3A9-C2F2970749BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

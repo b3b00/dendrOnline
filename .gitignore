@@ -7,7 +7,10 @@ Obj/*
 */obj/*
 */Obj/*
 out/*
-**/.idea
+#**/.idea
 **/.vs
 **/.fleet
 **/appsettings.Development.json
+bundle.js*
+bundle.css*
+**/node_modules/**
