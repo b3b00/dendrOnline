@@ -1,5 +1,11 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+FROM node as build-front-env
+WORKDIR dendrOnlineSPA
+RUN npm install
+RUN npm run build
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-back-env
 WORKDIR ./
+COPY --from=build-front-env /dendrOnlineSPA/wwwroot /dendrOnlineSPA/wwwroot
 
 # Copy csproj and restore as distinct layers ....
 COPY TreeMe.sln .
@@ -11,16 +17,11 @@ RUN dotnet restore
 
 # Copy everything else and build
 COPY . .
-WORKDIR dendrOnlineSPA
-RUN apt-get install -y nodejs
-RUN npm install
-RUN npm run build
-WORKDIR ../
 RUN dotnet publish --no-restore -c Release -o out ./dendrOnlineSPA
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /
-COPY --from=build-env /out .
+COPY --from=build-back-env /out .
 ENTRYPOINT ["./dendrOnlineSPA"]
 
