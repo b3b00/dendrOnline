@@ -3,8 +3,6 @@ using dendrOnlineSPA;
 using GitHubOAuthMiddleWare;
 
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,16 +11,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options => {
-    options.IdleTimeout = TimeSpan.FromMinutes(1);
-});
+builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(1); });
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("cors",
-        policy  =>
-        {
-            policy.WithOrigins("*");
-        });
+        policy => { policy.WithOrigins("*"); });
 });
 
 builder.Services.AddScoped<INotesService>((provider) =>
@@ -54,10 +47,7 @@ app.UseGHOAuth(options =>
     options.ClientSecret = app.Configuration[Constants.ClientSecretParameter];
     options.ReturnUrlParameter = app.Configuration[Constants.StartUrlParameter];
     options.RedirectUri = app.Configuration[Constants.RedirectUrlParameter];
-
-
+    options.ExcludePath = "/health";
 });
-
-
 
 app.Run();

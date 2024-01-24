@@ -19,6 +19,8 @@ public static class GitHubOAuthMiddleware
     public class GitHubOptions : OAuthOptions
     {
         public string RedirectUri { get; set; }
+        
+        public string ExcludePath { get; set; }
 
         public override string ToString() {
             return $@"
@@ -28,6 +30,7 @@ public static class GitHubOAuthMiddleware
             ClientId:{ClientId}
             ClientSecret:{ClientSecret}
             ReturnUrlParameter:{ReturnUrlParameter}
+            ExcludePath:{ExcludePath}    
             ";
         }
     }
@@ -38,6 +41,12 @@ public static class GitHubOAuthMiddleware
         configuration(options);
         app.Use(async (context, next) =>
         {
+            if (context.Request.Path.StartsWithSegments(options.ExcludePath))
+            {
+                await next.Invoke();
+                return;
+            }
+            
             bool existAccessToken = context.Session.TryGetValue(AccessToken, out var accessToken);
             if (!existAccessToken || accessToken == null || accessToken.Length == 0)
             {
@@ -110,7 +119,7 @@ public static class GitHubOAuthMiddleware
                 }
             }
 
-                await next.Invoke();
+            await next.Invoke();
         });
         return app;
     }
