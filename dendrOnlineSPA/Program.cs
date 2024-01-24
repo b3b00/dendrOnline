@@ -50,4 +50,13 @@ app.UseGHOAuth(options =>
     options.ExcludePath = "/health";
 });
 
-app.Run();
+if (app.Environment.IsDevelopment())
+{
+    app.Run();
+}
+else
+{
+    var port = Environment.GetEnvironmentVariable("PORT");
+    Console.WriteLine("DendrOnline is listening to http://*:" + port);
+    app.Run("http://*:" + port);
+}
