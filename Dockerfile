@@ -1,5 +1,8 @@
 FROM node as build-front-env
+# copy all content from repository
 COPY . .
+
+# build svelte front
 WORKDIR /dendrOnlineSPA
 RUN ls -alh
 RUN pwd
@@ -8,7 +11,7 @@ RUN npm run build
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-back-env
 WORKDIR ./
-COPY --from=build-front-env /dendrOnlineSPA/wwwroot /dendrOnlineSPA/wwwroot
+
 
 # Copy csproj and restore as distinct layers ....
 COPY TreeMe.sln .
@@ -20,11 +23,17 @@ RUN dotnet restore
 
 # Copy everything else and build
 COPY . .
+
+# Copy svelte javascript/CSS assets
+COPY --from=build-front-env /dendrOnlineSPA/wwwroot /dendrOnlineSPA/wwwroot
+
+# build aspnet core application
 RUN dotnet publish --no-restore -c Release -o out ./dendrOnlineSPA
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /
+# copy application
 COPY --from=build-back-env /out .
 ENTRYPOINT ["./dendrOnlineSPA"]
 
