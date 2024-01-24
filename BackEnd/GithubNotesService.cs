@@ -70,7 +70,7 @@ This may not be a dendron repository";
 
                     var request = new UpdateFileRequest($"DendrOnline : update {noteName}", noteContent,
                         content.content.Sha);
-                    gitHubClient.Repository.Content.UpdateFile(RepositoryId, content.content.Path, request);
+                    await gitHubClient.Repository.Content.UpdateFile(RepositoryId, content.content.Path, request);
                 }
                 else
                 {
