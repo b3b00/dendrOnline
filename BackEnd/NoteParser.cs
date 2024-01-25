@@ -12,7 +12,7 @@ namespace BackEnd
         {
             var headContent = ExtractHeaderContent(content);
             var header = ParseHeader(headContent.lines);
-            var bodyLines = content.GetAllLines().Skip(headContent.end);
+            var bodyLines = content.GetAllLines().Skip(headContent.end+1);
             string body = string.Join("\n", bodyLines);
             return new Note()
             {

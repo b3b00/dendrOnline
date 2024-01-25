@@ -37,6 +37,8 @@
       <None Remove="data\repository\notes\perso.topic2.item1.md" />
       <None Remove="data\repository\notes\perso.topic2.item2.md" />
       <None Remove="data\repository\notes\root.md" />
+      <None Remove="data\modes.md" />
+      <EmbeddedResource Include="data\modes.md" />
     </ItemGroup>
 
 </Project>
