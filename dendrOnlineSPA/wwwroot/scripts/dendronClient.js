@@ -43,6 +43,7 @@ export const DendronClient = {
     
     SaveNote: async(repositoryId, note) => {
         const res = await fetch(`/note/${repositoryId}/${note.header.title}`,{
+            withCredentials: true,
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

@@ -17,6 +17,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy("cors",
         policy => { policy.WithOrigins("*"); });
 });
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = "dendrOnline.Session";
+    options.IdleTimeout = TimeSpan.FromDays(1);
+    options.Cookie.IsEssential = true;
+    
+});
 
 builder.Services.AddScoped<INotesService>((provider) =>
     new GithubNotesService());
