@@ -30,7 +30,8 @@
     import {repository} from "../scripts/dendronStore.js";
     import {DendronClient} from "../scripts/dendronClient.js";
     import Fa from 'svelte-fa/src/fa.svelte';
-    import {faFloppyDisk, faPen} from '@fortawesome/free-solid-svg-icons/index.js';
+    import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/index.js';
+    
 
     export let params = {}
 
@@ -47,36 +48,36 @@
         body: ""
     };
 
-    let title = "";
-
     let titleStyle = "normal"
+
+    let floppyVisibility = "display:none";
 
     let previousContent = "";
 
-    let editTitle = false;
+    
     
     let description = "";
-    let getNoteFromStore = function (id) {
-        console.log(`Edit.getNoteFromSvelte(${id})`)
-        if ($draftNotes.hasOwnProperty(id)) {
-            console.log(`Edit.getNoteFromSvelte(${id}) - found in draft notes`, $draftNotes[id]);
+    let getNoteFromStore = function (id) {        
+        if ($draftNotes.hasOwnProperty(id)) {            
             return {
                 isDraft: true,
                 note: $draftNotes[id]
             }
-        } else if ($loadedNotes.hasOwnProperty(id)) {
-            console.log(`Edit.getNoteFromSvelte(${id}) - found in loaded notes`, $loadedNotes[id]);
+        } else if ($loadedNotes.hasOwnProperty(id)) {            
             return {
                 isDraft: false,
                 note: $loadedNotes[id]
             }
         }
-        console.log(`Edit.getNoteFromSvelte(${id}) - not found `);
         return null;
     }
 
     
+
+
+    
     let save = async function() {
+        console.log(`save ${id} ? `);
         let n = getNoteFromStore(id);
         if (n.isDraft) {
             let clone = {...n.note}
@@ -86,79 +87,65 @@
             setLoadedNote(newNote.header.title,newNote);
             n = getNoteFromStore(newNote.header.title);
             note = n.note;
-            title = getTitle(note.header.description);
-            console.log(`Edit.save() title=${title}`);
-            titleStyle = n.isDraft ? "draft" : "normal";
-            console.log(`Edit.save() style=${titleStyle}`);
+            description = note.header.description;            
+            titleStyle = n.isDraft ? "draft" : "normal";            
             previousContent = note.body;
             content = note.body;
+            floppyVisibility = n.isDraft ? "display:inline" : "display:none";
         }
     }
 
     let update = function () {
-        console.log("update()");
-        if (note.body != content) {
-            console.log("update() : updating...");
-            let clone = {...note}
+        if (note.body != content || note.header.description != description) {
+            floppyVisibility = "display:inline";
+            let clone = JSON.parse(JSON.stringify(note))
             clone.body = content;
-            previousContent = content;
-            description = note.header.description;
+            clone.header.description = description;
+            previousContent = content;            
             updateNote(id, clone);
-            title = getTitle(note.header.description) + " *";
+            //description = note.header.description;
             titleStyle = "draft";
         } else {
-            description = note.header.description;
-            title = getTitle(note.header.description);
+            description = note.header.description;            
             titleStyle = "normal";
+            floppyVisibility = "display:none";
             unDraft(id);
         }
     }
 
     onMount(async () => {
         id = params.note
-        console.log(`Edit.onMount(${id})`);
         setNoteId(id);
         var n = getNoteFromStore(id);
-        console.log(`Edit.onMount(${id}) note from store :: `, n);
         if (n) {
-            console.log(`Edit.onMount(${id}) [1] : note found`);
-            note = n.note;
-            title = getTitle(note.header.description) + (n.isDraft ? " *" : "");
-            console.log(`Edit.onMount(${id}) [1] title=${title}`);
+            note = n.note;            
+            description = note.header.description;
             titleStyle = n.isDraft ? "draft" : "normal";
-            console.log(`Edit.onMount(${id}) [1] style=${titleStyle}`);
             previousContent = note.body;
             content = note.body;
+            floppyVisibility = n.isDraft ? "display:block" : "display:none";
         } else {
-            console.log(`Edit.onMount(${id}) [2] : note not found`);
             note = await DendronClient.GetNote($repository, id);
-            console.log(`Edit.onMount(${id}) [2] : note from back ::`, note);
             previousContent = note.body;
             content = note.body;
             setLoadedNote(id, note);
-            title = getTitle(note.header.description) + ($draftNotes.hasOwnProperty(note.header.title) ? " *" : "");
-            console.log(`Edit.onMount(${id}) [2] title=${title}`);
+            description = note.header.description;
             titleStyle = $draftNotes.hasOwnProperty(note.header.title) ? "draft" : "normal";
-            console.log(`Edit.onMount(${id}) [2] style=${titleStyle}`);
         }
     });
 </script>
 <div>
 
-    {#if (editTitle)}
-        <input type="text" bind:value={note.description}/>
-        <button on:click={() => {editTitle=false;note.header.description=description;updateNote(id, note);title=note.description;}}>update title</button>
-        <Fa Icon={faFloppyDisk} on:click={() => {editTitle=false;note.header.description=description;updateNote(id, note);}}></Fa>
-    {:else}
-        <span>
-            <h1 style="display:inline" class="{titleStyle}" on:click={() => {editTitle=true;}}>{title}</h1>
-            <button on:click={() => {editTitle=true;}}>edit title</button>
-<Fa Icon={faPen} on:click={() => {editTitle=true;}}></Fa>       
-        </span>
-    {/if}
-<br>
-    <button  on:click={save}>Save</button>
+    <span>
+        <h1 contenteditable="true" style="display:inline" class="{titleStyle}" 
+        bind:textContent={description} 
+        on:input={update}>{description}</h1>
+    </span>
+
+
+    <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
+    <h1 on:click={save} on:keydown={save} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faFloppyDisk}" ></Fa></h1>
     <br>
-    <textarea bind:value={content} rows="200" on:keyup={update}></textarea>
+    <textarea bind:value={content} rows="200" on:keyup={update}></textarea> 
     <br>
 </div>
