@@ -59,7 +59,24 @@ public class NoteParserTests
         var serialization = note.ToString();
         
         var newNote = NoteParser.Parse(serialization);
+        Check.That(newNote).IsEqualTo(note);
+    }
+
+    [Fact]
+    public async void TestSave()
+    {
+        var service = HierarchyTests.GetNotesService();
+        string noteId = "test.saveAndRead.md";
+        await service.CreateNote(noteId);
+        var note = await service.GetNote(noteId);
+        Check.That(note).IsNotNull();
+        
+        note.Header.Description = "edited";
+        await service.SetContent(noteId, note.ToString());
+        var newNote = await service.GetNote(noteId);
+
         Check.That(newNote.Body).IsEqualTo(note.Body);
-        Check.That(newNote.Header).IsEqualTo(note.Header);
+
+
     }
 }

@@ -52,7 +52,7 @@ public class HierarchyTests
 ");
     }
 
-    private static StubNotesService GetNotesService()
+    public static StubNotesService GetNotesService()
     {
         string rootDir = "/repository/notes/";
         List<string> items = new List<string>()
