@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BackEnd
 {
-    public class NoteHeader
+    public class NoteHeader : IEquatable<NoteHeader>
     {
         public string Id { get; set; }
 
@@ -56,6 +56,26 @@ namespace BackEnd
                 .Append("created: ").AppendLine(CreatedTS.ToString())
                 .AppendLine(NoteParser.HeaderDelimiter);
             return builder.ToString();
+        }
+
+        public bool Equals(NoteHeader? other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Id == other.Id && Title == other.Title && Description == other.Description && LastUpdatedTS == other.LastUpdatedTS && CreatedTS == other.CreatedTS;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((NoteHeader)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Title, Description, LastUpdatedTS, CreatedTS);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace BackEnd
         public string ToString()
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine(Header.ToString())
+            builder.Append(Header.ToString())
                 .AppendLine(Body);
             return builder.ToString();
         }
