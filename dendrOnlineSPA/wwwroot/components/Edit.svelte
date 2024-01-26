@@ -20,23 +20,29 @@
 
     import {onMount} from 'svelte';
     import {
-        getTitle,
+        repository,
         updateNote,
         setNoteId,
         setLoadedNote,
         loadedNotes,
-        draftNotes, unDraft
+        draftNotes,
+        unDraft,
+        addNote
     } from "../scripts/dendronStore.js";
-    import {repository} from "../scripts/dendronStore.js";
+    
     import {DendronClient} from "../scripts/dendronClient.js";
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/index.js';
+    import {location} from 'svelte-spa-router'
+    
     
 
     export let params = {}
 
     let id = "";
 
+    let isNewNote = false;
+    
     let content = "";
 
     let note = {
@@ -113,12 +119,11 @@
         }
     }
 
-    onMount(async () => {
-        id = params.note
-        setNoteId(id);
+    const onMountEdit = async (id) => {
+        isNewNote = false;
         var n = getNoteFromStore(id);
         if (n) {
-            note = n.note;            
+            note = n.note;
             description = note.header.description;
             titleStyle = n.isDraft ? "draft" : "normal";
             previousContent = note.body;
@@ -132,6 +137,41 @@
             description = note.header.description;
             titleStyle = $draftNotes.hasOwnProperty(note.header.title) ? "draft" : "normal";
         }
+    }
+    
+    const onMountNew = async (noteId) => {
+        isNewNote = true;
+        note = {
+            header : {
+                name: noteId,
+                id: noteId,
+                description: "new note",
+                title: noteId
+            },
+            body : "# Write something really smart here.",            
+        }
+        addNote(note);
+        //updateNote(noteId,note);
+        
+        description = note.header.description;
+        titleStyle = "draft";
+        id = noteId;
+        previousContent = note.body;
+        content = note.body;
+        floppyVisibility = "display:inline" ;
+    }
+    
+    onMount(async () => {
+        console.log(`current page is at ${location}`);
+        id = params.note
+        setNoteId(id);
+        if ($location.startsWith("/new")) {
+            await onMountNew(id);
+        }
+        else {
+            await onMountEdit(id);
+        }
+        
     });
 </script>
 <div>

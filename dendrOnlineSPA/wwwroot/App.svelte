@@ -8,7 +8,7 @@
     import {noteId, repository} from "./scripts/dendronStore.js";
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faList, faPen, faEye, faFolderTree } from '@fortawesome/free-solid-svg-icons/index.js';
-
+    
     import Router from 'svelte-spa-router'
 
     const routes = {
@@ -22,6 +22,7 @@
         '/edit/:note': Edit,
         '/view/:note': View,
         '/tree/:repository': Tree,
+        '/new/:note': Edit,
 
         // Catch-all
         // This is optional, but if present it must be the last

@@ -50,7 +50,7 @@ export default {
 		css({ output: 'bundle.css' }),
 		resolve({
 			browser: true,
-			dedupe: ['svelte'],
+			dedupe: ['svelte', 'svelte/transition', 'svelte/internal'],
 			exportConditions: ['svelte']
 		}),
 		commonjs(),

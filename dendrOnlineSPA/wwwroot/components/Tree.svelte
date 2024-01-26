@@ -1,10 +1,10 @@
 <script>
 
-    import {repositories, repository, tree, setTree} from '../scripts/dendronStore.js';
-    import { onMount } from 'svelte';
-    import NoteNode from "./NoteNode.svelte";
+    import {repository, tree, setTree} from '../scripts/dendronStore.js';
+    import { onMount } from 'svelte';    
     import { DendronClient} from "../scripts/dendronClient.js";    
-    import TreeView from "@bolduh/svelte-treeview";
+    import TreeView from "@bolduh/svelte-treeview";    
+    import NoteNodeWraper from "./NoteNodeWraper.svelte";
     
     
     let currentRepository = {};
@@ -31,18 +31,18 @@
         currentRepository = $repository;
         currentTree = $tree;
         if (currentTree === null || currentTree === undefined || currentTree == {} || !currentTree.hasOwnProperty('name')) {
-            currentTree = DendronClient.GetTree(currentRepository.id);
+            currentTree = await DendronClient.GetTree(currentRepository.id);
             setTree(currentTree);
         }
     });
 
 </script>
 <div>
-    {#await currentTree}
-        <p>...loading note tree...</p>
-    {:then t}
-        <TreeView emptyTreeMessage="y a que dalle !" root={t} nodeTemplate={NoteNode} filter={nodefilter}></TreeView>
-    {:catch error}
-        <p style="color: red">{error.message}</p>
-    {/await}
+    <!--{#await currentTree}-->
+    <!--    <p>...loading note tree...</p>-->
+    <!--{:then t}-->
+        <TreeView emptyTreeMessage="y a que dalle !" root={currentTree} nodeTemplate={NoteNodeWraper} filter={nodefilter}></TreeView>
+    <!--{:catch error}-->
+    <!--    <p style="color: red">{error.message}</p>-->
+    <!--{/await}-->
 </div>
