@@ -5,8 +5,6 @@
     export let onOkay = () => {};
 
     const { close } = getContext('simple-modal');
-
-    export let parent;
     let onChange = () => {};
 
     function _onCancel() {

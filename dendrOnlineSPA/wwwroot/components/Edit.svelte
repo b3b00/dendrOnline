@@ -27,7 +27,8 @@
         loadedNotes,
         draftNotes,
         unDraft,
-        addNote
+        addNote,
+        setTree
     } from "../scripts/dendronStore.js";
     
     import {DendronClient} from "../scripts/dendronClient.js";
@@ -86,12 +87,13 @@
         console.log(`save ${id} ? `);
         let n = getNoteFromStore(id);
         if (n.isDraft) {
-            let clone = {...n.note}
-            clone.body = content;
-            let newNote = await DendronClient.SaveNote(repository.id, n.note);
+            // let clone = {...n.note}
+            // clone.body = content;
+            let newTree = await DendronClient.SaveNote($repository.id, n.note);
+            setTree(newTree);
             unDraft(n.note.header.title);
-            setLoadedNote(newNote.header.title,newNote);
-            n = getNoteFromStore(newNote.header.title);
+            setLoadedNote(n.note.header.title,n.note);
+            n = getNoteFromStore(n.note.header.title);
             note = n.note;
             description = note.header.description;            
             titleStyle = n.isDraft ? "draft" : "normal";            

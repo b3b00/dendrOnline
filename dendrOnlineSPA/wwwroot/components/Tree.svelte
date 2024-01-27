@@ -24,7 +24,7 @@
 	};
 
     $: {
-        currentTree = currentTree;
+        currentTree = $tree;
     }
 
     onMount(async () => {

@@ -46,14 +46,13 @@ export const DendronClient = {
             withCredentials: true,
             method: "PUT",
             headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
+                "Content-Type": "application/json"                
             },
             body: JSON.stringify(note), // body data type must match "Content-Type" header
         });
         if (res.status >= 200 && res.status <= 299) {
-            let note = await res.json()
-            return note;
+            let tree = await res.json();
+            return tree;
         } else {
             return {};
         }

@@ -32,7 +32,6 @@
     const onCreationOk = (noteId) => {
         console.log(`note creation requested : ${noteId}`);
         push(`/new/${noteId}`);
-        // TODO router push to /Edit/{noteId} ? should be enough ? => need some changes on Edit.svelte I guess 
     }
     
     const onDeletionOkay = () => {

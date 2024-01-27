@@ -18,7 +18,7 @@ export function setRepositories(repos) {
 }
 
 export function addNote(note) {
-    // we will need something really brillant here
+    // TODO we will need something really brillant here
     const id = note.header.id;
     const path = id.split('.');
     const parentPath = path.slice(0, path.length - 1);
