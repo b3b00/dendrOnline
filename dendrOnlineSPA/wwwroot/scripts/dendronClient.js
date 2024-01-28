@@ -37,8 +37,20 @@ export const DendronClient = {
         return {};
     },
     
-    DeleteNote: async (repositoryId, noteId) => {
-        return true;
+    DeleteNote: async (repositoryId, noteId, recurse) => {
+        const res = await fetch(`/note/${repositoryId}/${noteId}?recurse=${recurse}`,{
+            withCredentials: true,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        if (res.status >= 200 && res.status <= 299) {
+            let tree = await res.json();
+            return tree;
+        } else {
+            return {};
+        }
     },
     
     SaveNote: async(repositoryId, note) => {

@@ -74,6 +74,24 @@ public class RepositoryController : DendronController
         //return await GetNote(repositoryId, note.Header.Title);
     }
     
+    [HttpDelete("/note/{repositoryId}/{noteId}")]
+    public async Task<INoteHierarchy> DeleteNote(string repositoryId,string noteId, [FromQuery] bool recurse = false)
+    {
+        if (recurse)
+        {
+            var allNotes = await NotesService.GetNotes();
+            var children = allNotes.Where(x => x.StartsWith(noteId) && x != noteId);
+            foreach (var child in children)
+            {
+                await NotesService.DeleteNote(child);
+            }
+        }
+        await NotesService.DeleteNote(noteId);
+        
+        var tree = await GetNotesHierarchy(long.Parse(repositoryId));
+        return tree;
+    }
+    
     public async Task<IList<GhRepository>> GetRepositories(GitHubClient client)
     {
         string repositoryList = HttpContext?.Session?.GetString("repositories");

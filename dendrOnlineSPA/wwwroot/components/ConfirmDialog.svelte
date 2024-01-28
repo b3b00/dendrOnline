@@ -1,6 +1,11 @@
 <script>
     import { getContext } from 'svelte';
     export let message;
+    
+    export let option;
+    
+    let checked;
+    
     export let onCancel = () => {};
     export let onOkay = () => {};
 
@@ -13,7 +18,7 @@
     }
 
     function _onOkay() {
-        onOkay();
+        onOkay(checked);
         close();
     }
 
@@ -33,7 +38,12 @@
 </style>
 
 <h2>{message}</h2>
-
+{#if option}
+    <div style="display: flex;flex-direction: row">
+        <label for="opt">{option}</label>
+        <input id="opt" type="checkbox" bind:checked={checked}>
+    </div>
+{/if}
 
 
 <div class="buttons">
