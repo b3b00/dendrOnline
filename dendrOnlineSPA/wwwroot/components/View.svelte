@@ -32,25 +32,25 @@
 
     let note: Note|undefined = undefined;
 
-    let getNoteFromStore = function(id) {
-        console.log(`View.getNoteFromSvelte(${id})`)
-        if ($draftNotes.hasOwnProperty(id)) {
-            console.log(`View.getNoteFromSvelte(${id}) - found in draft notes`,$draftNotes[id]);
+    let getNoteFromStore = function (id): TaggedNote {   
+        
+        var draft = getDraftNote(id);
+        if (draft) {
             return {
-                isDraft: true,
-                note : $draftNotes[id]
+                isDraft:true,
+                note:draft
             }
         }
-        else if (loadedNotes.hasOwnProperty(id)) {
-            console.log(`View.getNoteFromSvelte(${id}) - found in loaded notes`,$loadedNotes[id]);
+
+        var loaded = getLoadedNote(id);
+        if (loaded) {
             return {
-                isDraft: false,
-                note : $loadedNotes[id]
+                isDraft:false,
+                note:loaded
             }
         }
-        console.log(`View.getNoteFromSvelte(${id}) - not found `);
         return null;
-    } 
+    }
     
     onMount(async () => {        
         id = params.note

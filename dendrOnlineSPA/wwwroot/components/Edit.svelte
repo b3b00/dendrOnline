@@ -24,11 +24,14 @@
         updateNote,
         setNoteId,
         setLoadedNote,
-        loadedNotes,
         draftNotes,
         unDraft,
         addNote,
-        setTree
+        setTree,
+        getDraftNote,
+        getLoadedNote
+
+
     } from "../scripts/dendronStore";
     
     import {DendronClient} from "../scripts/dendronClient";
@@ -58,16 +61,21 @@
     
     
     let description = "";
-    let getNoteFromStore = function (id): TaggedNote {        
-        if ($draftNotes.hasOwnProperty(id)) {            
+    let getNoteFromStore = function (id): TaggedNote {   
+        
+        var draft = getDraftNote(id);
+        if (draft) {
             return {
-                isDraft: true,
-                note: $draftNotes[id]
+                isDraft:true,
+                note:draft
             }
-        } else if ($loadedNotes.hasOwnProperty(id)) {            
+        }
+
+        var loaded = getLoadedNote(id);
+        if (loaded) {
             return {
-                isDraft: false,
-                note: $loadedNotes[id]
+                isDraft:false,
+                note:loaded
             }
         }
         return null;
@@ -100,8 +108,9 @@
 
     let undo = async function() {
         unDraft(id);
-        content = note.body;
-        description = note.header.description;
+        var oldNote = getLoadedNote(id)
+        content = oldNote.body;
+        description = oldNote.header.description;
         titleStyle = "normal";
         floppyVisibility = "display:none";        
     }

@@ -17,7 +17,7 @@ export function setRepositories(repos: Repository[]) {
 
 export function addNote(note: Note) {
     // TODO we will need something really brillant here
-    const id = note.header.id;
+    const id = note.header.title;
     const path = id.split('.');
     const parentPath = path.slice(0, path.length - 1);
     tree.update(r => {
@@ -113,44 +113,83 @@ export const draftNotes:Writable<Note[]> = writable([]);
 
 export function updateNote(id:string,note:Note) {
     draftNotes.update((r) => {
-        r[id] = note;
+        r = r.filter(x => x.header.title != id);
+        r.push(note);        
         return r;
     });
 }
 
 export function unDraft(id:string) {
     draftNotes.update((r) => {
-        delete r[id];
+        r = r.filter(x => x.header.title != id);
         return r;
     } )
 }
 
+export function getDraftNote(id:string): Note|undefined {
+    let note:Note|undefined = undefined;
+    draftNotes.update((r) => {
+        note =undefined;
+        let f = r.filter(x => x.header.title == id);
+        if (f.length > 0) {
+            note = f[0];
+        }
+        return r;
+    });
+    return note;
+}
+
+export function isDraft(id:string) {
+    console.log(`isDraft(${id}) ? `)
+    let drafted = false;
+    draftNotes.update((r) => {
+        console.log(`comparing ${id} with ${r.length} draft`);
+        if (r.length > 0) {
+            console.log(r.map(x => x.header.title));
+        }
+        drafted = r.some(x => { 
+            const d = x.header.title == id;
+            console.log(`isDrafted(${id}) // ${x.header.title}? => ${d}`);
+            return d;
+        });
+        console.log(`after comparisons : ${drafted}`);
+        return r;
+    } );
+    console.log(`isDraft(${id}) == ${drafted}`);
+    return drafted;
+}
+
 
 export const loadedNotes:Writable<Note[]> = writable([]);
-    
-    // {header: {  id: '',
-    //     name: '',
-    //     title: '',
-    //     description: '',
-    //     lastUpdatedTS: new Date('2000-01-01'),
-    //     createdTS: new Date('2000-01-01')
-    // },
-    // body: ''});
+
 
 export function setLoadedNote(id:string,note:Note) {
     loadedNotes.update((r) => {
-        r[id] = note;
+        r = r.filter(x => x.header.title != id);
+        r.push(note);        
         return r;
     });
 }
 
 export function unloadNote(id:string) {
     loadedNotes.update((r) => {
-        delete r[id];
+        r = r.filter(x => x.header.title != id);
         return r;
-    });
+    } )
 }
 
+export function getLoadedNote(id:string): Note|undefined {
+    let note:Note|undefined = undefined;
+    loadedNotes.update((r) => {
+        note =undefined;
+        let f = r.filter(x => x.header.title == id);
+        if (f.length > 0) {
+            note = f[0];
+        }        
+        return r;
+    });
+    return note;
+}
 
 // endregion
 

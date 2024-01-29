@@ -3,7 +3,7 @@
 <script lang="ts">
     import { onMount, getContext } from 'svelte';
     import {push} from 'svelte-spa-router'
-    import {deleteNote, unDraft, unloadNote, repository, setTree} from '../scripts/dendronStore.js';
+    import {deleteNote, unDraft, unloadNote, repository, setTree, isDraft} from '../scripts/dendronStore.js';
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons/index.js';
     import PromptDialog from "./PromptDialog.svelte";
@@ -96,7 +96,7 @@
 </script>
 
 <a name="{nodeTitle}">
-    <a href="#/edit/{data.name}">{nodeTitle}</a>
+    <a href="#/edit/{data.name}" style="{isDraft(data.name) ? 'color:red': ''}">{nodeTitle}</a>
     <Modal>
         <span tabindex="-5" role="button" style="cursor: pointer" on:keydown={(e) => { e.preventDefault(); showCreationDialog(data);}} on:click={(e) => { e.preventDefault(); showCreationDialog(data);}}><Fa icon="{faPlus}" >PLUS</Fa></span>
         <span tabindex="-5" role="button" style="cursor: pointer" on:keydown={(e) => { e.preventDefault(); showDeletionDialog(data);}} on:click={(e) => { e.preventDefault(); showDeletionDialog(data);}}><Fa icon="{faTrashCan}" >TRASH</Fa></span>
