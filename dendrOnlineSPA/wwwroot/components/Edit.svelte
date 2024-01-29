@@ -33,7 +33,7 @@
     
     import {DendronClient} from "../scripts/dendronClient";
     import Fa from 'svelte-fa/src/fa.svelte';
-    import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/index.js';
+    import { faFloppyDisk, faUndo } from '@fortawesome/free-solid-svg-icons/index.js';
     import {location} from 'svelte-spa-router'
     import {Node, Note, Repository, TaggedNote} from '../scripts/types';
     
@@ -97,6 +97,15 @@
         }
     }
 
+
+    let undo = async function() {
+        unDraft(id);
+        content = note.body;
+        description = note.header.description;
+        titleStyle = "normal";
+        floppyVisibility = "display:none";        
+    }
+
     let update = function () {
         if (note.body != content || note.header.description != description) {
             floppyVisibility = "display:inline";
@@ -120,11 +129,11 @@
         var n = getNoteFromStore(id);
         if (n) {
             note = n.note;
-            description = note.header.title;
+            description = note.header.description;
             titleStyle = n.isDraft ? "draft" : "normal";
             previousContent = note.body;
             content = note.body;
-            floppyVisibility = n.isDraft ? "display:block" : "display:none";
+            floppyVisibility = n.isDraft ? "display:inline" : "display:none";
         } else {
             note = await DendronClient.GetNote($repository.id, id);
             previousContent = note.body;
@@ -183,6 +192,7 @@
 
     <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
     <h1 on:click={save} on:keydown={save} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faFloppyDisk}" ></Fa></h1>
+    <h1 on:click={undo} on:keydown={undo} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faUndo}" ></Fa></h1>
     <br>
     <textarea bind:value={content} rows="200" on:keyup={update}></textarea> 
     <br>
