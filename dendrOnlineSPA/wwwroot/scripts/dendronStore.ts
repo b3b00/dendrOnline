@@ -57,9 +57,8 @@ export function addNote(note: Note) {
 
 }
 
-export function deleteNote(note: Node, recurse:boolean) {
-    // we will need something really brillant here
-    const id = note.id;
+export function deleteNote(id: string, recurse:boolean) {
+    // we will need something really brillant here    
     const path = id.split('.');
     const parentPath = path.slice(0, path.length - 1);
     tree.update(r => {
@@ -82,7 +81,7 @@ export function deleteNote(note: Node, recurse:boolean) {
             if (!parent.children) {
                 parent.children = [];
             }
-            parent.children = parent.children.filter(x => x.id !== note.id);            
+            parent.children = parent.children.filter(x => x.id !== id);            
         }
         return r;
     });

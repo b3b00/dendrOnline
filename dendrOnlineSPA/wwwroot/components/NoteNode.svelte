@@ -7,11 +7,13 @@
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons/index.js';
     import PromptDialog from "./PromptDialog.svelte";
-    import ConfirmDialog from "./ConfirmDialog.svelte";
-    import Modal from 'svelte-simple-modal';
+    import ConfirmDialog from "./ConfirmDialog.svelte";    
     import {DendronClient} from "../scripts/dendronClient.js";
-    const modal = getContext('simple-modal');
+    import type { Context } from 'svelte-simple-modal';
+    
     import {Node} from '../scripts/types';
+
+    const modal = getContext<Context>('simple-modal');
 
     export let data: Node;
 
@@ -45,7 +47,7 @@
         else {
             recurse = true;
         }
-        deleteNote(data, recurse);
+        deleteNote(data.id, recurse);
         unDraft(data.id);
         unloadNote(data.id);
         let newTree = await DendronClient.DeleteNote($repository.id,data.id,deleteChildren)
@@ -83,9 +85,7 @@
                 parent: data.id,
                 hasForm: true,
                 onCancel:onDeletionCancel,
-                onOkay:onDeletionOkay
-            },
-            {
+                onOkay:onDeletionOkay,            
                 closeButton: false,
                 closeOnEsc: false,
                 closeOnOuterClick: false,
@@ -97,9 +97,9 @@
 
 <a name="{nodeTitle}">
     <a href="#/edit/{data.name}" style="{isDraft(data.name) ? 'color:red': ''}">{nodeTitle}</a>
-    <Modal>
-        <span tabindex="-5" role="button" style="cursor: pointer" on:keydown={(e) => { e.preventDefault(); showCreationDialog(data);}} on:click={(e) => { e.preventDefault(); showCreationDialog(data);}}><Fa icon="{faPlus}" >PLUS</Fa></span>
-        <span tabindex="-5" role="button" style="cursor: pointer" on:keydown={(e) => { e.preventDefault(); showDeletionDialog(data);}} on:click={(e) => { e.preventDefault(); showDeletionDialog(data);}}><Fa icon="{faTrashCan}" >TRASH</Fa></span>
-    </Modal>
+    
+    <span tabindex="-5" role="button" style="cursor: pointer" on:keydown={(e) => { e.preventDefault(); showCreationDialog(data);}} on:click={(e) => { e.preventDefault(); showCreationDialog(data);}}><Fa icon="{faPlus}" >PLUS</Fa></span>
+    <span tabindex="-5" role="button" style="cursor: pointer" on:keydown={(e) => { e.preventDefault(); showDeletionDialog(data);}} on:click={(e) => { e.preventDefault(); showDeletionDialog(data);}}><Fa icon="{faTrashCan}" >TRASH</Fa></span>
+    
     
 </a>

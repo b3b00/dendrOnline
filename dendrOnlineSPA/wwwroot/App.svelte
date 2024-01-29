@@ -10,6 +10,7 @@
     import { faList, faPen, faEye, faFolderTree } from '@fortawesome/free-solid-svg-icons/index.js';
     
     import Router from 'svelte-spa-router'
+  import { Modal } from 'svelte-simple-modal';
 
     const routes = {
         // Exact path
@@ -54,5 +55,7 @@
 </header>
 
 <main>
-    <Router {routes}/>
+    <Modal>
+        <Router {routes}/>
+    </Modal>
 </main>

@@ -18,7 +18,7 @@
 </style>
 <script lang="ts">
 
-    import {onMount} from 'svelte';
+    import {onMount, getContext} from 'svelte';
     import {
         repository,
         updateNote,
@@ -29,17 +29,21 @@
         addNote,
         setTree,
         getDraftNote,
-        getLoadedNote
-
-
+        getLoadedNote,
+        unloadNote,
+        deleteNote
     } from "../scripts/dendronStore";
     
     import {DendronClient} from "../scripts/dendronClient";
     import Fa from 'svelte-fa/src/fa.svelte';
-    import { faFloppyDisk, faUndo } from '@fortawesome/free-solid-svg-icons/index.js';
-    import {location} from 'svelte-spa-router'
+    import { faFloppyDisk, faUndo, faTrashCan } from '@fortawesome/free-solid-svg-icons/index.js';
+    import {location, push} from 'svelte-spa-router'
     import {Node, Note, Repository, TaggedNote} from '../scripts/types';
+    import type { Context } from 'svelte-simple-modal';
+    import ConfirmDialog from './ConfirmDialog.svelte';
     
+    
+  const modal = getContext<Context>('simple-modal');
     
 
     export let params = {}
@@ -113,6 +117,46 @@
         description = oldNote.header.description;
         titleStyle = "normal";
         floppyVisibility = "display:none";        
+    }
+
+    const onDeletionOkay = async (deleteChildren) => {
+        console.log('do some note deletion work here '+id);
+        let recurse = false;
+        if (deleteChildren === undefined || deleteChildren === null || deleteChildren === false) {
+            recurse = false;
+        }
+        else {
+            recurse = true;
+        }
+        deleteNote(id, recurse);
+        unDraft(id);
+        unloadNote(id);
+        let newTree = await DendronClient.DeleteNote($repository.id,id,deleteChildren)
+        setTree(newTree);
+        push(`/tree/${$repository.id}`);
+    }
+    
+    const onDeletionCancel = () => {
+        console.log('finally I dont want to kill this note '+id);
+    }
+
+
+    let deleteThisNote = async function() {              
+        console.log('asking for deletion of '+note.header.name);
+        modal.open(ConfirmDialog,
+            {
+                message: `Are you sure to delete note ${note.header.description} ?`,
+                option: 'Also delete children',
+                parent: note.header.name,
+                hasForm: true,
+                onCancel:onDeletionCancel,
+                onOkay:onDeletionOkay
+            },
+            {            
+                closeButton: false,
+                closeOnEsc: false,
+                closeOnOuterClick: false,
+            });
     }
 
     let update = function () {
@@ -198,7 +242,7 @@
         on:input={update}>{description}</h1>
     </span>
 
-
+    <h1 on:click={deleteThisNote} on:keydown={deleteThisNote} role="button" tabindex="-1" style="display:inline;cursor:pointer"><Fa icon="{faTrashCan}" ></Fa></h1>
     <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
     <h1 on:click={save} on:keydown={save} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faFloppyDisk}" ></Fa></h1>
     <h1 on:click={undo} on:keydown={undo} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faUndo}" ></Fa></h1>
