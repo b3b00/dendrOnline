@@ -1,15 +1,16 @@
-<script>
+<script lang="ts">
 
     import {repository, tree, setTree} from '../scripts/dendronStore.js';
     import { onMount } from 'svelte';    
     import { DendronClient} from "../scripts/dendronClient.js";    
     import TreeView from "@bolduh/svelte-treeview";    
     import NoteNodeWraper from "./NoteNodeWraper.svelte";
+    import {Node, Repository} from '../scripts/types'
     
     
-    let currentRepository = {};
+    let currentRepository : Repository = undefined;
     
-    let currentTree = {};
+    let currentTree : Node = undefined;
     
     let childAccessor = (x) => {
         if (x!= null && x !== undefined && x.child != undefined && x.child != null && Array.isArray(x.child)) {
@@ -30,7 +31,7 @@
     onMount(async () => {
         currentRepository = $repository;
         currentTree = $tree;
-        if (currentTree === null || currentTree === undefined || currentTree == {} || !currentTree.hasOwnProperty('name')) {
+        if (currentTree === null || currentTree === undefined || !currentTree.hasOwnProperty('name')) {
             currentTree = await DendronClient.GetTree(currentRepository.id);
             setTree(currentTree);
         }

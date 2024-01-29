@@ -4,7 +4,7 @@
     
     export let option;
     
-    let checked;
+    let checked = false;
     
     export let onCancel = () => {};
     export let onOkay = () => {};
@@ -12,13 +12,14 @@
     const { close } = getContext('simple-modal');
     let onChange = () => {};
 
-    function _onCancel() {
-        onCancel();
+    async function _onCancel() {
+        await onCancel();
+        option = false;
         close();
     }
 
-    function _onOkay() {
-        onOkay(checked);
+    async function  _onOkay() {
+        await onOkay(checked);
         close();
     }
 

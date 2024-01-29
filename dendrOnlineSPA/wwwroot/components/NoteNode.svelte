@@ -1,19 +1,21 @@
 
 
-<script>
+<script lang="ts">
     import { onMount, getContext } from 'svelte';
     import {push} from 'svelte-spa-router'
-    import {deleteNote, unDraft, unloadNote} from '../scripts/dendronStore.js';
+    import {deleteNote, unDraft, unloadNote, repository, setTree} from '../scripts/dendronStore.js';
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons/index.js';
     import PromptDialog from "./PromptDialog.svelte";
     import ConfirmDialog from "./ConfirmDialog.svelte";
     import Modal from 'svelte-simple-modal';
+    import {DendronClient} from "../scripts/dendronClient.js";
     const modal = getContext('simple-modal');
+    import {Node} from '../scripts/types';
 
-    export let data;
+    export let data: Node;
 
-    let nodeTitle = "";
+    let nodeTitle: string = "";
 
     onMount(async () => {
         if (data?.name !== undefined && data?.name !== null) {
@@ -29,16 +31,25 @@
         console.log(`note creation canceled`);
     }
     
-    const onCreationOk = (noteId) => {
+    const onCreationOk = async (noteId) => {
         console.log(`note creation requested : ${noteId}`);
         push(`/new/${noteId}`);
     }
     
-    const onDeletionOkay = () => {
+    const onDeletionOkay = async (deleteChildren) => {
         console.log('do some note deletion work here '+nodeTitle);
-        deleteNote(data);
+        let recurse = false;
+        if (deleteChildren === undefined || deleteChildren === null || deleteChildren === false) {
+            recurse = false;
+        }
+        else {
+            recurse = true;
+        }
+        deleteNote(data, recurse);
         unDraft(data.id);
         unloadNote(data.id);
+        let newTree = await DendronClient.DeleteNote($repository.id,data.id,deleteChildren)
+        setTree(newTree);
         // TODO : call backend deletion ! (only if really needed ?);        
     }
     
@@ -68,6 +79,7 @@
             ConfirmDialog,
             {
                 message: `Are you sure to delete note ${nodeTitle} ?`,
+                option: 'Also delete children',
                 parent: data.id,
                 hasForm: true,
                 onCancel:onDeletionCancel,

@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
     import Repositories from './components/Repositories.svelte'
     import Tree from './components/Tree.svelte'
     import Edit from './components/Edit.svelte'
     import View from './components/View.svelte'
     import Home from './components/Home.svelte'
     import NotFound from "./components/NotFound.svelte";
-    import {noteId, repository} from "./scripts/dendronStore.js";
+    import {noteId, repository} from "./scripts/dendronStore";
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faList, faPen, faEye, faFolderTree } from '@fortawesome/free-solid-svg-icons/index.js';
     
@@ -29,20 +29,6 @@
         '*': NotFound,
     }
 
-    function onClickBurger() {
-        burgerMenuClass = "burger " + (opened ? "active" : "");
-        navBarMenuClass = "navbar  menu " + (opened ? "active" : "");
-        if (opened) {
-            //navBarMenuStyle = "maxHeight:"+
-        }
-    }
-
-    let opened = false;
-
-    let navBarMenuStyle = "";
-    let navBarMenuClass = "navbar menu";
-    let burgerMenuClass = "burger";
-
 </script>
 
 <header>
@@ -55,7 +41,7 @@
     <nav>
         <ul>
             <li><a href="#/repositories" ><Fa icon="{faList}"></Fa><span style="margin-left: 5px">Repositories</span></a></li>
-            {#if $repository.id}
+            {#if $repository && $repository.id}
                 <li><a href="#/tree/{$repository.id}"><Fa icon="{faFolderTree}"></Fa><span style="margin-left: 5px">Tree</span></a></li>
                 {/if}
             {#if $noteId}

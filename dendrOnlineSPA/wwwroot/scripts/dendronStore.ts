@@ -1,30 +1,28 @@
-import { writable } from 'svelte/store';
+import { Writable, writable } from 'svelte/store';
+import {Node, Note, Repository, emptyNode, emptyNote, empty} from '../scripts/types';
 
 //region repositories
-export const repository = writable({
-    id:undefined,
-    name:undefined
-});
+export const repository: Writable<Repository|undefined> = writable();
 
-export function setRepository(repo) {
+export function setRepository(repo:Repository) {
     repository.update(r => { return repo });
 }
 
 
-export const repositories = writable([]);
+export const repositories: Writable<Repository[]> = writable([]);
 
-export function setRepositories(repos) {
+export function setRepositories(repos: Repository[]) {
     repositories.update(r => { return repos  });
 }
 
-export function addNote(note) {
+export function addNote(note: Note) {
     // TODO we will need something really brillant here
     const id = note.header.id;
     const path = id.split('.');
     const parentPath = path.slice(0, path.length - 1);
     tree.update(r => {
         let i = 0;
-        let parent = r;
+        let parent: Node|undefined = r;
         while (i < parentPath.length && parent) {
             const currentItem = parentPath[i];
             const currentPath = parentPath.slice(0,i+1).join('.');
@@ -44,11 +42,13 @@ export function addNote(note) {
             }
             parent.children.push({
                 id:note.header.id,
-                name:note.header.name,
+                name:note.header.title,
                 children:[],
                 deployed:true,
                 edited:true,
-                selected:true
+                selected:true,
+                isNode:false,
+                isLeaf:true
             });
         }
         return r;
@@ -57,14 +57,14 @@ export function addNote(note) {
 
 }
 
-export function deleteNote(note) {
+export function deleteNote(note: Node, recurse:boolean) {
     // we will need something really brillant here
     const id = note.id;
     const path = id.split('.');
     const parentPath = path.slice(0, path.length - 1);
     tree.update(r => {
         let i = 0;
-        let parent = r;
+        let parent: Node|undefined = r;
         while (i < parentPath.length && parent) {
             const currentItem = parentPath[i];
             const currentPath = parentPath.slice(0,i+1).join('.');
@@ -92,10 +92,10 @@ export function deleteNote(note) {
 
 // region notes
 
-export const noteId = writable("");
+export const noteId:Writable<string> = writable("");
 
 
-export function getTitle(description) {
+export function getTitle(description: string) {
     if (description.startsWith("'")) {
         description = description.substring(1);
     }
@@ -104,20 +104,21 @@ export function getTitle(description) {
     }
     return description;
 }
-export function setNoteId(id) {
-    noteId.update((r) => { return id  });
+export function setNoteId(id: string) {
+    noteId.update((r:string) => { return id  });
 }
 
-export const draftNotes = writable({});
+export const draftNotes:Writable<Note[]> = writable([]);
 
-export function updateNote(id,content) {
+
+export function updateNote(id:string,note:Note) {
     draftNotes.update((r) => {
-        r[id] = content;
+        r[id] = note;
         return r;
     });
 }
 
-export function unDraft(id) {
+export function unDraft(id:string) {
     draftNotes.update((r) => {
         delete r[id];
         return r;
@@ -125,16 +126,25 @@ export function unDraft(id) {
 }
 
 
-export const loadedNotes = writable({});
+export const loadedNotes:Writable<Note[]> = writable([]);
+    
+    // {header: {  id: '',
+    //     name: '',
+    //     title: '',
+    //     description: '',
+    //     lastUpdatedTS: new Date('2000-01-01'),
+    //     createdTS: new Date('2000-01-01')
+    // },
+    // body: ''});
 
-export function setLoadedNote(id,content) {
+export function setLoadedNote(id:string,note:Note) {
     loadedNotes.update((r) => {
-        r[id] = content;
+        r[id] = note;
         return r;
     });
 }
 
-export function unloadNote(id) {
+export function unloadNote(id:string) {
     loadedNotes.update((r) => {
         delete r[id];
         return r;
@@ -145,9 +155,9 @@ export function unloadNote(id) {
 // endregion
 
 // region tree
-export const tree = writable({});
+export const tree:Writable<Node|undefined> = writable();
 
-export function setTree(currentTree) {
+export function setTree(currentTree: Node) {
     tree.update(r => {  return currentTree  });
 }
 

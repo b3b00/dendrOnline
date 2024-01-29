@@ -16,7 +16,7 @@
         border: 2px dashed;
     }
 </style>
-<script>
+<script lang="ts">
 
     import {onMount} from 'svelte';
     import {
@@ -29,12 +29,13 @@
         unDraft,
         addNote,
         setTree
-    } from "../scripts/dendronStore.js";
+    } from "../scripts/dendronStore";
     
-    import {DendronClient} from "../scripts/dendronClient.js";
+    import {DendronClient} from "../scripts/dendronClient";
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/index.js';
     import {location} from 'svelte-spa-router'
+    import {Node, Note, Repository, TaggedNote} from '../scripts/types';
     
     
 
@@ -46,14 +47,7 @@
     
     let content = "";
 
-    let note = {
-        header: {
-            id: "",
-            description: "",
-            title: ""
-        },
-        body: ""
-    };
+    let note: Note|undefined = undefined;
 
     let titleStyle = "normal"
 
@@ -64,7 +58,7 @@
     
     
     let description = "";
-    let getNoteFromStore = function (id) {        
+    let getNoteFromStore = function (id): TaggedNote {        
         if ($draftNotes.hasOwnProperty(id)) {            
             return {
                 isDraft: true,
@@ -126,13 +120,13 @@
         var n = getNoteFromStore(id);
         if (n) {
             note = n.note;
-            description = note.header.description;
+            description = note.header.title;
             titleStyle = n.isDraft ? "draft" : "normal";
             previousContent = note.body;
             content = note.body;
             floppyVisibility = n.isDraft ? "display:block" : "display:none";
         } else {
-            note = await DendronClient.GetNote($repository, id);
+            note = await DendronClient.GetNote($repository.id, id);
             previousContent = note.body;
             content = note.body;
             setLoadedNote(id, note);
@@ -148,7 +142,9 @@
                 name: noteId,
                 id: noteId,
                 description: "new note",
-                title: noteId
+                title: noteId,
+                lastUpdatedTS: 0,
+                createdTS: 0,
             },
             body : "# Write something really smart here.",            
         }

@@ -7,7 +7,7 @@
     }
 </style>
 
-<script>
+<script lang="ts">
 
     import { onMount } from 'svelte';
     import {
@@ -15,10 +15,11 @@
         setNoteId,
         setLoadedNote,
         loadedNotes, draftNotes,
-    } from "../scripts/dendronStore.js";
-    import {repository} from "../scripts/dendronStore.js";
-    import {DendronClient} from "../scripts/dendronClient.js";
+    } from "../scripts/dendronStore";
+    import {repository} from "../scripts/dendronStore";
+    import {DendronClient} from "../scripts/dendronClient";
     import SvelteMarkdown from 'svelte-markdown'
+    import {Note} from '../scripts/types'
     export let params = {}
 
     let id = "";
@@ -29,13 +30,7 @@
     
     let titleStyle = "normal"
 
-    let note = {
-        header:{
-            id:"",
-            description:"",
-            title:""
-        },
-        body:""};
+    let note: Note|undefined = undefined;
 
     let getNoteFromStore = function(id) {
         console.log(`View.getNoteFromSvelte(${id})`)
@@ -73,7 +68,7 @@
         }
         else {
             console.log(`View.onMount(${id}) [2] - not found`);
-            note = await DendronClient.GetNote($repository,id);
+            note = await DendronClient.GetNote($repository.id,id);
             console.log(`View.onMount(${id}) [2] - found note`,n);
             content = note.body;
             setLoadedNote(id,note);

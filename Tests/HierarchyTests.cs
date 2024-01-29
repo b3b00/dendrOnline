@@ -61,6 +61,7 @@ public class HierarchyTests
             "perso.topic1.item2.md",
             "perso.topic2.item1.md",
             "perso.topic2.item2.md",
+            "perso.topic2.item2.subitem1.md",
             "root.md"
         };
 

@@ -1,14 +1,15 @@
-<script>
+<script lang="ts">
     import {setRepository, repositories, setRepositories} from '../scripts/dendronStore.js';
     import {push} from 'svelte-spa-router'
     import {onMount} from 'svelte';
     import {DendronClient} from "../scripts/dendronClient.js";
+    import {Repository} from "../scripts/types";
 
-    let allRepositories = [];
+    let allRepositories: Repository[] = [];
 
-    let filteredRepositories = [];
+    let filteredRepositories: Repository[] = [];
 
-    let filter = "";
+    let filter:string = "";
 
     $:{
         allRepositories = $repositories;

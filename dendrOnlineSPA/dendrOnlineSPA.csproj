@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="wwwroot\scripts\dendronStore.js" />
+      <None Include="wwwroot\scripts\dendronStore.ts" />
       <None Remove="out\**" />
     </ItemGroup>
 
@@ -44,6 +44,10 @@
 
     <ItemGroup>
       <Content Remove="out\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <TypeScriptCompile Include="wwwroot\scripts\types.ts" />
     </ItemGroup>
 
 </Project>
