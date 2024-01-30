@@ -14,12 +14,15 @@
         getTitle,
         setNoteId,
         setLoadedNote,
-        loadedNotes, draftNotes,
+        loadedNotes,
+        draftNotes,
+        getDraftNote,
+        getLoadedNote
     } from "../scripts/dendronStore";
     import {repository} from "../scripts/dendronStore";
     import {DendronClient} from "../scripts/dendronClient";
     import SvelteMarkdown from 'svelte-markdown'
-    import {Note} from '../scripts/types'
+    import {Note, TaggedNote} from '../scripts/types'
     export let params = {}
 
     let id = "";
@@ -51,6 +54,12 @@
         }
         return null;
     }
+
+    let preprocessLinks = function(markdown:string) {
+        const regex = /\[\[(.*)\]\]/ig;
+        const processed = markdown.replaceAll(regex, "[$1](#/view/$1)");
+        return processed;
+    }
     
     onMount(async () => {        
         id = params.note
@@ -58,18 +67,13 @@
         var n = getNoteFromStore(id);
       
         if (n) {
-            console.log(`View.onMount(${id}) - found note`,n);
             note = n.note;
             title = getTitle(note.header.description)+(n.isDraft ? " *" : "");
-            console.log(`View.onMount(${id}) - title=${title}`,n);
             titleStyle = n.isDraft ? "draft" : "normal";
-            console.log(`View.onMount(${id}) - style=${titleStyle}`,n);
-            content = note.body;
+            content = preprocessLinks(note.body);
         }
         else {
-            console.log(`View.onMount(${id}) [2] - not found`);
             note = await DendronClient.GetNote($repository.id,id);
-            console.log(`View.onMount(${id}) [2] - found note`,n);
             content = note.body;
             setLoadedNote(id,note);
             title = getTitle(note.header.description)+($draftNotes.hasOwnProperty(note.header.title) ? " *" : "");

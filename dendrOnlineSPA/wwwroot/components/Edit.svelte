@@ -31,7 +31,8 @@
         getDraftNote,
         getLoadedNote,
         unloadNote,
-        deleteNote
+        deleteNote,
+        tree
     } from "../scripts/dendronStore";
     
     import {DendronClient} from "../scripts/dendronClient";
@@ -63,11 +64,28 @@
 
     let previousContent = "";
 
-    let textInput = null;
-
-    
+    let textInput = null;    
     
     let description = "";
+
+
+    let getDescendance = function(node:Node): Node[] {
+        let all:Node[] = [node];
+        if (node.children && node.children.length > 0) {
+            for (let index = 0; index < node.children.length; index++) {
+                const element = node.children[index];
+                const subs = getDescendance(element);
+                all = all.concat(subs);            
+            }
+        }
+        return all;
+    }
+
+
+    let getAllNotes = function()  {
+        return getDescendance($tree);
+    }
+
     let getNoteFromStore = function (id): TaggedNote {   
         
         var draft = getDraftNote(id);
@@ -148,19 +166,23 @@
     const onSelectOkay = function(item: SelectionItem) {
         console.log('selected item is',item);
         // TODO insert text at the right position and give focus back to the textarea
+        const range = window.getSelection();
+		console.log("range"+range);
+			const { selectionStart: start, selectionEnd: end } = textInput;
+		console.log(`start:${start}, end:${end}`);
+			
+			textInput.setRangeText(`${item.label}]]`);			
+			const newPosition = end+item.label.length+2;
+			textInput.setSelectionRange(newPosition,newPosition);
+			textInput.focus();			
     }
 
     let insertLink = async function() {
+        let items = getAllNotes().map(x => {return {id:x.name,label:x.name}});
         modal.open(SelectDialog,
             {
                 message: `Choose a note to link to: `,
-                items: [
-                    {id:"1",label:"first choice"},
-                    {id:"2",label:"second choice"},
-                    {id:"3",label:"third choice"},
-                    {id:"4",label:"fourth choice"},
-                    {id:"5",label:"fifth choice"},
-                ],                
+                items: items,                
                 hasForm: true,
                 onCancel:onCancel,
                 onOkay:onSelectOkay

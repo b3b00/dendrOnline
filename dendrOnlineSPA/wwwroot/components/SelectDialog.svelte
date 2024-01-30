@@ -27,7 +27,7 @@
 
     let onNavigateSelect = function(e) {
         const i = displayedItems.indexOf(selection);
-        if (i > 0) {
+        if (i >= 0) {
             if (e.key == 'ArrowDown') {           
                 let newIndex = i + 1;
                 newIndex = newIndex < 0 || newIndex > displayedItems.length-1 ? i : newIndex;                    
