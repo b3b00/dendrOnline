@@ -38,9 +38,10 @@
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faFloppyDisk, faUndo, faTrashCan } from '@fortawesome/free-solid-svg-icons/index.js';
     import {location, push} from 'svelte-spa-router'
-    import {Node, Note, Repository, TaggedNote} from '../scripts/types';
+    import {Node, Note, Repository, TaggedNote, SelectionItem} from '../scripts/types';
     import type { Context } from 'svelte-simple-modal';
     import ConfirmDialog from './ConfirmDialog.svelte';
+    import SelectDialog from './SelectDialog.svelte';
     
     
   const modal = getContext<Context>('simple-modal');
@@ -61,6 +62,8 @@
     let floppyVisibility = "display:none";
 
     let previousContent = "";
+
+    let textInput = null;
 
     
     
@@ -136,20 +139,47 @@
         push(`/tree/${$repository.id}`);
     }
     
-    const onDeletionCancel = () => {
-        console.log('finally I dont want to kill this note '+id);
+    const onCancel = () => {
     }
 
 
+    
+
+    const onSelectOkay = function(item: SelectionItem) {
+        console.log('selected item is',item);
+        // TODO insert text at the right position and give focus back to the textarea
+    }
+
+    let insertLink = async function() {
+        modal.open(SelectDialog,
+            {
+                message: `Choose a note to link to: `,
+                items: [
+                    {id:"1",label:"first choice"},
+                    {id:"2",label:"second choice"},
+                    {id:"3",label:"third choice"},
+                    {id:"4",label:"fourth choice"},
+                    {id:"5",label:"fifth choice"},
+                ],                
+                hasForm: true,
+                onCancel:onCancel,
+                onOkay:onSelectOkay
+            },
+            {            
+                closeButton: false,
+                closeOnEsc: false,
+                closeOnOuterClick: false,
+            });
+    }
+
     let deleteThisNote = async function() {              
-        console.log('asking for deletion of '+note.header.name);
         modal.open(ConfirmDialog,
             {
                 message: `Are you sure to delete note ${note.header.description} ?`,
                 option: 'Also delete children',
                 parent: note.header.name,
                 hasForm: true,
-                onCancel:onDeletionCancel,
+                onCancel:onCancel,
                 onOkay:onDeletionOkay
             },
             {            
@@ -159,7 +189,18 @@
             });
     }
 
+    let checkIfLinkInsertionIsNeeded = function() {
+        const { selectionStart: start, selectionEnd: end } = textInput;
+        const lastTwoChars = content.substring(start-2,start);
+        if (lastTwoChars == '[[') {
+            insertLink();
+        }
+        else {
+        }
+    }
+
     let update = function () {
+        checkIfLinkInsertionIsNeeded();
         if (note.body != content || note.header.description != description) {
             floppyVisibility = "display:inline";
             let clone = JSON.parse(JSON.stringify(note))
@@ -247,6 +288,6 @@
     <h1 on:click={save} on:keydown={save} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faFloppyDisk}" ></Fa></h1>
     <h1 on:click={undo} on:keydown={undo} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faUndo}" ></Fa></h1>
     <br>
-    <textarea bind:value={content} rows="200" on:keyup={update}></textarea> 
+    <textarea bind:this={textInput} bind:value={content} rows="200" on:keyup={update}></textarea> 
     <br>
 </div>

@@ -139,22 +139,14 @@ export function getDraftNote(id:string): Note|undefined {
 }
 
 export function isDraft(id:string) {
-    console.log(`isDraft(${id}) ? `)
     let drafted = false;
     draftNotes.update((r) => {
-        console.log(`comparing ${id} with ${r.length} draft`);
-        if (r.length > 0) {
-            console.log(r.map(x => x.header.title));
-        }
         drafted = r.some(x => { 
             const d = x.header.title == id;
-            console.log(`isDrafted(${id}) // ${x.header.title}? => ${d}`);
             return d;
         });
-        console.log(`after comparisons : ${drafted}`);
         return r;
     } );
-    console.log(`isDraft(${id}) == ${drafted}`);
     return drafted;
 }
 

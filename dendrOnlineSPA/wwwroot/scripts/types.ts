@@ -36,6 +36,11 @@ export interface Repository {
     name: string;
 }
 
+export interface SelectionItem {
+    id: string;
+    label: string;
+}
+
 export let empty ='**none**';
 
 export let emptyNode: Node = {
@@ -61,3 +66,5 @@ export let emptyNote: Note =
         },
         body: ''
     }
+
+    
