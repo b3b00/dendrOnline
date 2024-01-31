@@ -1,8 +1,8 @@
 <script lang="ts">
     import Repositories from './components/Repositories.svelte'
-    import Tree from './components/Tree.svelte'
-    import Edit from './components/Edit.svelte'
-    import View from './components/View.svelte'
+    import Tree from './components/Tree.svelte'    
+    import EditWrapper from './components/EditWrapper.svelte';
+    import ViewWrapper from './components/ViewWrapper.svelte'
     import Home from './components/Home.svelte'
     import NotFound from "./components/NotFound.svelte";
     import {noteId, repository} from "./scripts/dendronStore";
@@ -20,10 +20,10 @@
         '/repositories': Repositories,
 
         // Wildcard parameter
-        '/edit/:note': Edit,
-        '/view/:note': View,
+        '/edit/:id': EditWrapper,
+        '/view/:id': ViewWrapper,
         '/tree/:repository': Tree,
-        '/new/:note': Edit,
+        '/new/:id': EditWrapper,
 
         // Catch-all
         // This is optional, but if present it must be the last

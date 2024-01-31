@@ -48,9 +48,7 @@
   const modal = getContext<Context>('simple-modal');
     
 
-    export let params = {}
-
-    let id = "";
+    export let id = "";
 
     let isNewNote = false;
     
@@ -111,11 +109,8 @@
 
     
     let save = async function() {
-        console.log(`save ${id} ? `);
         let n = getNoteFromStore(id);
         if (n.isDraft) {
-            // let clone = {...n.note}
-            // clone.body = content;
             let newTree = await DendronClient.SaveNote($repository.id, n.note);
             setTree(newTree);
             unDraft(n.note.header.title);
@@ -141,7 +136,6 @@
     }
 
     const onDeletionOkay = async (deleteChildren) => {
-        console.log('do some note deletion work here '+id);
         let recurse = false;
         if (deleteChildren === undefined || deleteChildren === null || deleteChildren === false) {
             recurse = false;
@@ -164,16 +158,14 @@
     
 
     const onSelectOkay = function(item: SelectionItem) {
-        console.log('selected item is',item);
         // TODO insert text at the right position and give focus back to the textarea
         const range = window.getSelection();
-		console.log("range"+range);
 			const { selectionStart: start, selectionEnd: end } = textInput;
-		console.log(`start:${start}, end:${end}`);
-			
 			textInput.setRangeText(`${item.label}]]`);			
 			const newPosition = end+item.label.length+2;
 			textInput.setSelectionRange(newPosition,newPosition);
+            content = textInput.value;
+            update();
 			textInput.focus();			
     }
 
@@ -242,6 +234,7 @@
 
     const onMountEdit = async (id) => {
         isNewNote = false;
+        setNoteId(id);
         var n = getNoteFromStore(id);
         if (n) {
             note = n.note;
@@ -285,8 +278,6 @@
     }
     
     onMount(async () => {
-        console.log(`current page is at ${location}`);
-        id = params.note
         setNoteId(id);
         if ($location.startsWith("/new")) {
             await onMountNew(id);

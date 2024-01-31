@@ -10,6 +10,7 @@
 <script lang="ts">
 
     import { onMount } from 'svelte';
+    import {location} from 'svelte-spa-router'
     import {
         getTitle,
         setNoteId,
@@ -23,15 +24,14 @@
     import {DendronClient} from "../scripts/dendronClient";
     import SvelteMarkdown from 'svelte-markdown'
     import {Note, TaggedNote} from '../scripts/types'
-    export let params = {}
-
-    let id = "";
-
-    let content = "";
     
-    let title = "";
+    export let id:string = "";
+
+    let content:string = "";
     
-    let titleStyle = "normal"
+    let title:string = "";
+    
+    let titleStyle:string = "normal"
 
     let note: Note|undefined = undefined;
 
@@ -61,9 +61,8 @@
         return processed;
     }
     
-    onMount(async () => {        
-        id = params.note
-        setNoteId(id);
+    onMount(async () => {                
+        setNoteId(id);        
         var n = getNoteFromStore(id);
       
         if (n) {
@@ -74,7 +73,7 @@
         }
         else {
             note = await DendronClient.GetNote($repository.id,id);
-            content = note.body;
+            content = preprocessLinks(note.body);
             setLoadedNote(id,note);
             title = getTitle(note.header.description)+($draftNotes.hasOwnProperty(note.header.title) ? " *" : "");
             titleStyle = $draftNotes.hasOwnProperty(note.header.title) ? "draft" : "normal";

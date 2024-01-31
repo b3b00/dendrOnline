@@ -30,16 +30,13 @@
     })
 
     const onCreationCancel = (noteId) => {
-        console.log(`note creation canceled`);
     }
     
     const onCreationOk = async (noteId) => {
-        console.log(`note creation requested : ${noteId}`);
         push(`/new/${noteId}`);
     }
     
     const onDeletionOkay = async (deleteChildren) => {
-        console.log('do some note deletion work here '+nodeTitle);
         let recurse = false;
         if (deleteChildren === undefined || deleteChildren === null || deleteChildren === false) {
             recurse = false;
@@ -56,7 +53,6 @@
     }
     
     const onDeletionCancel = () => {
-        console.log('finally I dont want to kill this note '+nodeTitle);
     }
     const showCreationDialog = (data) => {
         modal.open(
@@ -96,7 +92,7 @@
 </script>
 
 <a name="{nodeTitle}">
-    <a href="#/edit/{data.name}" style="{isDraft(data.name) ? 'color:red': ''}">{nodeTitle}</a>
+    <a href="#/view/{data.name}" style="{isDraft(data.name) ? 'color:red': ''}">{nodeTitle}</a>
     
     <span tabindex="-5" role="button" style="cursor: pointer" on:keydown={(e) => { e.preventDefault(); showCreationDialog(data);}} on:click={(e) => { e.preventDefault(); showCreationDialog(data);}}><Fa icon="{faPlus}" >PLUS</Fa></span>
     <span tabindex="-5" role="button" style="cursor: pointer" on:keydown={(e) => { e.preventDefault(); showDeletionDialog(data);}} on:click={(e) => { e.preventDefault(); showDeletionDialog(data);}}><Fa icon="{faTrashCan}" >TRASH</Fa></span>
