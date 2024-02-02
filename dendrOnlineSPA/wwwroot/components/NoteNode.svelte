@@ -2,6 +2,7 @@
 
 <script lang="ts">
     import { onMount, getContext } from 'svelte';
+    import ErrorDialog from './ErrorDialog.svelte';
     import {push} from 'svelte-spa-router'
     import {deleteNote, unDraft, unloadNote, repository, setTree, isDraft} from '../scripts/dendronStore.js';
     import Fa from 'svelte-fa/src/fa.svelte';
@@ -48,7 +49,19 @@
         unDraft(data.id);
         unloadNote(data.id);
         let newTree = await DendronClient.DeleteNote($repository.id,data.id,deleteChildren)
-        setTree(newTree);
+        if (newTree.ok) {
+            setTree(newTree.result);
+        }
+        else {
+            modal.open(
+            ErrorDialog,
+            {
+                message: `Une erreur est survenue: ${newTree.error} `,                                                
+                closeButton: true,
+                closeOnEsc: true,
+                closeOnOuterClick: true,
+            });
+        }
         // TODO : call backend deletion ! (only if really needed ?);        
     }
     

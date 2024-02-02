@@ -1,36 +1,45 @@
+import NoteNode from "../components/NoteNode.svelte";
 import {repository, setRepository} from "./dendronStore";
-import {Note, Node, Repository, emptyNode, emptyNote} from "./types";
+import {Note, Node, Result, Repository, emptyNode, emptyNote} from "./types";
+
+const Ok = <T>(data:T): Result<T> => {
+    return {result:data,ok:true,error:undefined};
+}
+
+const Error = <T>(error:string): Result<T> => {
+    return {result:undefined,ok:false,error:error};
+}
 
 export const DendronClient = {
 
-    GetRepositories : async () => {
+    GetRepositories : async ():Promise<Result<Repository[]>> => {
 
         const res = await fetch('/repositories');
         if (res.status >= 200 && res.status <= 299) {
             let allRepositories = await res.json()
-            return allRepositories
+            return Ok(allRepositories);
         } else {
-            return [];
+            return Error(`erreur : ${res.status} - ${res.statusText}`);
         }
     },
     
-    GetTree: async (repositoryId) : Promise<Node> => {
+    GetTree: async (repositoryId) : Promise<Result<Node>> => {
         const res = await fetch(`/notes/${repositoryId}`);
         if (res.status >= 200 && res.status <= 299) {
             let tree = await res.json()
-            return tree;
+            return Ok(tree);
         } else {
-            return emptyNode;
+            return Error(`erreur : ${res.status} - ${res.statusText}`);
         }
     },
     
-    GetNote: async(repositoryId: string, noteId: string): Promise<Note> => {
+    GetNote: async(repositoryId: string, noteId: string): Promise<Result<Note>> => {
         const res = await fetch(`/note/${repositoryId}/${noteId}`);
         if (res.status >= 200 && res.status <= 299) {
             let note = await res.json()
-            return note;
+            return Ok(note);
         } else {
-            return emptyNote;
+            return Error(`erreur : ${res.status} - ${res.statusText}`);
         }
     },
     
@@ -38,7 +47,7 @@ export const DendronClient = {
     //     return emptyNote;
     // },
     
-    DeleteNote: async (repositoryId, noteId, recurse) => {
+    DeleteNote: async (repositoryId, noteId, recurse): Promise<Result<Node>> => {
         const res = await fetch(`/note/${repositoryId}/${noteId}?recurse=${recurse}`,{
             // withCredentials: true,
             method: "DELETE",
@@ -48,13 +57,13 @@ export const DendronClient = {
         });
         if (res.status >= 200 && res.status <= 299) {
             let tree = await res.json();
-            return tree;
+            return Ok(tree);
         } else {
-            return {};
+            return Error(`erreur : ${res.status} - ${res.statusText}`);
         }
     },
     
-    SaveNote: async(repositoryId, note) => {
+    SaveNote: async(repositoryId:string, note:Note):Promise<Result<Node>> => {
         const res = await fetch(`/note/${repositoryId}/${note.header.title}`,{
             // withCredentials: true,
             method: "PUT",
@@ -65,9 +74,9 @@ export const DendronClient = {
         });
         if (res.status >= 200 && res.status <= 299) {
             let tree = await res.json();
-            return tree;
+            return Ok(tree);
         } else {
-            return {};
+            return Error(`erreur : ${res.status} - ${res.statusText}`);
         }
     }
     

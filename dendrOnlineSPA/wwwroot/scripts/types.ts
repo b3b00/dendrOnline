@@ -41,6 +41,12 @@ export interface SelectionItem {
     label: string;
 }
 
+export interface Result<T> {
+    result: T|undefined;
+    ok: boolean;
+    error: string|undefined;
+}
+
 export let empty ='**none**';
 
 export let emptyNode: Node = {

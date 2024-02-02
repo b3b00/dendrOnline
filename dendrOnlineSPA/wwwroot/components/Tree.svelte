@@ -1,13 +1,17 @@
 <script lang="ts">
 
     import {repository, tree, setTree} from '../scripts/dendronStore.js';
-    import { onMount } from 'svelte';    
+    import { onMount, getContext } from 'svelte';    
     import { DendronClient} from "../scripts/dendronClient.js";    
     import TreeView from "@bolduh/svelte-treeview";    
     import NoteNodeWraper from "./NoteNodeWraper.svelte";
     import {Node, Repository} from '../scripts/types'
+    import ErrorDialog from './ErrorDialog.svelte';
+    import type { Context } from 'svelte-simple-modal';
     
     
+  const modal = getContext<Context>('simple-modal');
+
     let currentRepository : Repository = undefined;
     
     let currentTree : Node = undefined;
@@ -32,8 +36,23 @@
         currentRepository = $repository;
         currentTree = $tree;
         if (currentTree === null || currentTree === undefined || !currentTree.hasOwnProperty('name')) {
-            currentTree = await DendronClient.GetTree(currentRepository.id);
-            setTree(currentTree);
+            const newCurrentTree = await DendronClient.GetTree(currentRepository.id);
+            if (newCurrentTree.ok) {
+                currentTree = newCurrentTree.result
+                setTree(currentTree);
+            }
+            else {
+                modal.open(
+                    ErrorDialog,
+                    {
+                        message: `Une erreur est survenue: ${newCurrentTree.error} `,                                                
+                        closeButton: true,
+                        closeOnEsc: true,
+                        closeOnOuterClick: true,
+                    });
+            }
+            
+
         }
     });
 

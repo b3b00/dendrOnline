@@ -24,6 +24,10 @@
     import {DendronClient} from "../scripts/dendronClient";
     import SvelteMarkdown from 'svelte-markdown'
     import {Note, TaggedNote} from '../scripts/types'
+    import type { Context } from 'svelte-simple-modal';
+    import ErrorDialog from './ErrorDialog.svelte';
+
+    const modal = getContext<Context>('simple-modal');
     
     export let id:string = "";
 
@@ -72,12 +76,26 @@
             content = preprocessLinks(note.body);
         }
         else {
-            note = await DendronClient.GetNote($repository.id,id);
-            content = preprocessLinks(note.body);
-            setLoadedNote(id,note);
-            title = getTitle(note.header.description)+($draftNotes.hasOwnProperty(note.header.title) ? " *" : "");
-            titleStyle = $draftNotes.hasOwnProperty(note.header.title) ? "draft" : "normal";
-            setLoadedNote(id,note);
+            const n = await DendronClient.GetNote($repository.id,id);
+            if (n.ok) {
+                note = n.result;
+                content = preprocessLinks(note.body);
+                setLoadedNote(id,note);
+                title = getTitle(note.header.description)+($draftNotes.hasOwnProperty(note.header.title) ? " *" : "");
+                titleStyle = $draftNotes.hasOwnProperty(note.header.title) ? "draft" : "normal";
+                setLoadedNote(id,note);
+            }
+            else {
+                modal.open(
+                    ErrorDialog,
+                    {
+                        message: `Une erreur est survenue: ${n.error} `,                                                
+                        closeButton: true,
+                        closeOnEsc: true,
+                        closeOnOuterClick: true,
+                    }
+                );
+            }
         }
 
     });

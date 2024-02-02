@@ -1,9 +1,13 @@
 <script lang="ts">
     import {setRepository, repositories, setRepositories} from '../scripts/dendronStore.js';
     import {push} from 'svelte-spa-router'
-    import {onMount} from 'svelte';
+    import {onMount, getContext} from 'svelte';
     import {DendronClient} from "../scripts/dendronClient.js";
-    import {Repository} from "../scripts/types";
+    import {Repository } from "../scripts/types";
+    import type { Context } from 'svelte-simple-modal';
+  import ErrorDialog from './ErrorDialog.svelte';
+
+    const modal = getContext<Context>('simple-modal');
 
     let allRepositories: Repository[] = [];
 
@@ -22,8 +26,21 @@
     onMount(async () => {
 
         let allRepositories = await DendronClient.GetRepositories();
-        setRepositories(allRepositories);
-        filteredRepositories = allRepositories;
+        if (allRepositories.ok) {
+            setRepositories(allRepositories.result);
+            filteredRepositories = allRepositories.result;
+        }
+        else {
+            modal.open(
+                ErrorDialog,
+                {
+                    message: `Une erreur est survenue: ${allRepositories.error} `,                                                
+                    closeButton: true,
+                    closeOnEsc: true,
+                    closeOnOuterClick: true,
+                }
+            );
+        }
     });
 
 </script>

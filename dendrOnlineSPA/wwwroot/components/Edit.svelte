@@ -40,9 +40,10 @@
     import { faFloppyDisk, faUndo, faTrashCan } from '@fortawesome/free-solid-svg-icons/index.js';
     import {location, push} from 'svelte-spa-router'
     import {Node, Note, Repository, TaggedNote, SelectionItem} from '../scripts/types';
-    import type { Context } from 'svelte-simple-modal';
     import ConfirmDialog from './ConfirmDialog.svelte';
     import SelectDialog from './SelectDialog.svelte';
+    import ErrorDialog from './ErrorDialog.svelte';
+    import type { Context } from 'svelte-simple-modal';
     
     
   const modal = getContext<Context>('simple-modal');
@@ -112,16 +113,29 @@
         let n = getNoteFromStore(id);
         if (n.isDraft) {
             let newTree = await DendronClient.SaveNote($repository.id, n.note);
-            setTree(newTree);
-            unDraft(n.note.header.title);
-            setLoadedNote(n.note.header.title,n.note);
-            n = getNoteFromStore(n.note.header.title);
-            note = n.note;
-            description = note.header.description;            
-            titleStyle = n.isDraft ? "draft" : "normal";            
-            previousContent = note.body;
-            content = note.body;
-            floppyVisibility = n.isDraft ? "display:inline" : "display:none";
+            if (newTree.ok) {
+                setTree(newTree.result);
+                unDraft(n.note.header.title);
+                setLoadedNote(n.note.header.title,n.note);
+                n = getNoteFromStore(n.note.header.title);
+                note = n.note;
+                description = note.header.description;            
+                titleStyle = n.isDraft ? "draft" : "normal";            
+                previousContent = note.body;
+                content = note.body;
+                floppyVisibility = n.isDraft ? "display:inline" : "display:none";
+            }
+            else {
+                modal.open(
+                    ErrorDialog,
+                    {
+                        message: `Une erreur est survenue: ${allRepositories.error} `,                                                
+                        closeButton: true,
+                        closeOnEsc: true,
+                        closeOnOuterClick: true,
+                    }
+                );
+            }
         }
     }
 
@@ -147,8 +161,21 @@
         unDraft(id);
         unloadNote(id);
         let newTree = await DendronClient.DeleteNote($repository.id,id,deleteChildren)
-        setTree(newTree);
-        push(`/tree/${$repository.id}`);
+        if (newTree.ok) {
+            setTree(newTree.result);
+            push(`/tree/${$repository.id}`);
+        }
+        else {
+            modal.open(
+            ErrorDialog,
+            {
+                message: `Une erreur est survenue: ${newTree.error} `,                                                
+                closeButton: true,
+                closeOnEsc: true,
+                closeOnOuterClick: true,
+            }
+        );
+        }
     }
     
     const onCancel = () => {
@@ -244,12 +271,26 @@
             content = note.body;
             floppyVisibility = n.isDraft ? "display:inline" : "display:none";
         } else {
-            note = await DendronClient.GetNote($repository.id, id);
-            previousContent = note.body;
-            content = note.body;
-            setLoadedNote(id, note);
-            description = note.header.description;
-            titleStyle = $draftNotes.hasOwnProperty(note.header.title) ? "draft" : "normal";
+            const n = await DendronClient.GetNote($repository.id, id);
+            if (n.ok) {
+                note = n.result;
+                previousContent = note.body;
+                content = note.body;
+                setLoadedNote(id, note);
+                description = note.header.description;
+                titleStyle = $draftNotes.hasOwnProperty(note.header.title) ? "draft" : "normal";
+            }
+            else {
+                modal.open(
+                    ErrorDialog,
+                    {
+                        message: `Une erreur est survenue: ${n.error} `,                                                
+                        closeButton: true,
+                        closeOnEsc: true,
+                        closeOnOuterClick: true,
+                    }
+                );
+            }
         }
     }
     
