@@ -193,17 +193,10 @@ This may not be a dendron repository";
             request.Headers.UserAgent.TryParseAdd("DendrOnline's agent"); 
             var result = await client.SendAsync(request);
             var resultContent = await result.Content.ReadAsStringAsync();
-            if (result.StatusCode == HttpStatusCode.OK)
+            if (result.StatusCode != HttpStatusCode.OK)
             {
-                // TODO ? 
+                throw new Exception($"'error while deleting note {fileName} : {result.StatusCode} - {result.ReasonPhrase}");
             }
-            else
-            {
-                // TODO 
-            }
-            
-            
-
         }    
         
         
