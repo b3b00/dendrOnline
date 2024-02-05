@@ -41,22 +41,10 @@ export interface SelectionItem {
   label: string;
 }
 
-export let empty = "**none**";
 
-export let emptyNode: Node = {
-  id: empty,
-  name: "",
-  children: [],
-  isLeaf: false,
-  isNode: false,
-  deployed: false,
-  selected: false,
-  edited: false,
-};
-
-export let emptyNote: Note = {
+export const emptyNote: Note = {
   header: {
-    id: empty,
+    id: "**none**",
     name: "",
     title: "",
     description: "",

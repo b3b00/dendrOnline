@@ -1,5 +1,5 @@
 import { Writable, writable } from 'svelte/store';
-import {Node, Note, Repository, emptyNode, emptyNote, empty} from '../scripts/types';
+import {Node, Note, Repository} from '../scripts/types';
 
 //region repositories
 export const repository: Writable<Repository|undefined> = writable();
@@ -16,7 +16,6 @@ export function setRepositories(repos: Repository[]) {
 }
 
 export function addNote(note: Note) {
-    // TODO we will need something really brillant here
     const id = note.header.title;
     const path = id.split('.');
     const parentPath = path.slice(0, path.length - 1);
@@ -24,7 +23,6 @@ export function addNote(note: Note) {
         let i = 0;
         let parent: Node|undefined = r;
         while (i < parentPath.length && parent) {
-            const currentItem = parentPath[i];
             const currentPath = parentPath.slice(0,i+1).join('.');
             let p = parent.children.filter(x => x.id === currentPath)[0];
             if (p) {
@@ -65,7 +63,6 @@ export function deleteNote(id: string, recurse:boolean) {
         let i = 0;
         let parent: Node|undefined = r;
         while (i < parentPath.length && parent) {
-            const currentItem = parentPath[i];
             const currentPath = parentPath.slice(0,i+1).join('.');
             let p = parent.children.filter(x => x.id === currentPath)[0];
             if (p) {

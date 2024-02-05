@@ -62,15 +62,15 @@ public class StubNotesService : AsbtractNotesService
             return "";
         }
 
-        public override async Task<Result<Note>> SetContent(string noteName, Note newNote)
+        public override async Task<Result<Note>> SetContent(string noteName, Note note)
         {
             var path = GetNotePath(noteName);
             if (FileSystem.Exists(path))
             {
-                FileSystem.WriteAllText(path, newNote.ToString());
+                FileSystem.WriteAllText(path, nn.ToString());
             }
 
-            var note = NoteParser.Parse(newNote.ToString());
+            var note = NoteParser.Parse(nn.ToString());
             note.Sha = "nope";
             return note;
         }

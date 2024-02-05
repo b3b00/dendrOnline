@@ -73,7 +73,7 @@ namespace BackEnd
             return Result<(string,string)>.Error(ResultCode.InternalError, "unable no github connection");
         }
 
-        public override async Task<Result<Note>> SetContent(string noteName, Note newNote)
+        public override async Task<Result<Note>> SetContent(string noteName, Note note)
         {
             if (gitHubClient != null)
             {
@@ -84,28 +84,28 @@ namespace BackEnd
                 }
                 if (content.TheResult.exists)
                 {
-                    if (content.TheResult.content.Sha != newNote.Sha && !string.IsNullOrEmpty(newNote.Sha))
+                    if (content.TheResult.content.Sha != note.Sha && !string.IsNullOrEmpty(note.Sha))
                     {
                         return Result<Note>.Error(ResultCode.Conflict, ConflictCode.Modified,
                             $"note {noteName} has been modified");
                     }
                     
-                    var note = NoteParser.Parse(newNote.ToString());
-                    note.Header.LastUpdatedTS = DateTime.Now.ToTimestamp();
-                    var request = new UpdateFileRequest($"DendrOnline : update {noteName}", note.ToString(),
+                    var newNote = NoteParser.Parse(note.ToString());
+                    newNote.Header.LastUpdatedTS = DateTime.Now.ToTimestamp();
+                    var request = new UpdateFileRequest($"DendrOnline : update {noteName}", newNote.ToString(),
                         content.TheResult.content.Sha);
                     var repositoryChange = await gitHubClient.Repository.Content.UpdateFile(RepositoryId, content.TheResult.content.Path, request);
-                    note.Sha = repositoryChange.Content.Sha;
-                    return note;
+                    newNote.Sha = repositoryChange.Content.Sha;
+                    return newNote;
                 }
                 else
                 {
                     var request =
-                        new CreateFileRequest($"DendrOnline : new note : {noteName}", newNote.ToString(), "main");
+                        new CreateFileRequest($"DendrOnline : new note : {noteName}", note.ToString(), "main");
                         var fileCreated =await gitHubClient.Repository.Content.CreateFile(RepositoryId,
                         "notes/" + noteName + ".md",
                         request);
-                        newNote.Sha = fileCreated.Content.Sha;
+                        note.Sha = fileCreated.Content.Sha;
                 }
             }
 
@@ -226,7 +226,6 @@ namespace BackEnd
             request.Headers.Add("owner",user.Login);
             request.Headers.UserAgent.TryParseAdd("DendrOnline's agent"); 
             var result = await client.SendAsync(request);
-            var resultContent = await result.Content.ReadAsStringAsync();
             if (result.StatusCode != HttpStatusCode.OK)
             {
                 throw new Exception($"'error while deleting note {fileName} : {result.StatusCode} - {result.ReasonPhrase}");

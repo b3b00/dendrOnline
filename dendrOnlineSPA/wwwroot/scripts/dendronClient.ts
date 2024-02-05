@@ -1,5 +1,3 @@
-import NoteNode from "../components/NoteNode.svelte";
-import { repository, setRepository } from "./dendronStore";
 import {
   Note,
   Node,  
@@ -9,7 +7,7 @@ import {
   ConflictCode,
 } from "./types";
 
-const Error = <T>(error: string, code: BackEndResultCode): BackEndResult<T> => {
+const ErrorResult = <T>(error: string, code: BackEndResultCode): BackEndResult<T> => {
   return {
     theResult: undefined,
     code: code,
@@ -29,7 +27,7 @@ export const DendronClient = {
 
     } catch (e) {
       console.log(`client.getRepositories() -> ${e.message}`);
-      return Error(`erreur : ${e.message}`, BackEndResultCode.InternalError);
+      return ErrorResult(`erreur : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
@@ -48,7 +46,7 @@ export const DendronClient = {
       let tree = await res.json();
       return tree;
     } catch (e) {
-      return Error(`erreur : ${e.message}`, BackEndResultCode.InternalError);
+      return ErrorResult(`erreur : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
@@ -61,7 +59,7 @@ export const DendronClient = {
       let note = await res.json();
       return note;
     } catch (e) {
-      return Error(`erreur : ${e.message}`, BackEndResultCode.InternalError);
+      return ErrorResult(`erreur : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
@@ -89,7 +87,7 @@ export const DendronClient = {
       let tree = await res.json();
       return tree;
     } catch (e) {
-      return Error(`erreur : ${e.message}`, BackEndResultCode.InternalError);
+      return ErrorResult(`erreur : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
@@ -110,7 +108,7 @@ export const DendronClient = {
       let tree = await res.json();
       return tree;
     } catch (e) {
-      return Error(`erreur : ${e.message}`, BackEndResultCode.InternalError);
+      return ErrorResult(`erreur : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 };

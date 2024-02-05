@@ -77,12 +77,9 @@ namespace BackEnd
             
             root.Name = "root";
             Debug.WriteLine(root.Dump(""));
-            if (!string.IsNullOrEmpty(filter))
+            if (!string.IsNullOrEmpty(filter) && root.Filter(filter) is NodeNote r)
             {
-                if (root.Filter(filter) is NodeNote r)
-                {
-                    return r;
-                }
+                return r;
             }
             
 
