@@ -66,13 +66,17 @@ public class RepositoryController : DendronController
 
 
     [HttpPut("/note/{repositoryId}/{noteId}")]
-    public async Task<Result<INoteHierarchy>> SaveNote(string repositoryId,string noteId, [FromBody] Note note)
+    public async Task<Result<INoteHierarchy>> SaveNote(string repositoryId, string noteId, [FromBody] Note note)
     {
-        await NotesService.SetContent(noteId, note);
+        var setted = await NotesService.SetContent(noteId, note);
+        if (!setted.IsOk)
+        {
+            return Result<INoteHierarchy>.Error(setted.Code, setted.ConflictCode, setted.ErrorMessage);
+        }
         var tree = await GetNotesHierarchy(long.Parse(repositoryId));
         return tree;
     }
-    
+
     [HttpDelete("/note/{repositoryId}/{noteId}")]
     public async Task<Result<INoteHierarchy>> DeleteNote(string repositoryId,string noteId, [FromQuery] bool recurse = false)
     {

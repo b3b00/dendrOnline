@@ -5,7 +5,7 @@
     import ViewWrapper from './components/ViewWrapper.svelte'
     import Home from './components/Home.svelte'
     import NotFound from "./components/NotFound.svelte";
-    import {noteId, repository, setTree, tree} from "./scripts/dendronStore";
+    import {draftNotes, loadedNotes, noteId, repository, setTree, tree} from "./scripts/dendronStore";
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faList, faPen, faEye, faFolderTree, faRefresh } from '@fortawesome/free-solid-svg-icons/index.js';
     
@@ -35,6 +35,8 @@
         const tree = await DendronClient.GetTree($repository.id);
         if (tree.isOk) {
             setTree(tree.theResult);
+            $loadedNotes = [];
+            $draftNotes = [];
             push(`/tree/${$repository.id}`);
         }
         else {
