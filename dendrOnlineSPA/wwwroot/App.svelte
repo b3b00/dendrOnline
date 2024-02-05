@@ -1,15 +1,17 @@
-<script>
+<script lang="ts">
     import Repositories from './components/Repositories.svelte'
-    import Tree from './components/Tree.svelte'
-    import Edit from './components/Edit.svelte'
-    import View from './components/View.svelte'
+    import Tree from './components/Tree.svelte'    
+    import EditWrapper from './components/EditWrapper.svelte';
+    import ViewWrapper from './components/ViewWrapper.svelte'
     import Home from './components/Home.svelte'
     import NotFound from "./components/NotFound.svelte";
-    import {noteId, repository} from "./scripts/dendronStore.js";
+    import {draftNotes, loadedNotes, noteId, repository, setTree, tree} from "./scripts/dendronStore";
     import Fa from 'svelte-fa/src/fa.svelte';
-    import { faList, faPen, faEye, faFolderTree } from '@fortawesome/free-solid-svg-icons/index.js';
-
-    import Router from 'svelte-spa-router'
+    import { faList, faPen, faEye, faFolderTree, faRefresh } from '@fortawesome/free-solid-svg-icons/index.js';
+    
+    import Router, { push } from 'svelte-spa-router'
+  import { Modal } from 'svelte-simple-modal';
+  import { DendronClient } from './scripts/dendronClient';
 
     const routes = {
         // Exact path
@@ -19,28 +21,28 @@
         '/repositories': Repositories,
 
         // Wildcard parameter
-        '/edit/:note': Edit,
-        '/view/:note': View,
-        '/tree/:repository': Tree,
+        '/edit/:id': EditWrapper,
+        '/view/:id': ViewWrapper,
+        '/tree/:id/:refresh?': Tree,
+        '/new/:id': EditWrapper,
 
         // Catch-all
         // This is optional, but if present it must be the last
         '*': NotFound,
     }
 
-    function onClickBurger() {
-        burgerMenuClass = "burger " + (opened ? "active" : "");
-        navBarMenuClass = "navbar  menu " + (opened ? "active" : "");
-        if (opened) {
-            //navBarMenuStyle = "maxHeight:"+
+    const refresh= async () => {
+        const tree = await DendronClient.GetTree($repository.id);
+        if (tree.isOk) {
+            setTree(tree.theResult);
+            $loadedNotes = [];
+            $draftNotes = [];
+            push(`/tree/${$repository.id}`);
+        }
+        else {
+            push(`/repositories`);
         }
     }
-
-    let opened = false;
-
-    let navBarMenuStyle = "";
-    let navBarMenuClass = "navbar menu";
-    let burgerMenuClass = "burger";
 
 </script>
 
@@ -54,8 +56,9 @@
     <nav>
         <ul>
             <li><a href="#/repositories" ><Fa icon="{faList}"></Fa><span style="margin-left: 5px">Repositories</span></a></li>
-            {#if $repository.id}
-                <li><a href="#/tree/{$repository.id}"><Fa icon="{faFolderTree}"></Fa><span style="margin-left: 5px">Tree</span></a></li>
+            {#if $repository && $repository.id}
+                <li><a href="#/tree/{$repository.id}/refresh" on:click={refresh}><Fa icon="{faRefresh}"></Fa><span style="margin-left: 5px">Refresh tree</span></a></li>
+                <li><a href="#/tree/{$repository.id}" ><Fa icon="{faFolderTree}"></Fa><span style="margin-left: 5px">Tree</span></a></li>
                 {/if}
             {#if $noteId}
                 <li><a href="#/edit/{$noteId}"><Fa icon="{faPen}"></Fa><span style="margin-left: 5px">Edit</span></a></li>
@@ -67,5 +70,7 @@
 </header>
 
 <main>
-    <Router {routes}/>
+    <Modal>
+        <Router {routes}/>
+    </Modal>
 </main>

@@ -8,6 +8,8 @@ namespace BackEnd
         public NoteHeader Header { get; set; }
 
         public string Body { get; set; }
+        
+        public string? Sha { get; set; }
 
         public string ToString()
         {

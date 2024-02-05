@@ -28,7 +28,7 @@ public class RepositoryController : DendronController
     }
 
     [HttpGet("/user")]
-    public async Task<GHUser> User()
+    public async Task<Result<GHUser>> User()
     {
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();
@@ -38,7 +38,7 @@ public class RepositoryController : DendronController
     }
     
     [HttpGet("/repositories")]
-    public async Task<IEnumerable<GhRepository>> Get()
+    public async Task<Result<IList<GhRepository>>> Get()
     {
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();
@@ -48,17 +48,17 @@ public class RepositoryController : DendronController
     }
 
     [HttpGet("/notes/{repositoryId}")]
-    public async Task<INoteHierarchy> GetNotesHierarchy(long repositoryId)
+    public async Task<Result<INoteHierarchy>> GetNotesHierarchy(long repositoryId)
     {
         HttpContext.SetRepositoryId(repositoryId);
         var notes = await NotesService.GetNotes();
-        var hierarchy = NotesService.GetHierarchy(notes, null, HttpContext.GetCurrentNote(), HttpContext.GetEditedNotes().Keys.ToList());
+        var hierarchy = await NotesService.GetHierarchy(notes, null, HttpContext.GetCurrentNote(), HttpContext.GetEditedNotes().Keys.ToList());
         var json = JsonSerializer.Serialize(hierarchy);
         return hierarchy;
     }
 
     [HttpGet("/note/{repositoryId}/{noteId}")]
-    public async Task<Note> GetNote(string repositoryId, string noteId)
+    public async Task<Result<Note>> GetNote(string repositoryId, string noteId)
     {
         var note = await NotesService.GetNote(noteId);
         return note;
@@ -66,13 +66,44 @@ public class RepositoryController : DendronController
 
 
     [HttpPut("/note/{repositoryId}/{noteId}")]
-    public async Task<Note> SaveNote(string repositoryId,string noteId, [FromBody] Note note)
+    public async Task<Result<INoteHierarchy>> SaveNote(string repositoryId, string noteId, [FromBody] Note note)
     {
-        await NotesService.SetContent(noteId, note.ToString());
-        return await GetNote(repositoryId, note.Header.Title);
+        var setted = await NotesService.SetContent(noteId, note);
+        if (!setted.IsOk)
+        {
+            return Result<INoteHierarchy>.Error(setted.Code, setted.ConflictCode, setted.ErrorMessage);
+        }
+        var tree = await GetNotesHierarchy(long.Parse(repositoryId));
+        return tree;
+    }
+
+    [HttpDelete("/note/{repositoryId}/{noteId}")]
+    public async Task<Result<INoteHierarchy>> DeleteNote(string repositoryId,string noteId, [FromQuery] bool recurse = false)
+    {
+        if (recurse)
+        {
+            var allNotes = await NotesService.GetNotes();
+            if (!allNotes.IsOk)
+            {
+                return Result<INoteHierarchy>.Error(allNotes.Code,allNotes.ConflictCode,allNotes.ErrorMessage);
+            }
+            var children = allNotes.TheResult.Where(x => x.StartsWith(noteId) && x != noteId);
+            foreach (var child in children)
+            {
+                await NotesService.DeleteNote(child);
+            }
+        }
+        var deleted = await NotesService.DeleteNote(noteId);
+        if (!deleted.IsOk)
+        {
+            return Result<INoteHierarchy>.Error(deleted.Code,deleted.ConflictCode,deleted.ErrorMessage);
+        }
+        
+        var tree = await GetNotesHierarchy(long.Parse(repositoryId));
+        return tree;
     }
     
-    public async Task<IList<GhRepository>> GetRepositories(GitHubClient client)
+    public async Task<Result<IList<GhRepository>>> GetRepositories(GitHubClient client)
     {
         string repositoryList = HttpContext?.Session?.GetString("repositories");
         if (string.IsNullOrEmpty(repositoryList))
@@ -85,7 +116,7 @@ public class RepositoryController : DendronController
         }
         else
         {
-            var repositories = JsonSerializer.Deserialize<IList<GhRepository>>(repositoryList) ??
+            var repositories = JsonSerializer.Deserialize<IList<GhRepository>>(repositoryList).ToList() ??
                            new List<GhRepository>();
             return repositories;
         }

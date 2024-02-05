@@ -11,7 +11,7 @@ namespace BackEnd
 
         public string Description { get; set; }
 
-        public string TrimmedDescription => Description?.TrimEnd('\'')?.TrimStart('\'');
+        public string? TrimmedDescription => Description?.TrimEnd('\'')?.TrimStart('\'');
         
         public long LastUpdatedTS { get; set; }
 

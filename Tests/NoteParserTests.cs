@@ -69,13 +69,15 @@ public class NoteParserTests
         string noteId = "test.saveAndRead.md";
         await service.CreateNote(noteId);
         var note = await service.GetNote(noteId);
+        Check.That(note.IsOk).IsTrue();
         Check.That(note).IsNotNull();
         
-        note.Header.Description = "edited";
-        await service.SetContent(noteId, note.ToString());
+        note.TheResult.Header.Description = "edited";
+        var setted = await service.SetContent(noteId, note);
+        Check.That(setted.IsOk).IsTrue();
         var newNote = await service.GetNote(noteId);
 
-        Check.That(newNote.Body).IsEqualTo(note.Body);
+        Check.That(newNote.TheResult.Body).IsEqualTo(note.TheResult.Body);
 
 
     }

@@ -7,79 +7,95 @@
     }
 </style>
 
-<script>
+<script lang="ts">
 
-    import { onMount } from 'svelte';
+    import { onMount, getContext } from 'svelte';
+    import {location} from 'svelte-spa-router'
     import {
         getTitle,
         setNoteId,
         setLoadedNote,
-        loadedNotes, draftNotes,
-    } from "../scripts/dendronStore.js";
-    import {repository} from "../scripts/dendronStore.js";
-    import {DendronClient} from "../scripts/dendronClient.js";
+        loadedNotes,
+        draftNotes,
+        getDraftNote,
+        getLoadedNote
+    } from "../scripts/dendronStore";
+    import {repository} from "../scripts/dendronStore";
+    import {DendronClient} from "../scripts/dendronClient";
     import SvelteMarkdown from 'svelte-markdown'
-    export let params = {}
+    import {Note, TaggedNote} from '../scripts/types'
+    import type { Context } from 'svelte-simple-modal';
+    import ErrorDialog from './ErrorDialog.svelte';
 
-    let id = "";
-
-    let content = "";
+    const modal = getContext<Context>('simple-modal');
     
-    let title = "";
+    export let id:string = "";
+
+    let content:string = "";
     
-    let titleStyle = "normal"
+    let title:string = "";
+    
+    let titleStyle:string = "normal"
 
-    let note = {
-        header:{
-            id:"",
-            description:"",
-            title:""
-        },
-        body:""};
+    let note: Note|undefined = undefined;
 
-    let getNoteFromStore = function(id) {
-        console.log(`View.getNoteFromSvelte(${id})`)
-        if ($draftNotes.hasOwnProperty(id)) {
-            console.log(`View.getNoteFromSvelte(${id}) - found in draft notes`,$draftNotes[id]);
+    let getNoteFromStore = function (id): TaggedNote {   
+        
+        var draft = getDraftNote(id);
+        if (draft) {
             return {
-                isDraft: true,
-                note : $draftNotes[id]
+                isDraft:true,
+                note:draft
             }
         }
-        else if (loadedNotes.hasOwnProperty(id)) {
-            console.log(`View.getNoteFromSvelte(${id}) - found in loaded notes`,$loadedNotes[id]);
+
+        var loaded = getLoadedNote(id);
+        if (loaded) {
             return {
-                isDraft: false,
-                note : $loadedNotes[id]
+                isDraft:false,
+                note:loaded
             }
         }
-        console.log(`View.getNoteFromSvelte(${id}) - not found `);
         return null;
-    } 
+    }
+
+    let preprocessLinks = function(markdown:string) {
+        const regex = /\[\[(.*)\]\]/ig;
+        const processed = markdown.replaceAll(regex, "[$1](#/view/$1)");
+        return processed;
+    }
     
-    onMount(async () => {        
-        id = params.note
-        setNoteId(id);
+    onMount(async () => {                
+        setNoteId(id);        
         var n = getNoteFromStore(id);
       
         if (n) {
-            console.log(`View.onMount(${id}) - found note`,n);
             note = n.note;
             title = getTitle(note.header.description)+(n.isDraft ? " *" : "");
-            console.log(`View.onMount(${id}) - title=${title}`,n);
             titleStyle = n.isDraft ? "draft" : "normal";
-            console.log(`View.onMount(${id}) - style=${titleStyle}`,n);
-            content = note.body;
+            content = preprocessLinks(note.body);
         }
         else {
-            console.log(`View.onMount(${id}) [2] - not found`);
-            note = await DendronClient.GetNote($repository,id);
-            console.log(`View.onMount(${id}) [2] - found note`,n);
-            content = note.body;
-            setLoadedNote(id,note);
-            title = getTitle(note.header.description)+($draftNotes.hasOwnProperty(note.header.title) ? " *" : "");
-            titleStyle = $draftNotes.hasOwnProperty(note.header.title) ? "draft" : "normal";
-            setLoadedNote(id,note);
+            const n = await DendronClient.GetNote($repository.id,id);
+            if (n.isOk) {
+                note = n.theResult;
+                content = preprocessLinks(note.body);
+                setLoadedNote(id,note);
+                title = getTitle(note.header.description)+($draftNotes.hasOwnProperty(note.header.title) ? " *" : "");
+                titleStyle = $draftNotes.hasOwnProperty(note.header.title) ? "draft" : "normal";
+                setLoadedNote(id,note);
+            }
+            else {
+                modal.open(
+                    ErrorDialog,
+                    {
+                        message: `Une erreur est survenue: ${n.errorMessage} `,                                                
+                        closeButton: true,
+                        closeOnEsc: true,
+                        closeOnOuterClick: true,
+                    }
+                );
+            }
         }
 
     });

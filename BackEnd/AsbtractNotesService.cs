@@ -22,21 +22,26 @@ namespace BackEnd
 
         public abstract void SetAccessToken(string token);
 
-        public abstract Task<string> GetContent(string noteName);
+        public abstract Task<Result<(string content, string sha)>> GetContent(string noteName);
 
-        public async Task<Note> GetNote(string noteName)
+        public async Task<Result<Note>> GetNote(string noteName)
         {
-            string content = await GetContent(noteName);
-            var note = NoteParser.Parse(content);
+            var getContentResult = await GetContent(noteName);
+            if (!getContentResult.IsOk)
+            {
+                return Result<Note>.Error(getContentResult.Code,getContentResult.ConflictCode,getContentResult.ErrorMessage);
+            }
+            var note = NoteParser.Parse(getContentResult.TheResult.content);
             note.Header.Title = noteName;
+            note.Sha = getContentResult.TheResult.sha;
             return note;
         }
         public abstract Task<string> CreateNote(string name);
 
-        public abstract Task SetContent(string noteName, string noteContent);
+        public abstract Task<Result<Note>> SetContent(string noteName, Note note);
 
-        public abstract Task<List<string>> GetNotes();
-        public abstract Task DeleteNote(string noteName);
+        public abstract Task<Result<List<string>>> GetNotes();
+        public abstract Task<Result<Note>> DeleteNote(string noteName);
 
 
         public string GetHeader(string noteName)
@@ -52,7 +57,7 @@ namespace BackEnd
             return b.ToString();
         }
 
-        public INoteHierarchy GetHierarchy(List<string> notes, string filter, string currentNote, List<string> editedNotes)
+        public async Task<Result<INoteHierarchy>> GetHierarchy(List<string> notes, string filter, string currentNote, List<string> editedNotes)
         {
             var ordered = notes.OrderBy(x => x.Length).ToList();
             ordered.Reverse();
@@ -74,8 +79,12 @@ namespace BackEnd
             Debug.WriteLine(root.Dump(""));
             if (!string.IsNullOrEmpty(filter))
             {
-                root = root.Filter(filter) as NodeNote;
+                if (root.Filter(filter) is NodeNote r)
+                {
+                    return r;
+                }
             }
+            
 
             return root;
         }

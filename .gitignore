@@ -14,3 +14,4 @@ out/*
 bundle.js*
 bundle.css*
 **/node_modules/**
+*/out/*

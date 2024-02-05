@@ -17,12 +17,37 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="wwwroot\scripts\dendronStore.js" />
+      <None Include="wwwroot\scripts\dendronStore.ts" />
+      <None Remove="out\**" />
     </ItemGroup>
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="front\svelte-app\package-lock.json" />
       <_ContentIncludedByDefault Remove="front\svelte-app\package.json" />
+      <_ContentIncludedByDefault Remove="out\web.config" />
+      <_ContentIncludedByDefault Remove="out\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="out\appsettings.json" />
+      <_ContentIncludedByDefault Remove="out\dendrOnlineSPA.deps.json" />
+      <_ContentIncludedByDefault Remove="out\dendrOnlineSPA.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="out\package-lock.json" />
+      <_ContentIncludedByDefault Remove="out\package.json" />
+      <_ContentIncludedByDefault Remove="out\wwwroot\package-lock.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="out\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="out\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="out\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <TypeScriptCompile Include="wwwroot\scripts\types.ts" />
     </ItemGroup>
 
 </Project>
