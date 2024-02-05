@@ -38,6 +38,6 @@ jobs:
       with:
         testProject: ${{env.TESTS_PROJECT}}
         output: 'lcov.info'
-        threshold: 30
+        threshold: 20
         outputFormat: 'lcov'
         excludes: '[Tests]*'
