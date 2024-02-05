@@ -9,8 +9,11 @@
     import ErrorDialog from './ErrorDialog.svelte';
     import type { Context } from 'svelte-simple-modal';
     
-    
-  const modal = getContext<Context>('simple-modal');
+    const modal = getContext<Context>('simple-modal');
+
+    export let id:string;
+
+    export let refresh:string = undefined;
 
     let currentRepository : Repository = undefined;
     
@@ -35,17 +38,17 @@
     onMount(async () => {
         currentRepository = $repository;
         currentTree = $tree;
-        if (currentTree === null || currentTree === undefined || !currentTree.hasOwnProperty('name')) {
+        if (currentTree === null || currentTree === undefined || !currentTree.hasOwnProperty('name') || refresh) {
             const newCurrentTree = await DendronClient.GetTree(currentRepository.id);
-            if (newCurrentTree.ok) {
-                currentTree = newCurrentTree.result
+            if (newCurrentTree.isOk) {
+                currentTree = newCurrentTree.theResult
                 setTree(currentTree);
             }
             else {
                 modal.open(
                     ErrorDialog,
                     {
-                        message: `Une erreur est survenue: ${newCurrentTree.error} `,                                                
+                        message: `Une erreur est survenue: ${newCurrentTree.errorMessage} `,                                                
                         closeButton: true,
                         closeOnEsc: true,
                         closeOnOuterClick: true,

@@ -26,15 +26,17 @@
     onMount(async () => {
 
         let allRepositories = await DendronClient.GetRepositories();
-        if (allRepositories.ok) {
-            setRepositories(allRepositories.result);
-            filteredRepositories = allRepositories.result;
+        console.log(`repos.svelte -> `,allRepositories);
+        if (allRepositories.isOk) {
+            setRepositories(allRepositories.theResult);
+            filteredRepositories = allRepositories.theResult;
         }
         else {
+            console.log(`error while getting repos ${allRepositories.errorMessage}`);
             modal.open(
                 ErrorDialog,
                 {
-                    message: `Une erreur est survenue: ${allRepositories.error} `,                                                
+                    message: `Une erreur est survenue: ${allRepositories.errorMessage} `,                                                
                     closeButton: true,
                     closeOnEsc: true,
                     closeOnOuterClick: true,

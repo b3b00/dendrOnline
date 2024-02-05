@@ -113,8 +113,8 @@
         let n = getNoteFromStore(id);
         if (n.isDraft) {
             let newTree = await DendronClient.SaveNote($repository.id, n.note);
-            if (newTree.ok) {
-                setTree(newTree.result);
+            if (newTree.isOk) {
+                setTree(newTree.theResult);
                 unDraft(n.note.header.title);
                 setLoadedNote(n.note.header.title,n.note);
                 n = getNoteFromStore(n.note.header.title);
@@ -124,12 +124,13 @@
                 previousContent = note.body;
                 content = note.body;
                 floppyVisibility = n.isDraft ? "display:inline" : "display:none";
+                return;
             }
             else {
                 modal.open(
                     ErrorDialog,
                     {
-                        message: `Une erreur est survenue: ${allRepositories.error} `,                                                
+                        message: `Une erreur est survenue: ${newTree.errorMessage} `,                                                
                         closeButton: true,
                         closeOnEsc: true,
                         closeOnOuterClick: true,
@@ -161,15 +162,15 @@
         unDraft(id);
         unloadNote(id);
         let newTree = await DendronClient.DeleteNote($repository.id,id,deleteChildren)
-        if (newTree.ok) {
-            setTree(newTree.result);
+        if (newTree.isOk) {
+            setTree(newTree.theResult);
             push(`/tree/${$repository.id}`);
         }
         else {
             modal.open(
             ErrorDialog,
             {
-                message: `Une erreur est survenue: ${newTree.error} `,                                                
+                message: `Une erreur est survenue: ${newTree.errorMessage} `,                                                
                 closeButton: true,
                 closeOnEsc: true,
                 closeOnOuterClick: true,
@@ -272,8 +273,8 @@
             floppyVisibility = n.isDraft ? "display:inline" : "display:none";
         } else {
             const n = await DendronClient.GetNote($repository.id, id);
-            if (n.ok) {
-                note = n.result;
+            if (n.isOk) {
+                note = n.theResult;
                 previousContent = note.body;
                 content = note.body;
                 setLoadedNote(id, note);
@@ -284,7 +285,7 @@
                 modal.open(
                     ErrorDialog,
                     {
-                        message: `Une erreur est survenue: ${n.error} `,                                                
+                        message: `Une erreur est survenue: ${n.errorMessage} `,                                                
                         closeButton: true,
                         closeOnEsc: true,
                         closeOnOuterClick: true,
@@ -305,6 +306,7 @@
                 lastUpdatedTS: 0,
                 createdTS: 0,
             },
+            sha:undefined,
             body : "# Write something really smart here.",            
         }
         addNote(note);

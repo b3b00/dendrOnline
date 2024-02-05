@@ -1,58 +1,67 @@
 import NoteNode from "../components/NoteNode.svelte";
 import { repository, setRepository } from "./dendronStore";
-import { Note, Node, Result, Repository, emptyNode, emptyNote } from "./types";
+import {
+  Note,
+  Node,  
+  Repository,
+  BackEndResult,
+  BackEndResultCode,
+  ConflictCode,
+} from "./types";
 
-const Ok = <T>(data: T): Result<T> => {
-  return { result: data, ok: true, error: undefined };
-};
-
-const Error = <T>(error: string): Result<T> => {
-  return { result: undefined, ok: false, error: error };
+const Error = <T>(error: string, code: BackEndResultCode): BackEndResult<T> => {
+  return {
+    theResult: undefined,
+    code: code,
+    conflictCode: ConflictCode.NoConflict,
+    errorMessage: error,
+    isOk: false,
+  };
 };
 
 export const DendronClient = {
-  GetRepositories: async (): Promise<Result<Repository[]>> => {
+  GetRepositories: async (): Promise<BackEndResult<Repository[]>> => {
     try {
       const res = await fetch("/repositories");
-      if (res.status >= 200 && res.status <= 299) {
-        let allRepositories = await res.json();
-        return Ok(allRepositories);
-      } else {
-        return Error(`erreur : ${res.status} - ${res.statusText}`);
-      }
+      let allRepositories = await res.json();
+      console.log(`client.getRepositories() -> `,allRepositories);
+      return allRepositories;
+
     } catch (e) {
-      return Error(`erreur : ${e.message}`);
+      console.log(`client.getRepositories() -> ${e.message}`);
+      return Error(`erreur : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
-  GetTree: async (repositoryId): Promise<Result<Node>> => {
+  GetTree: async (repositoryId): Promise<BackEndResult<Node>> => {
     try {
       const res = await fetch(`/notes/${repositoryId}`);
-      if (res.status >= 200 && res.status <= 299) {
-        let tree = await res.json();
-        return Ok(tree);
-      } else {
-        return Error(`erreur : ${res.status} - ${res.statusText}`);
+      if (res.status == 204) {
+        return {
+          theResult : undefined,
+          isOk:false,
+          code: BackEndResultCode.NotFound,
+          conflictCode:ConflictCode.NoConflict,
+          errorMessage:`dendron tree is empty`
+        };
       }
+      let tree = await res.json();
+      return tree;
     } catch (e) {
-      return Error(`erreur : ${e.message}`);
+      return Error(`erreur : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
   GetNote: async (
     repositoryId: string,
     noteId: string
-  ): Promise<Result<Note>> => {
+  ): Promise<BackEndResult<Note>> => {
     try {
       const res = await fetch(`/note/${repositoryId}/${noteId}`);
-      if (res.status >= 200 && res.status <= 299) {
-        let note = await res.json();
-        return Ok(note);
-      } else {
-        return Error(`erreur : ${res.status} - ${res.statusText}`);
-      }
+      let note = await res.json();
+      return note;
     } catch (e) {
-      return Error(`erreur : ${e.message}`);
+      return Error(`erreur : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
@@ -60,7 +69,11 @@ export const DendronClient = {
   //     return emptyNote;
   // },
 
-  DeleteNote: async (repositoryId, noteId, recurse): Promise<Result<Node>> => {
+  DeleteNote: async (
+    repositoryId,
+    noteId,
+    recurse
+  ): Promise<BackEndResult<Node>> => {
     try {
       const res = await fetch(
         `/note/${repositoryId}/${noteId}?recurse=${recurse}`,
@@ -72,18 +85,18 @@ export const DendronClient = {
           },
         }
       );
-      if (res.status >= 200 && res.status <= 299) {
-        let tree = await res.json();
-        return Ok(tree);
-      } else {
-        return Error(`erreur : ${res.status} - ${res.statusText}`);
-      }
+
+      let tree = await res.json();
+      return tree;
     } catch (e) {
-      return Error(`erreur : ${e.message}`);
+      return Error(`erreur : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
-  SaveNote: async (repositoryId: string, note: Note): Promise<Result<Node>> => {
+  SaveNote: async (
+    repositoryId: string,
+    note: Note
+  ): Promise<BackEndResult<Node>> => {
     try {
       const res = await fetch(`/note/${repositoryId}/${note.header.title}`, {
         // withCredentials: true,
@@ -93,14 +106,11 @@ export const DendronClient = {
         },
         body: JSON.stringify(note), // body data type must match "Content-Type" header
       });
-      if (res.status >= 200 && res.status <= 299) {
-        let tree = await res.json();
-        return Ok(tree);
-      } else {
-        return Error(`erreur : ${res.status} - ${res.statusText}`);
-      }
+
+      let tree = await res.json();
+      return tree;
     } catch (e) {
-      return Error(`erreur : ${e.message}`);
+      return Error(`erreur : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 };

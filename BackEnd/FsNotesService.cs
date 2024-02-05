@@ -27,7 +27,7 @@ namespace BackEnd
             ;
         }
 
-        public override async Task<string> GetContent(string noteName)
+        public override async Task<Result<(string content, string sha)>> GetContent(string noteName)
         {
             string content = "";
             var path = Path.Combine(RootDirectory, "notes", noteName + ".md");
@@ -36,7 +36,7 @@ namespace BackEnd
                 content = File.ReadAllText(path);
             }
 
-            return content;
+            return (content,"nope");
         }
 
         public override async Task<string> CreateNote(string noteName)
@@ -56,17 +56,19 @@ namespace BackEnd
             return "";
         }
 
-        public override async Task SetContent(string noteName, string noteContent)
+        public override async Task<Result<Note>> SetContent(string noteName, Note note)
         {
             var path = Path.Combine(RootDirectory, "notes", noteName + ".md");
             if (File.Exists(path))
             {
-                File.WriteAllText(path, noteContent);
+                File.WriteAllText(path, note.ToString());
             }
+
+            return Result<Note>.Ok();
         }
 
         //C:\Users\olduh\DendronNotes
-        public override async Task<List<string>> GetNotes()
+        public override async Task<Result<List<string>>> GetNotes()
         {
             var notedir = new DirectoryInfo(Path.Combine(RootDirectory, "notes"));
             var files = notedir.GetFiles("*.md");
@@ -74,13 +76,15 @@ namespace BackEnd
             return list;
         }
 
-        public override async Task DeleteNote(string noteName)
+        public override async Task<Result<Note>> DeleteNote(string noteName)
         {
             var path = Path.Combine(RootDirectory, "notes", noteName + ".md");
             if (File.Exists(path))
             {
                 File.Delete(path);
             }
+
+            return Result<Note>.Ok();
         }
     }
 }

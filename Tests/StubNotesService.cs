@@ -38,11 +38,11 @@ public class StubNotesService : AsbtractNotesService
             return path;
         }
 
-        public override async Task<string> GetContent(string noteName)
+        public override async Task<Result<(string content, string sha)>> GetContent(string noteName)
         {
             var path = GetNotePath(noteName);
             var content = FileSystem.ReadAllText(path);
-            return content;
+            return (content,"nope");
         }
 
         public override async Task<string> CreateNote(string noteName)
@@ -62,16 +62,20 @@ public class StubNotesService : AsbtractNotesService
             return "";
         }
 
-        public override async Task SetContent(string noteName, string noteContent)
+        public override async Task<Result<Note>> SetContent(string noteName, Note newNote)
         {
             var path = GetNotePath(noteName);
             if (FileSystem.Exists(path))
             {
-                FileSystem.WriteAllText(path, noteContent);
+                FileSystem.WriteAllText(path, newNote.ToString());
             }
+
+            var note = NoteParser.Parse(newNote.ToString());
+            note.Sha = "nope";
+            return note;
         }
 
-        public override async Task<List<string>> GetNotes()
+        public override async Task<Result<List<string>>> GetNotes()
         {
             var notedir = RootDirectory+"/notes/";
             var files = FileSystem.GetEntitiesRecursive(FileSystemPath.Parse(notedir)).ToList();
@@ -79,8 +83,8 @@ public class StubNotesService : AsbtractNotesService
             return list;
         }
 
-        public override async Task DeleteNote(string noteName)
+        public override async Task<Result<Note>> DeleteNote(string noteName)
         {
-            
+            return Result<Note>.Ok();
         }
 }

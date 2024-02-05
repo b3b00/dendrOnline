@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -45,7 +46,7 @@ namespace BackEnd
             gitHubClient.Credentials = new Credentials(token);
         }
 
-        public override async Task<string> GetContent(string noteName)
+        public override async Task<Result<(string content, string sha)>> GetContent(string noteName)
         {
             if (gitHubClient != null)
             {
@@ -56,45 +57,59 @@ namespace BackEnd
                     if (contents.Any())
                     {
                         var content = contents.First();
-                        return content.Content;
+                        return (content.Content, content.Sha);
+                    }
+                    else
+                    {
+                        Result<(string, string)>.Error(ResultCode.NotFound, $"note {noteName} not found");
                     }
                 }
                 catch (Exception e)
                 {
-                    // TODO : better error reporting
-                    return @"# root note not found !
-
-This may not be a dendron repository";
+                    Result<(string, string)>.Error(ResultCode.InternalError, $"internal error : {e.Message}");
                 }
             }
 
-            return "";
+            return Result<(string,string)>.Error(ResultCode.InternalError, "unable no github connection");
         }
 
-        public override async Task SetContent(string noteName, string noteContent)
+        public override async Task<Result<Note>> SetContent(string noteName, Note newNote)
         {
             if (gitHubClient != null)
             {
                 var content = await NoteExists(noteName);
-                if (content.exists)
+                if (!content.IsOk)
                 {
-                    var note = NoteParser.Parse(noteContent);
+                    return Result<Note>.Error(content.Code, content.ConflictCode, content.ErrorMessage);
+                }
+                if (content.TheResult.exists)
+                {
+                    if (content.TheResult.content.Sha != newNote.Sha && !string.IsNullOrEmpty(newNote.Sha))
+                    {
+                        return Result<Note>.Error(ResultCode.Conflict, ConflictCode.Modified,
+                            $"note {noteName} has been modified");
+                    }
+                    
+                    var note = NoteParser.Parse(newNote.ToString());
                     note.Header.LastUpdatedTS = DateTime.Now.ToTimestamp();
-
-
-                    var request = new UpdateFileRequest($"DendrOnline : update {noteName}", noteContent,
-                        content.content.Sha);
-                    await gitHubClient.Repository.Content.UpdateFile(RepositoryId, content.content.Path, request);
+                    var request = new UpdateFileRequest($"DendrOnline : update {noteName}", note.ToString(),
+                        content.TheResult.content.Sha);
+                    var repositoryChange = await gitHubClient.Repository.Content.UpdateFile(RepositoryId, content.TheResult.content.Path, request);
+                    note.Sha = repositoryChange.Content.Sha;
+                    return note;
                 }
                 else
                 {
                     var request =
-                        new CreateFileRequest($"DendrOnline : new note : {noteName}", noteContent, "main");
-                        await gitHubClient.Repository.Content.CreateFile(RepositoryId,
+                        new CreateFileRequest($"DendrOnline : new note : {noteName}", newNote.ToString(), "main");
+                        var fileCreated =await gitHubClient.Repository.Content.CreateFile(RepositoryId,
                         "notes/" + noteName + ".md",
                         request);
+                        newNote.Sha = fileCreated.Content.Sha;
                 }
             }
+
+            return Result<Note>.Error(ResultCode.InternalError, "unable no github connection");
         }
 
         public override async Task<string> CreateNote(string noteName)
@@ -103,7 +118,11 @@ This may not be a dendron repository";
             {
                 var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/");
                 var content = await NoteExists(noteName);
-                if (!content.exists)
+                if (!content.IsOk)
+                {
+                    return Result<string>.Error(content.Code, content.ConflictCode, content.ErrorMessage);
+                }
+                if (!content.TheResult.exists)
                 {
                     Note note = new Note()
                     {
@@ -122,27 +141,37 @@ This may not be a dendron repository";
             return "";
         }
 
-        private async Task<IList<RepositoryContent>> GetNoteFiles()
+        private async Task<Result<IList<RepositoryContent>>> GetNoteFiles()
         {
             var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, "notes");
             return contents.Where(x => x.Name.EndsWith(".md")).ToList();
         }
 
-        private async Task<(bool exists, RepositoryContent content)> NoteExists(string note)
+        private async Task<Result<(bool exists, RepositoryContent content)>> NoteExists(string note)
         {
             var contents = await GetNoteFiles();
-            var content = contents.FirstOrDefault(x => x.Name == note + ".md");
+            if (!contents.IsOk)
+            {
+                return Result<(bool exists, RepositoryContent content)>.Error(contents.Code, contents.ConflictCode,
+                    contents.ErrorMessage);
+            }
+            var content = contents.TheResult.FirstOrDefault(x => x.Name == note + ".md");
             return (content != null, content);
         }
 
-        public override async Task<List<string>> GetNotes()
+        public override async Task<Result<List<string>>> GetNotes()
         {
             if (gitHubClient != null)
             {
                 try
                 {
                     var contents = await GetNoteFiles();
-                    return contents.Select(x => x.Name.Replace(".md", "")).ToList();
+                    if (!contents.IsOk)
+                    {
+                        return Result<Result<List<string>>>.Error(contents.Code, contents.ConflictCode,
+                            contents.ErrorMessage);
+                    }
+                    return contents.TheResult.Select(x => x.Name.Replace(".md", "")).ToList();
                 }
                 catch (Exception e)
                 {
@@ -153,17 +182,22 @@ This may not be a dendron repository";
             return new List<string>();
         }
 
-        public override async Task DeleteNote(string noteName)
+        public override async Task<Result<Note>> DeleteNote(string noteName)
         {
             if (gitHubClient != null)
             {
                 var content = await NoteExists(noteName);
-                if (content.exists)
+                if (content.TheResult.exists)
                 {
                     await DeleteFile($"DendrOnline : delete note {noteName}", RepositoryId, $"notes/{noteName}.md",
-                        content.content.Sha);
+                        content.TheResult.content.Sha);
+                }
+                else
+                {
+                    return Result<Note>.Error(ResultCode.NotFound, $"note {noteName} not found");
                 }
             }
+            return Result<Note>.Error(ResultCode.InternalError, "unable no github connection");
         }
         
         #region tooling

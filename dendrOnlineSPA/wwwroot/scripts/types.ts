@@ -1,76 +1,99 @@
+import { TVNode } from "@bolduh/svelte-treeview";
 
-import { TVNode  }from '@bolduh/svelte-treeview'
-
-export class Node implements  TVNode {
-    name: string;
-    isLeaf : boolean;
-    isNode : boolean;
-    deployed: boolean;
-    selected: boolean;
-    edited: boolean;
-    children: Node[];
-    id: string
+export class Node implements TVNode {
+  name: string;
+  isLeaf: boolean;
+  isNode: boolean;
+  deployed: boolean;
+  selected: boolean;
+  edited: boolean;
+  children: Node[];
+  id: string;
 }
 
 export interface NoteHeader {
-    id: string;
-    name: string;
-    title: string;
-    description: string;
-    lastUpdatedTS: number,
-    createdTS: number;
+  id: string;
+  name: string;
+  title: string;
+  description: string;
+  lastUpdatedTS: number;
+  createdTS: number;
 }
 
 export interface Note {
-    header: NoteHeader,
-    body: string
+  header: NoteHeader;
+  body: string;
+  sha: string | undefined;
 }
 
 export interface TaggedNote {
-    isDraft: boolean;
-    note: Note; 
+  isDraft: boolean;
+  note: Note;
 }
 
 export interface Repository {
-    id: string;
-    name: string;
+  id: string;
+  name: string;
 }
 
 export interface SelectionItem {
-    id: string;
-    label: string;
+  id: string;
+  label: string;
 }
 
-export interface Result<T> {
-    result: T|undefined;
-    ok: boolean;
-    error: string|undefined;
-}
-
-export let empty ='**none**';
+export let empty = "**none**";
 
 export let emptyNode: Node = {
-    id:empty,
-    name: '',
-    children: [],
-    isLeaf : false,
-    isNode : false,
-    deployed: false,
-    selected: false,
-    edited: false
+  id: empty,
+  name: "",
+  children: [],
+  isLeaf: false,
+  isNode: false,
+  deployed: false,
+  selected: false,
+  edited: false,
+};
+
+export let emptyNote: Note = {
+  header: {
+    id: empty,
+    name: "",
+    title: "",
+    description: "",
+    lastUpdatedTS: 0,
+    createdTS: 0,
+  },
+  body: "",
+  sha: undefined,
+};
+
+export enum ConflictCode {
+    NoConflict,
+    Modified,
+    Deleted,
+    Created
 }
 
-export let emptyNote: Note = 
-    {
-        header: {  
-            id: empty,
-            name: '',
-            title: '',
-            description: '',
-            lastUpdatedTS: 0,
-            createdTS: 0
-        },
-        body: ''
-    }
+export enum BackEndResultCode {
+  Ok,
+  Conflict,
+  InternalError,
+  NotFound
+}
 
-    
+
+
+export enum ResultCode {
+  Modified,
+  Deleted,
+  Created,
+}
+
+
+export interface BackEndResult<T> {
+    theResult: T|undefined;
+    code: BackEndResultCode;
+    conflictCode : ConflictCode;
+    isOk: boolean;
+    errorMessage: string;
+}

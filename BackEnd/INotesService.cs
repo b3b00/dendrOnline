@@ -6,21 +6,17 @@ namespace BackEnd
 
     public interface INotesService
     {
-        Task<string> GetContent(string noteName);
+        Task<Result<(string content, string sha)>> GetContent(string noteName);
 
+        Task<Result<Note>> SetContent(string noteName, Note note);
 
-        // creates note and returns the default content
-        Task<string> CreateNote(string name);
+        Task<Result<List<string>>> GetNotes();
 
-        Task SetContent(string noteName, string noteContent);
-
-        Task<List<string>> GetNotes();
-
-        Task<Note> GetNote(string noteName);
+        Task<Result<Note>> GetNote(string noteName);
         
-        Task DeleteNote(string noteName);
+        Task<Result<Note>> DeleteNote(string noteName);
 
-        INoteHierarchy GetHierarchy(List<string> notes, string filter, string currentNote, List<string> editedNotes);
+        Task<Result<INoteHierarchy>> GetHierarchy(List<string> notes, string filter, string currentNote, List<string> editedNotes);
 
         void SetRepository(string name, long id);
 

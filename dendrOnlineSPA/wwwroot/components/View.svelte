@@ -9,7 +9,7 @@
 
 <script lang="ts">
 
-    import { onMount } from 'svelte';
+    import { onMount, getContext } from 'svelte';
     import {location} from 'svelte-spa-router'
     import {
         getTitle,
@@ -77,8 +77,8 @@
         }
         else {
             const n = await DendronClient.GetNote($repository.id,id);
-            if (n.ok) {
-                note = n.result;
+            if (n.isOk) {
+                note = n.theResult;
                 content = preprocessLinks(note.body);
                 setLoadedNote(id,note);
                 title = getTitle(note.header.description)+($draftNotes.hasOwnProperty(note.header.title) ? " *" : "");
@@ -89,7 +89,7 @@
                 modal.open(
                     ErrorDialog,
                     {
-                        message: `Une erreur est survenue: ${n.error} `,                                                
+                        message: `Une erreur est survenue: ${n.errorMessage} `,                                                
                         closeButton: true,
                         closeOnEsc: true,
                         closeOnOuterClick: true,
