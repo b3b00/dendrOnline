@@ -49,14 +49,14 @@
         unDraft(data.id);
         unloadNote(data.id);
         let newTree = await DendronClient.DeleteNote($repository.id,data.id,deleteChildren)
-        if (newTree.ok) {
-            setTree(newTree.result);
+        if (newTree.isOk) {
+            setTree(newTree.theResult);
         }
         else {
             modal.open(
             ErrorDialog,
             {
-                message: `Une erreur est survenue: ${newTree.error} `,                                                
+                message: `Une erreur est survenue: ${newTree.errorMessage} `,                                                
                 closeButton: true,
                 closeOnEsc: true,
                 closeOnOuterClick: true,

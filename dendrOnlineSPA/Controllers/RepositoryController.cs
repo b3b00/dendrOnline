@@ -71,7 +71,6 @@ public class RepositoryController : DendronController
         await NotesService.SetContent(noteId, note);
         var tree = await GetNotesHierarchy(long.Parse(repositoryId));
         return tree;
-        //return await GetNote(repositoryId, note.Header.Title);
     }
     
     [HttpDelete("/note/{repositoryId}/{noteId}")]

@@ -131,9 +131,9 @@
                     ErrorDialog,
                     {
                         message: `Une erreur est survenue: ${newTree.errorMessage} `,                                                
-                        closeButton: true,
-                        closeOnEsc: true,
-                        closeOnOuterClick: true,
+                        // closeButton: true,
+                        // closeOnEsc: true,
+                        // closeOnOuterClick: true,
                     }
                 );
             }
@@ -306,7 +306,7 @@
                 lastUpdatedTS: 0,
                 createdTS: 0,
             },
-            sha:undefined,
+            sha:null,
             body : "# Write something really smart here.",            
         }
         addNote(note);
