@@ -22,11 +22,9 @@ export const DendronClient = {
     try {
       const res = await fetch("/repositories");
       let allRepositories = await res.json();
-      console.log(`client.getRepositories() -> `,allRepositories);
       return allRepositories;
 
     } catch (e) {
-      console.log(`client.getRepositories() -> ${e.message}`);
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
@@ -68,9 +66,9 @@ export const DendronClient = {
   // },
 
   DeleteNote: async (
-    repositoryId,
-    noteId,
-    recurse
+    repositoryId : string,
+    noteId : string,
+    recurse : boolean
   ): Promise<BackEndResult<Node>> => {
     try {
       const res = await fetch(
@@ -85,6 +83,7 @@ export const DendronClient = {
       );
 
       let tree = await res.json();
+
       return tree;
     } catch (e) {
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);

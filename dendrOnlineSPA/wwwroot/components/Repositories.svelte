@@ -31,13 +31,11 @@
     onMount(async () => {
         currentRepository = $repository;
         let allRepositories = await DendronClient.GetRepositories();
-        console.log(`repos.svelte -> `,allRepositories);
         if (allRepositories.isOk) {
             setRepositories(allRepositories.theResult);
             filteredRepositories = allRepositories.theResult;
         }
         else {
-            console.log(`error while getting repos ${allRepositories.errorMessage}`);
             modal.open(
                 ErrorDialog,
                 {

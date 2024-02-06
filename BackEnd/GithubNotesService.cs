@@ -70,7 +70,7 @@ namespace BackEnd
                 }
             }
 
-            return Result<(string,string)>.Error(ResultCode.InternalError, "unable no github connection");
+            return Result<(string,string)>.Error(ResultCode.InternalError, "unable to github connection");
         }
 
         public override async Task<Result<Note>> SetContent(string noteName, Note note)
@@ -110,7 +110,7 @@ namespace BackEnd
                 }
             }
 
-            return Result<Note>.Error(ResultCode.InternalError, "unable no github connection");
+            return Result<Note>.Error(ResultCode.InternalError, "unable to github connection");
         }
 
         public override async Task<string> CreateNote(string noteName)
@@ -190,7 +190,7 @@ namespace BackEnd
                 var content = await NoteExists(noteName);
                 if (content.TheResult.exists)
                 {
-                    await DeleteFile($"DendrOnline : delete note {noteName}", RepositoryId, $"notes/{noteName}.md",
+                    return await DeleteFile($"DendrOnline : delete note {noteName}", RepositoryId, $"notes/{noteName}.md",
                         content.TheResult.content.Sha);
                 }
                 else
@@ -198,12 +198,12 @@ namespace BackEnd
                     return Result<Note>.Error(ResultCode.NotFound, $"note {noteName} not found");
                 }
             }
-            return Result<Note>.Error(ResultCode.InternalError, "unable no github connection");
+            return Result<Note>.Error(ResultCode.InternalError, "unable to github connection");
         }
         
         #region tooling
         
-        private async Task DeleteFile(string message, long repositoryId, string fileName, string sha)
+        private async Task<Result<Note>> DeleteFile(string message, long repositoryId, string fileName, string sha)
         {
             var creds = gitHubClient.Credentials;
             var user = await gitHubClient.User.Current();
@@ -230,6 +230,10 @@ namespace BackEnd
             if (result.StatusCode != HttpStatusCode.OK)
             {
                 throw new Exception($"'error while deleting note {fileName} : {result.StatusCode} - {result.ReasonPhrase}");
+            }
+            else
+            {
+                return Result<Note>.Ok();
             }
         }    
         

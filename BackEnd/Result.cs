@@ -65,14 +65,14 @@ namespace BackEnd
             };
         }
 
-        public static Result<T> Ok()
+        public static Result<T> Ok(T result = default)
         {
             return new Result<T>()
             {
                 Code = ResultCode.IsOk,
                 ConflictCode = ConflictCode.NoConflict,
                 ErrorMessage = null,
-                TheResult = default(T)
+                TheResult = result
             };
         }
     }

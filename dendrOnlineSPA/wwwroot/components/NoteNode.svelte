@@ -48,7 +48,7 @@
         deleteNote(data.id, recurse);
         unDraft(data.id);
         unloadNote(data.id);
-        let newTree = await DendronClient.DeleteNote($repository.id,data.id,deleteChildren)
+        let newTree = await DendronClient.DeleteNote($repository.id,data.id,recurse)
         if (newTree.isOk) {
             setTree(newTree.theResult);
         }
@@ -94,7 +94,9 @@
                 message: `Are you sure to delete note ${nodeTitle} ?`,
                 option: 'Also delete children',
                 parent: data.id,
-                hasForm: true
+                hasForm: true,
+                oncancel: onDeletionCancel,
+                onOkay: onDeletionOkay
             },
             {
                 closeButton: true,

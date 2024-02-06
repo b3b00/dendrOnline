@@ -146,10 +146,12 @@
     let undo = async function() {
         unDraft(id);
         var oldNote = getLoadedNote(id)
-        content = oldNote.body;
-        description = oldNote.header.description;
-        titleStyle = "normal";
-        floppyVisibility = "display:none";        
+        if (oldNote) {
+            content = oldNote.body;
+            description = oldNote.header.description;
+            titleStyle = "normal";
+            floppyVisibility = "display:none";        
+        }
     }
 
     const onDeletionOkay = async (deleteChildren) => {
