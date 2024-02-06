@@ -67,12 +67,12 @@ public class StubNotesService : AsbtractNotesService
             var path = GetNotePath(noteName);
             if (FileSystem.Exists(path))
             {
-                FileSystem.WriteAllText(path, nn.ToString());
+                FileSystem.WriteAllText(path, note.ToString());
             }
 
-            var note = NoteParser.Parse(nn.ToString());
-            note.Sha = "nope";
-            return note;
+            var newNote = NoteParser.Parse(note.ToString());
+            newNote.Sha = "nope";
+            return newNote;
         }
 
         public override async Task<Result<List<string>>> GetNotes()
