@@ -25,8 +25,7 @@ builder.Services.AddSession(options =>
     
 });
 
-builder.Services.AddScoped<INotesService>((provider) =>
-    new GithubNotesService());
+builder.Services.AddScoped<INotesService, GithubNotesService>();
 
 var app = builder.Build();
 
