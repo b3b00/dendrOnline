@@ -24,7 +24,6 @@ namespace BackEnd
 
         public override void SetAccessToken(string token)
         {
-            ;
         }
 
         public override async Task<Result<(string content, string sha)>> GetContent(string noteName)

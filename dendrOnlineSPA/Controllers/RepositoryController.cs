@@ -24,7 +24,6 @@ public class RepositoryController : DendronController
     public async Task Index()
     {
         HttpContext.Response.Redirect("/index.html");
-        return;
     }
 
     [HttpGet("/user")]
@@ -43,7 +42,6 @@ public class RepositoryController : DendronController
         GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
         var accessToken = HttpContext.GetGithubAccessToken();
         client.Credentials = new Credentials(accessToken);
-        var user = await client.User.Current();
         return await GetRepositories(client);
     }
 
@@ -53,7 +51,6 @@ public class RepositoryController : DendronController
         HttpContext.SetRepositoryId(repositoryId);
         var notes = await NotesService.GetNotes();
         var hierarchy = await NotesService.GetHierarchy(notes, null, HttpContext.GetCurrentNote(), HttpContext.GetEditedNotes().Keys.ToList());
-        var json = JsonSerializer.Serialize(hierarchy);
         return hierarchy;
     }
 

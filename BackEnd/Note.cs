@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BackEnd
 {
-    public class Note : IEquatable<Note>
+    public sealed class Note : IEquatable<Note>
     {
         public NoteHeader Header { get; set; }
 

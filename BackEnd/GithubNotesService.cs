@@ -16,10 +16,6 @@ namespace BackEnd
     public class GithubNotesService : AsbtractNotesService
     {
         
-        private readonly ILogger<GithubNotesService> _logger;
-
-        private ILogger<GithubNotesService> Logger => _logger;
-        
         private GitHubClient gitHubClient { get; set; }
 
         private long RepositoryId { get; set; }
@@ -43,10 +39,6 @@ namespace BackEnd
         }
 
 
-        public GithubNotesService(ILogger<GithubNotesService> logger)
-        {
-            _logger = logger;
-        }
         
 
         public override async Task<Result<(string content, string sha)>> GetContent(string noteName)

@@ -26,7 +26,7 @@ namespace BackEnd
         
         public bool IsLeaf => false;
 
-        public bool Deployed { get; set; } = false;
+        public bool Deployed { get; set; }
         
         public bool Selected { get; set; } = false;
 
@@ -76,7 +76,7 @@ namespace BackEnd
             {
                 if (!subName.Contains('.'))
                 {
-                    if ((!Children.Any() || Children.All(x => x.Name != name)))
+                    if ((!Children.Any() || Children.TrueForAll(x => x.Name != name)))
                     {
                         var leaf = new LeafNote(name);
                         leaf.Selected = name == currentNote;
@@ -89,7 +89,7 @@ namespace BackEnd
                     var nextNodeIndex = subName.IndexOf(".");
                     subName = subName.Substring(0, nextNodeIndex);
                     var FqnSubName = (!IsRoot ? Name + "." : "") + subName;
-                    var sub = Children.FirstOrDefault(x => x.Name == FqnSubName);
+                    var sub = Children.Find(x => x.Name == FqnSubName);
                     if (sub == null)
                     {
                         sub = new NodeNote(FqnSubName);
