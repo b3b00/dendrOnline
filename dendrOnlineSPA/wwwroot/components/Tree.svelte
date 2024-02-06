@@ -18,16 +18,9 @@
     let currentRepository : Repository = undefined;
     
     let currentTree : Node = undefined;
-    
-    let childAccessor = (x) => {
-        if (x!= null && x !== undefined && x.child != undefined && x.child != null && Array.isArray(x.child)) {
-            return x.child;
-        }
-        return [];
-    }
 
     let nodefilter = (node, search)  => {
-		const contains = search === undefined || search === null || search.length== 0 || node.name.toLocaleLowerCase().includes(search.toLocaleLowerCase());
+		const contains = search === undefined || search === null || search.length== 0 || node.name.toLocaleLowerCase().includes(search.toLocaleLowerCase());       
 		return contains;
 	};
 
