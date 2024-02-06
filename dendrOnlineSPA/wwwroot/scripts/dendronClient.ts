@@ -21,7 +21,7 @@ const ErrorResult = <T>(error: string, code: BackEndResultCode): BackEndResult<T
 export const DendronClient = {
   GetRepositories: async (): Promise<BackEndResult<Repository[]>> => {
     try {
-      const res = await fetch("/repositories");
+      const res = await fetch("/repositories",{credentials: 'include'});
       let allRepositories = await res.json();
       return allRepositories;
 
@@ -32,7 +32,7 @@ export const DendronClient = {
 
   GetTree: async (repositoryId): Promise<BackEndResult<Node>> => {
     try {
-      const res = await fetch(`/notes/${repositoryId}`);
+      const res = await fetch(`/notes/${repositoryId}`,{credentials: 'include'});
       if (res.status == 204) {
         return {
           theResult : undefined,
@@ -54,7 +54,7 @@ export const DendronClient = {
     noteId: string
   ): Promise<BackEndResult<Note>> => {
     try {
-      const res = await fetch(`/note/${repositoryId}/${noteId}`);
+      const res = await fetch(`/note/${repositoryId}/${noteId}`,{credentials: 'include'});
       let note = await res.json();
       return note;
     } catch (e) {
@@ -72,23 +72,19 @@ export const DendronClient = {
     recurse : boolean
   ): Promise<BackEndResult<Node>> => {
     try {
-      console.log(`dendronClinet.deleteNote(${repositoryId},${noteId},${recurse}) => fetch`);
       const res = await fetch(
         `/note/${repositoryId}/${noteId}?recurse=${recurse}`,
         {
-          // withCredentials: true,
+          credentials: 'include',
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-      console.log(`fetch => ${res.status} - ${res.statusText}`);
       let tree = await res.json();
-      console.log(`client will return `,tree);
       return tree;
-    } catch (e) {
-      console.log(`exception on delete ${e.message}`)
+    } catch (e) {      
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
@@ -99,7 +95,7 @@ export const DendronClient = {
   ): Promise<BackEndResult<HierarchyAndSha>> => {
     try {
       const res = await fetch(`/note/${repositoryId}/${note.header.title}`, {
-        // withCredentials: true,
+        credentials: 'include',
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
