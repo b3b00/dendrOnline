@@ -54,6 +54,14 @@ public class RepositoryController : DendronController
         return hierarchy;
     }
 
+    [HttpGet("/dendron/{repositoryId}")]
+    public async Task<Result<Dendron>> GetDendron(long repositoryId)
+    {
+        HttpContext.SetRepositoryId(repositoryId);
+        var dendron = await NotesService.GetDendron();
+        return dendron;
+    }
+
     [HttpGet("/note/{repositoryId}/{noteId}")]
     public async Task<Result<Note>> GetNote(string repositoryId, string noteId)
     {
@@ -117,6 +125,8 @@ public class RepositoryController : DendronController
         }
         return tree;
     }
+    
+    
     
     public async Task<Result<IList<GhRepository>>> GetRepositories(GitHubClient client)
     {

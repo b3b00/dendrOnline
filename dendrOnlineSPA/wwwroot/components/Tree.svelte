@@ -1,11 +1,11 @@
 <script lang="ts">
 
-    import {repository, tree, setTree} from '../scripts/dendronStore.js';
+    import {repository, tree, setTree, loadedNotes} from '../scripts/dendronStore.js';
     import { onMount, getContext } from 'svelte';    
     import { DendronClient} from "../scripts/dendronClient.js";    
     import TreeView from "@bolduh/svelte-treeview";    
     import NoteNodeWraper from "./NoteNodeWraper.svelte";
-    import {Node, Repository} from '../scripts/types'
+    import {Dendron, Node, Repository} from '../scripts/types'
     import ErrorDialog from './ErrorDialog.svelte';
     import type { Context } from 'svelte-simple-modal';
     
@@ -32,16 +32,17 @@
         currentRepository = $repository;
         currentTree = $tree;
         if (currentTree === null || currentTree === undefined || !currentTree.hasOwnProperty('name') || refresh) {
-            const newCurrentTree = await DendronClient.GetTree(currentRepository.id);
-            if (newCurrentTree.isOk) {
-                currentTree = newCurrentTree.theResult
-                setTree(currentTree);
-            }
+            const dendron = await DendronClient.GetDendron(currentRepository.id);
+            if (dendron.isOk) {
+                setTree(dendron.theResult.hierarchy);
+                $loadedNotes = dendron.theResult.notes;
+                console.log(`dendron is fully loaded`,dendron);
+            }            
             else {
                 modal.open(
                     ErrorDialog,
                     {
-                        message: `An error occured: ${newCurrentTree.errorMessage} `
+                        message: `An error occured: ${dendron.errorMessage} `
                     },
                     {
                         closeButton: true,

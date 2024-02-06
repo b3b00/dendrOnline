@@ -85,5 +85,35 @@ namespace BackEnd
 
             return root;
         }
+
+        public async Task<Result<Dendron>> GetDendron()
+        {
+            var noteNames = await GetNotes();
+            if (!noteNames.IsOk)
+            {
+                return Result<Dendron>.TransformError<List<string>, Dendron>(noteNames);
+            }
+
+            var hierarchy = await GetHierarchy(noteNames.TheResult, null, null, new List<string>());
+
+            if (!hierarchy.IsOk)
+            {
+                return Result<Dendron>.TransformError<INoteHierarchy, Dendron>(hierarchy);
+            }
+
+            var dendron = new Dendron(hierarchy.TheResult);
+
+            foreach (var noteName in noteNames.TheResult)
+            {
+                var note = await GetNote(noteName);
+                if (!note.IsOk)
+                {
+                    return Result<Dendron>.TransformError<Note, Dendron>(note);
+                }
+                dendron.Put(note.TheResult);
+            }
+
+            return dendron;
+        }
     }
 }

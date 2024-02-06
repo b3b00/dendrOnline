@@ -90,3 +90,8 @@ export interface BackEndResult<T> {
     isOk: boolean;
     errorMessage: string;
 }
+
+export class Dendron {
+  hierarchy: Node;
+  notes: Note[];
+}
