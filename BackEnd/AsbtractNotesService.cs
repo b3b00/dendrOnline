@@ -22,7 +22,7 @@ namespace BackEnd
 
         public abstract void SetAccessToken(string token);
 
-        public abstract Task<Result<(string content, string sha)>> GetContent(string noteName);
+        public abstract Task<Result<(string content, string sha)>> GetContent(string name);
 
         public async Task<Result<Note>> GetNote(string noteName)
         {

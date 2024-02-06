@@ -26,10 +26,10 @@ namespace BackEnd
         {
         }
 
-        public override async Task<Result<(string content, string sha)>> GetContent(string noteName)
+        public override async Task<Result<(string content, string sha)>> GetContent(string name)
         {
             string content = "";
-            var path = Path.Combine(RootDirectory, "notes", noteName + ".md");
+            var path = Path.Combine(RootDirectory, "notes", name + ".md");
             if (File.Exists(path))
             {
                 content = File.ReadAllText(path);

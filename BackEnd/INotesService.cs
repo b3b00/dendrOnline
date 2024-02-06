@@ -6,7 +6,7 @@ namespace BackEnd
 
     public interface INotesService
     {
-        Task<Result<(string content, string sha)>> GetContent(string noteName);
+        Task<Result<(string content, string sha)>> GetContent(string name);
 
         Task<Result<Note>> SetContent(string noteName, Note note);
 

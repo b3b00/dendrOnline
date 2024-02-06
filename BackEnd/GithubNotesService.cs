@@ -41,22 +41,22 @@ namespace BackEnd
 
         
 
-        public override async Task<Result<(string content, string sha)>> GetContent(string noteName)
+        public override async Task<Result<(string content, string sha)>> GetContent(string name)
         {
             if (gitHubClient != null)
             {
                 try
                 {
                     var contents =
-                        await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/{noteName}.md");
+                        await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/{name}.md");
                     if (contents.Any())
                     {   
-                        var content = contents.First();
+                        var content = contents[0];
                         return (content.Content, content.Sha);
                     }
                     else
                     {
-                        Result<(string, string)>.Error(ResultCode.NotFound, $"note {noteName} not found");
+                        Result<(string, string)>.Error(ResultCode.NotFound, $"note {name} not found");
                     }
                 }
                 catch (Exception e)
@@ -111,7 +111,6 @@ namespace BackEnd
         {
             if (gitHubClient != null)
             {
-                var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/");
                 var content = await NoteExists(noteName);
                 if (!content.IsOk)
                 {
@@ -126,7 +125,7 @@ namespace BackEnd
                     };
                     var request =
                         new CreateFileRequest($"DendrOnline : new note : {noteName}", note.ToString(), "main");
-                    var task = await gitHubClient.Repository.Content.CreateFile(RepositoryId,
+                        await gitHubClient.Repository.Content.CreateFile(RepositoryId,
                         "notes/" + noteName + ".md",
                         request);
                     return note.ToString();

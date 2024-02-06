@@ -38,9 +38,9 @@ public class StubNotesService : AsbtractNotesService
             return path;
         }
 
-        public override async Task<Result<(string content, string sha)>> GetContent(string noteName)
+        public override async Task<Result<(string content, string sha)>> GetContent(string name)
         {
-            var path = GetNotePath(noteName);
+            var path = GetNotePath(name);
             var content = FileSystem.ReadAllText(path);
             return (content,"nope");
         }
