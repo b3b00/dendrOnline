@@ -71,6 +71,7 @@ export const DendronClient = {
     recurse : boolean
   ): Promise<BackEndResult<Node>> => {
     try {
+      console.log(`dendronClinet.deleteNote(${repositoryId},${noteId},${recurse}) => fetch`);
       const res = await fetch(
         `/note/${repositoryId}/${noteId}?recurse=${recurse}`,
         {
@@ -81,11 +82,12 @@ export const DendronClient = {
           },
         }
       );
-
+      console.log(`fetch => ${res.status} - ${res.statusText}`);
       let tree = await res.json();
-
+      console.log(`client will return `,tree);
       return tree;
     } catch (e) {
+      console.log(`exception on delete ${e.message}`)
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
