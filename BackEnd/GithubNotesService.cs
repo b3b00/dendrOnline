@@ -51,7 +51,6 @@ namespace BackEnd
 
         public override async Task<Result<(string content, string sha)>> GetContent(string noteName)
         {
-            Logger.LogDebug($"getting note {RepositoryId} - {noteName}");
             if (gitHubClient != null)
             {
                 try
@@ -60,23 +59,19 @@ namespace BackEnd
                         await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/{noteName}.md");
                     if (contents.Any())
                     {   
-                        Logger.LogDebug($"note {RepositoryId} - {noteName} found");
                         var content = contents.First();
                         return (content.Content, content.Sha);
                     }
                     else
                     {
-                        Logger.LogDebug($"note {RepositoryId} - {noteName} does not exist");
                         Result<(string, string)>.Error(ResultCode.NotFound, $"note {noteName} not found");
                     }
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError($"error when getting note {RepositoryId} - {noteName} ",e);
                     Result<(string, string)>.Error(ResultCode.InternalError, $"internal error : {e.Message}");
                 }
             }
-            Logger.LogError($"error when getting note {RepositoryId} - {noteName} : no github client initialized ! ");
             return Result<(string,string)>.Error(ResultCode.InternalError, "unable to github connection");
         }
 
@@ -190,13 +185,11 @@ namespace BackEnd
 
         public override async Task<Result<Note>> DeleteNote(string noteName)
         {
-            Logger.LogDebug($"deleting note {RepositoryId} - {noteName}");
             if (gitHubClient != null)
             {
                 var content = await NoteExists(noteName);
                 if (content.TheResult.exists)
                 {
-                    Logger.LogDebug($"calling gh api for DELETE {RepositoryId} - {noteName}");
                     return await DeleteFile($"DendrOnline : delete note {noteName}", RepositoryId, $"notes/{noteName}.md",
                         content.TheResult.content.Sha);
                 }
