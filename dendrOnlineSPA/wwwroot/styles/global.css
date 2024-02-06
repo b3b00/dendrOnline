@@ -14,7 +14,7 @@
 
 header {
     overflow: hidden;
-    background: #911c57
+    background: #4241a2
 }
 
 header a, header label {
@@ -28,7 +28,7 @@ header a, header label {
 header a:hover, header label:hover { color: #aaa; }
 
 header label {
-    background-color: #911c57;
+    background-color: #4241a2;
     float: right;
     padding: 18px 20px;
     cursor: pointer;
@@ -38,19 +38,19 @@ header label:after {
     content: "\2261";
     font-size: 1.8em;
     font-weight: bolder;
-    background-color: #911c57
+    background-color: #4241a2
 }
 
 .logo {
     float: left;
     font-weight: bold;
     font-size: 1.5em;
-    background-color: #911c57;
+    background-color: #4241a2;
 }
 
 nav {
     float: right;
-    background-color: #911c57;
+    background-color: #4241a2;
     max-height: 0;
     width: 100%;
     -webkit-transition: max-height 0.3s;
