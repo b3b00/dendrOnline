@@ -106,6 +106,7 @@ namespace BackEnd
                         "notes/" + noteName + ".md",
                         request);
                         note.Sha = fileCreated.Content.Sha;
+                        return note;
                 }
             }
 
