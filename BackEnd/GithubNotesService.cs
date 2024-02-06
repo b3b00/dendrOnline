@@ -221,7 +221,7 @@ namespace BackEnd
             var result = await client.SendAsync(request);
             if (result.StatusCode != HttpStatusCode.OK)
             {
-                throw new Exception($"'error while deleting note {fileName} : {result.StatusCode} - {result.ReasonPhrase}");
+                throw new ArgumentException($"'error while deleting note {fileName} : {result.StatusCode} - {result.ReasonPhrase}");
             }
             else
             {
