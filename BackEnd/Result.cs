@@ -75,5 +75,10 @@ namespace BackEnd
                 TheResult = result
             };
         }
+
+        public static Result<T> TransformError<X, T>(Result<X> x)
+        {
+            return Result<T>.Error(x.Code, x.ConflictCode, x.ErrorMessage);
+        }
     }
 }

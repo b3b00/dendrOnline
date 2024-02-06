@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Octokit;
@@ -14,18 +13,6 @@ using ProductHeaderValue = Octokit.ProductHeaderValue;
 
 namespace BackEnd
 {
-
- 
-
-    public class DeleteMessage
-    {
-        [JsonPropertyName("message")]
-        public string Message { get; set; }
-       
-        [JsonPropertyName("sha")]
-        public string Sha { get; set; }
-    }
-    
     public class GithubNotesService : AsbtractNotesService
     {
         
@@ -100,7 +87,7 @@ namespace BackEnd
                 var content = await NoteExists(noteName);
                 if (!content.IsOk)
                 {
-                    return Result<Note>.Error(content.Code, content.ConflictCode, content.ErrorMessage);
+                    return Result<Note>.TransformError<(bool,RepositoryContent),Note>(content);
                 }
                 if (content.TheResult.exists)
                 {
@@ -141,7 +128,7 @@ namespace BackEnd
                 var content = await NoteExists(noteName);
                 if (!content.IsOk)
                 {
-                    return Result<string>.Error(content.Code, content.ConflictCode, content.ErrorMessage);
+                    return Result<string>.TransformError<(bool,RepositoryContent),string>(content);
                 }
                 if (!content.TheResult.exists)
                 {
@@ -173,8 +160,7 @@ namespace BackEnd
             var contents = await GetNoteFiles();
             if (!contents.IsOk)
             {
-                return Result<(bool exists, RepositoryContent content)>.Error(contents.Code, contents.ConflictCode,
-                    contents.ErrorMessage);
+                return Result<(bool exists, RepositoryContent content)>.TransformError<IList<RepositoryContent>,(bool exists, RepositoryContent content)>(contents);
             }
             var content = contents.TheResult.FirstOrDefault(x => x.Name == note + ".md");
             return (content != null, content);
@@ -189,8 +175,7 @@ namespace BackEnd
                     var contents = await GetNoteFiles();
                     if (!contents.IsOk)
                     {
-                        return Result<Result<List<string>>>.Error(contents.Code, contents.ConflictCode,
-                            contents.ErrorMessage);
+                        return Result<Result<List<string>>>.TransformError<IList<RepositoryContent>,List<string>>(contents);
                     }
                     return contents.TheResult.Select(x => x.Name.Replace(".md", "")).ToList();
                 }
@@ -236,12 +221,12 @@ namespace BackEnd
             var uri = new Uri(gitHubClient.BaseAddress, $"repos/{user.Login}/{repo.Name}/contents/{fileName}");
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, uri);
             
-            DeleteMessage deleteMessage = new DeleteMessage()
+            GithubDeleteMessage githubDeleteMessage = new GithubDeleteMessage()
             {
                 Message = message,
                 Sha = sha
             };
-            var jsonDeleteMessage = JsonSerializer.Serialize(deleteMessage);
+            var jsonDeleteMessage = JsonSerializer.Serialize(githubDeleteMessage);
             var content = new StringContent(jsonDeleteMessage,Encoding.UTF8);
             request.Headers.Authorization = new AuthenticationHeaderValue(AuthenticationType.Bearer.ToString(),creds.Password);
             request.Content = content;

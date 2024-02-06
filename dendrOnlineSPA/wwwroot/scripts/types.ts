@@ -11,6 +11,11 @@ export class Node implements TVNode {
   id: string;
 }
 
+export class HierarchyAndSha {
+  hierarchy: Node;
+  sha: string;
+}
+
 export interface NoteHeader {
   id: string;
   name: string;

@@ -114,8 +114,9 @@
         if (n.isDraft) {
             let newTree = await DendronClient.SaveNote($repository.id, n.note);
             if (newTree.isOk) {
-                setTree(newTree.theResult);
+                setTree(newTree.theResult.hierarchy);
                 unDraft(n.note.header.title);
+                n.note.sha = newTree.theResult.sha;
                 setLoadedNote(n.note.header.title,n.note);
                 n = getNoteFromStore(n.note.header.title);
                 note = n.note;

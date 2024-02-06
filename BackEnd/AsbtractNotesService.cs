@@ -29,7 +29,7 @@ namespace BackEnd
             var getContentResult = await GetContent(noteName);
             if (!getContentResult.IsOk)
             {
-                return Result<Note>.Error(getContentResult.Code,getContentResult.ConflictCode,getContentResult.ErrorMessage);
+                return Result<Note>.TransformError<(string,string),Note>(getContentResult);
             }
             var note = NoteParser.Parse(getContentResult.TheResult.content);
             note.Header.Title = noteName;

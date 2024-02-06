@@ -66,15 +66,27 @@ public class RepositoryController : DendronController
 
 
     [HttpPut("/note/{repositoryId}/{noteId}")]
-    public async Task<Result<INoteHierarchy>> SaveNote(string repositoryId, string noteId, [FromBody] Note note)
+    public async Task<Result<HierarchyAndSha>> SaveNote(string repositoryId, string noteId, [FromBody] Note note)
     {
         var setted = await NotesService.SetContent(noteId, note);
         if (!setted.IsOk)
         {
-            return Result<INoteHierarchy>.Error(setted.Code, setted.ConflictCode, setted.ErrorMessage);
+            return Result<HierarchyAndSha>.TransformError<Note,HierarchyAndSha>(setted);
         }
+        
         var tree = await GetNotesHierarchy(long.Parse(repositoryId));
-        return tree;
+        if (!tree.IsOk)
+        {
+            return Result<HierarchyAndSha>.TransformError<INoteHierarchy,HierarchyAndSha>(tree);
+        }
+
+        var treeAndSha = new HierarchyAndSha()
+        {
+            Hierarchy = tree.TheResult,
+            Sha = setted.TheResult.Sha
+        };
+        
+        return treeAndSha;
     }
 
     [HttpDelete("/note/{repositoryId}/{noteId}")]
@@ -85,7 +97,7 @@ public class RepositoryController : DendronController
             var allNotes = await NotesService.GetNotes();
             if (!allNotes.IsOk)
             {
-                return Result<INoteHierarchy>.Error(allNotes.Code,allNotes.ConflictCode,allNotes.ErrorMessage);
+                return Result<INoteHierarchy>.TransformError<List<string>,INoteHierarchy>(allNotes);
             }
             var children = allNotes.TheResult.Where(x => x.StartsWith(noteId) && x != noteId);
             foreach (var child in children)
@@ -96,7 +108,7 @@ public class RepositoryController : DendronController
         var deleted = await NotesService.DeleteNote(noteId);
         if (!deleted.IsOk)
         {
-            return Result<INoteHierarchy>.Error(deleted.Code,deleted.ConflictCode,deleted.ErrorMessage);
+            return Result<INoteHierarchy>.TransformError<Note,INoteHierarchy>(deleted);
         }
         Logger.LogDebug($"after note deletion {repositoryId} - {noteId} - {recurse}");
         var tree = await GetNotesHierarchy(long.Parse(repositoryId));

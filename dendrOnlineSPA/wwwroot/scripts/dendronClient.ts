@@ -5,6 +5,7 @@ import {
   BackEndResult,
   BackEndResultCode,
   ConflictCode,
+  HierarchyAndSha,
 } from "./types";
 
 const ErrorResult = <T>(error: string, code: BackEndResultCode): BackEndResult<T> => {
@@ -95,7 +96,7 @@ export const DendronClient = {
   SaveNote: async (
     repositoryId: string,
     note: Note
-  ): Promise<BackEndResult<Node>> => {
+  ): Promise<BackEndResult<HierarchyAndSha>> => {
     try {
       const res = await fetch(`/note/${repositoryId}/${note.header.title}`, {
         // withCredentials: true,
