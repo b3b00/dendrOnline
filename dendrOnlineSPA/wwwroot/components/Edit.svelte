@@ -112,14 +112,24 @@
     let save = async function() {
         let n = getNoteFromStore(id);
         if (n.isDraft) {
-            let newTree = await DendronClient.SaveNote($repository.id, n.note);
-            if (newTree.isOk) {
+            console.log(`saving note ${n.note.header.name} @${n.note.sha}`,n.note);
+            let newTree = await DendronClient.SaveNote($repository.id, n.note);            
+            if (newTree.isOk) {                
+                console.log(`note saved get tree back `,newTree);
+                console.log('setting tree',newTree.theResult.hierarchy);
                 setTree(newTree.theResult.hierarchy);
+                console.log(`new sha is ${newTree.theResult.sha}`);
                 unDraft(n.note.header.title);
+                console.log('note before',n.note);
                 n.note.sha = newTree.theResult.sha;
+                console.log('note fater',n.note);
+                console.log('set new note to loaded store');
                 setLoadedNote(n.note.header.title,n.note);
+                
                 n = getNoteFromStore(n.note.header.title);
+                console.log('get note back from store',n);
                 note = n.note;
+                console.log('editor s note is finally',note);
                 description = note.header.description;            
                 titleStyle = n.isDraft ? "draft" : "normal";            
                 previousContent = note.body;
