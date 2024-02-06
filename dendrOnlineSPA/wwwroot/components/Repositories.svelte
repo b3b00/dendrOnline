@@ -53,7 +53,7 @@
 </script>
 
 <div>
-    <input type="text" bind:value={filter}/>
+    <input type="text" bind:value={filter} placeholder="search ..."/>
     {#if filteredRepositories.length > 0}
         {#each filteredRepositories as repository}
             <div class="w3-display-container" aria-hidden="true" style="cursor: pointer" on:click={() => {                            

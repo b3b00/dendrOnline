@@ -66,7 +66,7 @@
     <!--{#await currentTree}-->
     <!--    <p>...loading note tree...</p>-->
     <!--{:then t}-->
-        <TreeView emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} filter={nodefilter}></TreeView>
+        <TreeView emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} filter={nodefilter} searchPlaceholder="search the notes ..."></TreeView>
     <!--{:catch error}-->
     <!--    <p style="color: red">{error.message}</p>-->
     <!--{/await}-->
