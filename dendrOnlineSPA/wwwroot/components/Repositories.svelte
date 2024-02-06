@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {setRepository, repositories, setRepositories} from '../scripts/dendronStore.js';
+    import {setRepository, repositories, setRepositories, repository, setTree, draftNotes, loadedNotes} from '../scripts/dendronStore.js';
     import {push} from 'svelte-spa-router'
     import {onMount, getContext} from 'svelte';
     import {DendronClient} from "../scripts/dendronClient.js";
@@ -13,9 +13,14 @@
 
     let filteredRepositories: Repository[] = [];
 
+    
+
     let filter:string = "";
 
+    let currentRepository : Repository | undefined;
+
     $:{
+        currentRepository = $repository;
         allRepositories = $repositories;
         filter = filter;
         filteredRepositories = allRepositories.filter(
@@ -24,7 +29,7 @@
     }
 
     onMount(async () => {
-
+        currentRepository = $repository;
         let allRepositories = await DendronClient.GetRepositories();
         console.log(`repos.svelte -> `,allRepositories);
         if (allRepositories.isOk) {
@@ -36,7 +41,7 @@
             modal.open(
                 ErrorDialog,
                 {
-                    message: `Une erreur est survenue: ${allRepositories.errorMessage} `,                                                
+                    message: `An error occured: ${allRepositories.errorMessage} `,                                                
                     closeButton: true,
                     closeOnEsc: true,
                     closeOnOuterClick: true,
@@ -52,8 +57,17 @@
     {#if filteredRepositories.length > 0}
         {#each filteredRepositories as repository}
             <div class="w3-display-container" aria-hidden="true" style="cursor: pointer" on:click={() => {                            
+                        if (currentRepository && currentRepository.id != repository.id) {
+                            setRepository(repository);
+                            setTree(null);
+                            $loadedNotes = [];
+                            $draftNotes = [];
+                            push(`#/tree/${repository.id}/refresh`);
+                        }
+                        else {
                             setRepository(repository);
                             push(`#/tree/${repository.id}`);
+                        }
                     }}>
                 {repository.name}
             </div>
