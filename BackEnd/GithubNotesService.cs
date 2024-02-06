@@ -4,11 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Octokit;
 using ProductHeaderValue = Octokit.ProductHeaderValue;
 
@@ -28,11 +28,20 @@ namespace BackEnd
     
     public class GithubNotesService : AsbtractNotesService
     {
+        
+        private readonly ILogger<GithubNotesService> _logger;
+
+        private ILogger<GithubNotesService> Logger => _logger;
+        
         private GitHubClient gitHubClient { get; set; }
 
         private long RepositoryId { get; set; }
 
         private string RepositoryName { get; set; }
+        
+
+        
+        
 
         public override void SetRepository(string name, long id)
         {
@@ -46,8 +55,16 @@ namespace BackEnd
             gitHubClient.Credentials = new Credentials(token);
         }
 
+
+        public GithubNotesService(ILogger<GithubNotesService> logger)
+        {
+            _logger = logger;
+        }
+        
+
         public override async Task<Result<(string content, string sha)>> GetContent(string noteName)
         {
+            Logger.LogDebug($"getting note {RepositoryId} - {noteName}");
             if (gitHubClient != null)
             {
                 try
@@ -55,21 +72,24 @@ namespace BackEnd
                     var contents =
                         await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/{noteName}.md");
                     if (contents.Any())
-                    {
+                    {   
+                        Logger.LogDebug($"note {RepositoryId} - {noteName} found");
                         var content = contents.First();
                         return (content.Content, content.Sha);
                     }
                     else
                     {
+                        Logger.LogDebug($"note {RepositoryId} - {noteName} does not exist");
                         Result<(string, string)>.Error(ResultCode.NotFound, $"note {noteName} not found");
                     }
                 }
                 catch (Exception e)
                 {
+                    Logger.LogError($"error when getting note {RepositoryId} - {noteName} ",e);
                     Result<(string, string)>.Error(ResultCode.InternalError, $"internal error : {e.Message}");
                 }
             }
-
+            Logger.LogError($"error when getting note {RepositoryId} - {noteName} : no github client initialized ! ");
             return Result<(string,string)>.Error(ResultCode.InternalError, "unable to github connection");
         }
 
@@ -185,11 +205,13 @@ namespace BackEnd
 
         public override async Task<Result<Note>> DeleteNote(string noteName)
         {
+            Logger.LogDebug($"deleting note {RepositoryId} - {noteName}");
             if (gitHubClient != null)
             {
                 var content = await NoteExists(noteName);
                 if (content.TheResult.exists)
                 {
+                    Logger.LogDebug($"calling gh api for DELETE {RepositoryId} - {noteName}");
                     return await DeleteFile($"DendrOnline : delete note {noteName}", RepositoryId, $"notes/{noteName}.md",
                         content.TheResult.content.Sha);
                 }

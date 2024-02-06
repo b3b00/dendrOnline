@@ -98,8 +98,14 @@ public class RepositoryController : DendronController
         {
             return Result<INoteHierarchy>.Error(deleted.Code,deleted.ConflictCode,deleted.ErrorMessage);
         }
-        
+        Logger.LogDebug($"after note deletion {repositoryId} - {noteId} - {recurse}");
         var tree = await GetNotesHierarchy(long.Parse(repositoryId));
+        Logger.LogDebug($" new tree : {tree.IsOk} - {tree.ErrorMessage}");
+        if (tree.TheResult != null)
+        {
+            Logger.LogDebug("new tree :: ");
+            Logger.LogDebug(tree.TheResult.Dump("  "));
+        }
         return tree;
     }
     
