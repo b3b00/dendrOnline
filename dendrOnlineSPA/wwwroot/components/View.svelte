@@ -89,10 +89,12 @@
                 modal.open(
                     ErrorDialog,
                     {
-                        message: `Une erreur est survenue: ${n.errorMessage} `,                                                
+                        message: `An error occured: ${n.errorMessage} `,                                                                        
+                    },
+                    {
                         closeButton: true,
                         closeOnEsc: true,
-                        closeOnOuterClick: true,
+                        closeOnOuterClick: true
                     }
                 );
             }

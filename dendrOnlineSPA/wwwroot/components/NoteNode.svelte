@@ -56,11 +56,13 @@
             modal.open(
             ErrorDialog,
             {
-                message: `Une erreur est survenue: ${newTree.errorMessage} `,                                                
+                message: `An error occured: ${newTree.errorMessage} `
+            },
+            {
                 closeButton: true,
                 closeOnEsc: true,
-                closeOnOuterClick: true,
-            });
+                closeOnOuterClick: true
+            })
         }
         // TODO : call backend deletion ! (only if really needed ?);        
     }
@@ -71,16 +73,16 @@
         modal.open(
             PromptDialog,
             {
-                message: "What is your favorite colour ?",
+                message: "new note name : ",
                 parent: data.id,
                 hasForm: true,
                 onCancel:onCreationCancel,
                 onOkay:onCreationOk
             },
             {
-                closeButton: false,
-                closeOnEsc: false,
-                closeOnOuterClick: false,
+                closeButton: true,
+                closeOnEsc: true,
+                closeOnOuterClick: true,
             }
         );
     };
@@ -92,12 +94,12 @@
                 message: `Are you sure to delete note ${nodeTitle} ?`,
                 option: 'Also delete children',
                 parent: data.id,
-                hasForm: true,
-                onCancel:onDeletionCancel,
-                onOkay:onDeletionOkay,            
-                closeButton: false,
-                closeOnEsc: false,
-                closeOnOuterClick: false,
+                hasForm: true
+            },
+            {
+                closeButton: true,
+                closeOnEsc: true,
+                closeOnOuterClick: true,
             }
         );
     };

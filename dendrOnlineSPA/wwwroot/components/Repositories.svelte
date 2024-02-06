@@ -41,7 +41,9 @@
             modal.open(
                 ErrorDialog,
                 {
-                    message: `An error occured: ${allRepositories.errorMessage} `,                                                
+                    message: `An error occured: ${allRepositories.errorMessage} `
+                },
+                {
                     closeButton: true,
                     closeOnEsc: true,
                     closeOnOuterClick: true,

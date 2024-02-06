@@ -48,10 +48,12 @@
                 modal.open(
                     ErrorDialog,
                     {
-                        message: `Une erreur est survenue: ${newCurrentTree.errorMessage} `,                                                
+                        message: `An error occured: ${newCurrentTree.errorMessage} `
+                    },
+                    {
                         closeButton: true,
                         closeOnEsc: true,
-                        closeOnOuterClick: true,
+                        closeOnOuterClick: true
                     });
             }
             
@@ -64,7 +66,7 @@
     <!--{#await currentTree}-->
     <!--    <p>...loading note tree...</p>-->
     <!--{:then t}-->
-        <TreeView emptyTreeMessage="y a que dalle !" root={currentTree} nodeTemplate={NoteNodeWraper} filter={nodefilter}></TreeView>
+        <TreeView emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} filter={nodefilter}></TreeView>
     <!--{:catch error}-->
     <!--    <p style="color: red">{error.message}</p>-->
     <!--{/await}-->

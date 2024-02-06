@@ -130,10 +130,12 @@
                 modal.open(
                     ErrorDialog,
                     {
-                        message: `Une erreur est survenue: ${newTree.errorMessage} `,                                                
-                        // closeButton: true,
-                        // closeOnEsc: true,
-                        // closeOnOuterClick: true,
+                        message: `An error occured: ${newTree.errorMessage} `
+                    },
+                    {
+                        closeButton: true,
+                        closeOnEsc: true,
+                        closeOnOuterClick: true
                     }
                 );
             }
@@ -170,10 +172,12 @@
             modal.open(
             ErrorDialog,
             {
-                message: `Une erreur est survenue: ${newTree.errorMessage} `,                                                
+                message: `An error occured: ${newTree.errorMessage} `
+            },
+            {
                 closeButton: true,
                 closeOnEsc: true,
-                closeOnOuterClick: true,
+                closeOnOuterClick: true
             }
         );
         }
@@ -207,10 +211,10 @@
                 onCancel:onCancel,
                 onOkay:onSelectOkay
             },
-            {            
-                closeButton: false,
-                closeOnEsc: false,
-                closeOnOuterClick: false,
+            {
+                closeButton: true,
+                closeOnEsc: true,
+                closeOnOuterClick: true
             });
     }
 
@@ -225,9 +229,9 @@
                 onOkay:onDeletionOkay
             },
             {            
-                closeButton: false,
-                closeOnEsc: false,
-                closeOnOuterClick: false,
+                closeButton: true,
+                closeOnEsc: true,
+                closeOnOuterClick: true
             });
     }
 
@@ -285,10 +289,12 @@
                 modal.open(
                     ErrorDialog,
                     {
-                        message: `Une erreur est survenue: ${n.errorMessage} `,                                                
+                        message: `An error occured: ${n.errorMessage} `                                            
+                    },
+                    {
                         closeButton: true,
                         closeOnEsc: true,
-                        closeOnOuterClick: true,
+                        closeOnOuterClick: true
                     }
                 );
             }

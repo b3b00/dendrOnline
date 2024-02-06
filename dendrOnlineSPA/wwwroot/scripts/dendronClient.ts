@@ -27,7 +27,7 @@ export const DendronClient = {
 
     } catch (e) {
       console.log(`client.getRepositories() -> ${e.message}`);
-      return ErrorResult(`erreur : ${e.message}`, BackEndResultCode.InternalError);
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
@@ -46,7 +46,7 @@ export const DendronClient = {
       let tree = await res.json();
       return tree;
     } catch (e) {
-      return ErrorResult(`erreur : ${e.message}`, BackEndResultCode.InternalError);
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
@@ -59,7 +59,7 @@ export const DendronClient = {
       let note = await res.json();
       return note;
     } catch (e) {
-      return ErrorResult(`erreur : ${e.message}`, BackEndResultCode.InternalError);
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
@@ -87,7 +87,7 @@ export const DendronClient = {
       let tree = await res.json();
       return tree;
     } catch (e) {
-      return ErrorResult(`erreur : ${e.message}`, BackEndResultCode.InternalError);
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 
@@ -108,7 +108,7 @@ export const DendronClient = {
       let tree = await res.json();
       return tree;
     } catch (e) {
-      return ErrorResult(`erreur : ${e.message}`, BackEndResultCode.InternalError);
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
 };
