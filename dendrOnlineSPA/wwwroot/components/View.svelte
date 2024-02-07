@@ -79,6 +79,18 @@
     
     onMount(async () => {                
         setNoteId(id);        
+        const commits = await DendronClient.getCommits($repository.id,id);
+        console.log(commits);
+        if (commits.isOk) {
+            for (let i = 0; i < commits.theResult.length; i++) {
+                const commit = commits.theResult[i];
+                const atDate = DendronClient.GetNote($repository.id,id,commit.tree.sha);
+                if ((await atDate).isOk) {
+                    console.log(`${id} @ ${commit.sha}`,(await atDate).theResult);
+                }
+            }
+        }
+
         var n = getNoteFromStore(id);
       
         if (n) {

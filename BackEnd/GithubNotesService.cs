@@ -13,7 +13,7 @@ using ProductHeaderValue = Octokit.ProductHeaderValue;
 
 namespace BackEnd
 {
-    public class GithubNotesService : AsbtractNotesService
+    public class GithubNotesService : AbstractNotesService
     {
         
         private GitHubClient gitHubClient { get; set; }
@@ -41,14 +41,19 @@ namespace BackEnd
 
         
 
-        public override async Task<Result<(string content, string sha)>> GetContent(string name)
+        public override async Task<Result<(string content, string sha)>> GetContent(string name, string reference = null)
         {
             if (gitHubClient != null)
             {
                 try
                 {
+                    string url = $"notes/{name}.md";
+                    if (!string.IsNullOrEmpty(reference))
+                    {
+                        url += $"?ref={reference}";
+                    }
                     var contents =
-                        await gitHubClient.Repository.Content.GetAllContents(RepositoryId, $"notes/{name}.md");
+                        await gitHubClient.Repository.Content.GetAllContents(RepositoryId, url);
                     if (contents.Any())
                     {   
                         var content = contents[0];
@@ -191,6 +196,22 @@ namespace BackEnd
             }
             return Result<Note>.Error(ResultCode.InternalError, "unable to github connection");
         }
+
+        public override async Task<Result<IList<Commit>>> GetCommits(string noteName)
+        {
+            var commitRequest = new CommitRequest()
+            {
+                Path = $"notes/{noteName}.md"
+            };
+            var commits = await gitHubClient.Repository.Commit.GetAll(RepositoryId, commitRequest);
+            if (commits != null && commits.Any())
+            {
+                return commits.Select(x => new Commit(x)).ToList();
+            }
+
+            return new List<Commit>();
+        }
+        
         
         #region tooling
         

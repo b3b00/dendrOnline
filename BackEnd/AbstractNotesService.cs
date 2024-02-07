@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BackEnd
 {
 
-    public abstract class AsbtractNotesService : INotesService
+    public abstract class AbstractNotesService : INotesService
     {
         public long UserId { get; set; }
         
@@ -22,9 +22,9 @@ namespace BackEnd
 
         public abstract void SetAccessToken(string token);
 
-        public abstract Task<Result<(string content, string sha)>> GetContent(string name);
+        public abstract Task<Result<(string content, string sha)>> GetContent(string name, string reference = null);
 
-        public async Task<Result<Note>> GetNote(string noteName)
+        public async Task<Result<Note>> GetNote(string noteName, string reference = null)
         {
             var getContentResult = await GetContent(noteName);
             if (!getContentResult.IsOk)
@@ -115,5 +115,7 @@ namespace BackEnd
 
             return dendron;
         }
+
+        public abstract Task<Result<IList<Commit>>> GetCommits(string noteName);
     }
 }

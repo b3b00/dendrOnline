@@ -7,6 +7,7 @@ import {
   BackEndResultCode,
   ConflictCode,
   HierarchyAndSha,
+  Commit,
 } from "./types";
 
 const ErrorResult = <T>(error: string, code: BackEndResultCode): BackEndResult<T> => {
@@ -71,10 +72,15 @@ export const DendronClient = {
 
   GetNote: async (
     repositoryId: string,
-    noteId: string
+    noteId: string,
+    reference: string
   ): Promise<BackEndResult<Note>> => {
     try {
-      const res = await fetch(`/note/${repositoryId}/${noteId}`,{credentials: 'include'});
+      let url = `/note/${repositoryId}/${noteId}`;
+      if (reference) {
+        url += `?reference=${reference}`
+      }
+      const res = await fetch(url,{credentials: 'include'});
       let note = await res.json();
       return note;
     } catch (e) {
@@ -129,4 +135,18 @@ export const DendronClient = {
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
+
+  getCommits: async(repositoryId: string, noteName:string): Promise<BackEndResult<Commit[]>> => {
+    try {
+      const res = await fetch(`/commits/${repositoryId}/${noteName}`, {
+        credentials: 'include',
+        method: "GET"
+      });
+
+      let commits = await res.json();
+      return commits;
+    } catch (e) {
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
+    }
+  }
 };

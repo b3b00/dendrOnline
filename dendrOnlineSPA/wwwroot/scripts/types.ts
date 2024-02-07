@@ -95,3 +95,22 @@ export class Dendron {
   hierarchy: Node;
   notes: Note[];
 }
+
+export interface Commit {
+  author: GithubUser;
+  committer: GithubUser;
+  message: string;
+  tree: Tree;
+  url: string;
+  sha: string;
+}
+
+export interface GithubUser {
+  email: string;
+  name: string;
+}
+
+export interface Tree {
+  sha: string;
+  url: string;
+}

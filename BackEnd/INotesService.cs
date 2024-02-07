@@ -6,13 +6,13 @@ namespace BackEnd
 
     public interface INotesService
     {
-        Task<Result<(string content, string sha)>> GetContent(string name);
+        Task<Result<(string content, string sha)>> GetContent(string name, string reference = null);
 
         Task<Result<Note>> SetContent(string noteName, Note note);
 
         Task<Result<List<string>>> GetNotes();
 
-        Task<Result<Note>> GetNote(string noteName);
+        Task<Result<Note>> GetNote(string noteName, string reference);
         
         Task<Result<Note>> DeleteNote(string noteName);
 
@@ -26,5 +26,7 @@ namespace BackEnd
 
         Task<Result<Dendron>> GetDendron();
 
+
+        Task<Result<IList<Commit>>> GetCommits(string noteName);
     }
 }

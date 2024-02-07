@@ -5,6 +5,7 @@ using dendrOnlinSPA.model;
 using GitHubOAuthMiddleWare;
 using Microsoft.AspNetCore.Mvc;
 using Octokit;
+using Commit = BackEnd.Commit;
 
 namespace dendrOnlineSPA.Controllers;
 
@@ -63,9 +64,9 @@ public class RepositoryController : DendronController
     }
 
     [HttpGet("/note/{repositoryId}/{noteId}")]
-    public async Task<Result<Note>> GetNote(string repositoryId, string noteId)
+    public async Task<Result<Note>> GetNote(string repositoryId, string noteId, [FromQuery]string reference)
     {
-        var note = await NotesService.GetNote(noteId);
+        var note = await NotesService.GetNote(noteId,reference);
         return note;
     }
 
@@ -92,6 +93,12 @@ public class RepositoryController : DendronController
         };
         
         return treeAndSha;
+    }
+
+    [HttpGet("/commits/{repositoryId}/{noteId}")]
+    public async Task<Result<IList<Commit>>> GetCommits(string repositoryId, string noteId)
+    {
+        return await NotesService.GetCommits(noteId);
     }
 
     [HttpDelete("/note/{repositoryId}/{noteId}")]

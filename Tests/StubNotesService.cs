@@ -8,7 +8,7 @@ using SharpFileSystem.FileSystems;
 
 namespace Tests;
 
-public class StubNotesService : AsbtractNotesService
+public class StubNotesService : AbstractNotesService
 {
     
         public string RootDirectory { get; set; }
@@ -32,13 +32,18 @@ public class StubNotesService : AsbtractNotesService
             ;
         }
 
+        public override Task<Result<IList<Commit>>> GetCommits(string noteName)
+        {
+            throw new System.NotImplementedException();
+        }
+
         private string GetNotePath(string noteName)
         {
             var path = Path.Combine(RootDirectory,"notes",$"{noteName}.md");
             return path;
         }
 
-        public override async Task<Result<(string content, string sha)>> GetContent(string name)
+        public override async Task<Result<(string content, string sha)>> GetContent(string name, string reference=null)
         {
             var path = GetNotePath(name);
             var content = FileSystem.ReadAllText(path);

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BackEnd
 {
 
-    public class FsNotesService : AsbtractNotesService
+    public class FsNotesService : AbstractNotesService
     {
 
         public string RootDirectory { get; set; }
@@ -26,7 +26,7 @@ namespace BackEnd
         {
         }
 
-        public override async Task<Result<(string content, string sha)>> GetContent(string name)
+        public override async Task<Result<(string content, string sha)>> GetContent(string name, string reference = null)
         {
             string content = "";
             var path = Path.Combine(RootDirectory, "notes", name + ".md");
@@ -84,6 +84,11 @@ namespace BackEnd
             }
 
             return Result<Note>.Ok();
+        }
+
+        public override async Task<Result<IList<Commit>>> GetCommits(string noteName)
+        {
+            return new List<Commit>();
         }
     }
 }
