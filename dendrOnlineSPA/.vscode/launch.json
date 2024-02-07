@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch dendron",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "url": "https​://localhost:5003/Index",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}
