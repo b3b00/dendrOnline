@@ -2,6 +2,7 @@ import {
   Note,
   Node,  
   Repository,
+  Dendron,
   BackEndResult,
   BackEndResultCode,
   ConflictCode,
@@ -44,6 +45,25 @@ export const DendronClient = {
       }
       let tree = await res.json();
       return tree;
+    } catch (e) {
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
+    }
+  },
+
+  GetDendron : async (repositoryId): Promise<BackEndResult<Dendron>> => {
+    try {
+      const res = await fetch(`/dendron/${repositoryId}`,{credentials: 'include'});
+      if (res.status == 204) {
+        return {
+          theResult : undefined,
+          isOk:false,
+          code: BackEndResultCode.NotFound,
+          conflictCode:ConflictCode.NoConflict,
+          errorMessage:`dendron tree is empty`
+        };
+      }
+      let dendron = await res.json();
+      return dendron;
     } catch (e) {
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }

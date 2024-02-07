@@ -61,7 +61,16 @@
 
     let preprocessLinks = function(markdown:string) {
         const regex = /\[\[(.*)\]\]/ig;
-        const processed = markdown.replaceAll(regex, "[$1](#/view/$1)");
+        const matches = markdown.matchAll(regex);
+        let processed = markdown;
+        for (let match of matches) {
+            const name = match[1];
+            const tag = match[0]
+            var note = getNoteFromStore(match[1]);  
+            var description = note.note.header.description;
+            processed = processed.replaceAll(tag,`[${description}](#/view/${name})`);
+        }
+
         return processed;
     }
     

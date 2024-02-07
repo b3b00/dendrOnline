@@ -32,14 +32,16 @@
     }
 
     const refresh= async () => {
-        const tree = await DendronClient.GetTree($repository.id);
-        if (tree.isOk) {
-            setTree(tree.theResult);
-            $loadedNotes = [];
+        const dendron = await DendronClient.GetDendron($repository.id);
+        if (dendron.isOk) {
+            
+            setTree(dendron.theResult.hierarchy);
+            $loadedNotes = dendron.theResult.notes;
             $draftNotes = [];
             push(`/tree/${$repository.id}`);
         }
         else {
+            console.log(`an error happened ${dendron.code}-${dendron.conflictCode} : ${dendron.errorMessage}`);
             push(`/repositories`);
         }
     }
@@ -55,14 +57,18 @@
 
     <nav>
         <ul>
-            <li><a href="#/repositories" ><Fa icon="{faList}"></Fa><span style="margin-left: 5px">Repositories</span></a></li>
+            <li><a href="#/repositories" ><Fa icon="{faList}"/><span style="margin-left: 5px">Repositories</span></a></li>
             {#if $repository && $repository.id}
-                <li><a href="#/tree/{$repository.id}/refresh" on:click={refresh}><Fa icon="{faRefresh}"></Fa><span style="margin-left: 5px">Refresh tree</span></a></li>
-                <li><a href="#/tree/{$repository.id}" ><Fa icon="{faFolderTree}"></Fa><span style="margin-left: 5px">Tree</span></a></li>
+                <li><a href="#/tree/{$repository.id}/refresh" on:click={refresh}><Fa icon="{faRefresh}"/><span style="margin-left: 5px">Refresh tree</span></a></li>
+                <li><a href="#/tree/{$repository.id}" ><Fa icon="{faFolderTree}"/><span style="margin-left: 5px">Tree</span></a></li>
                 {/if}
             {#if $noteId}
-                <li><a href="#/edit/{$noteId}"><Fa icon="{faPen}"></Fa><span style="margin-left: 5px">Edit</span></a></li>
-                <li><a href="#/view/{$noteId}"><Fa icon="{faEye}"></Fa><span style="margin-left: 5px">View</span></a></li>
+            <li>
+                <ul>
+                    <li><a href="#/edit/{$noteId}"><Fa icon="{faPen}"/><span style="margin-left: 5px">Edit</span></a></li>
+                    <li><a href="#/view/{$noteId}"><Fa icon="{faEye}"/><span style="margin-left: 5px">View</span></a></li>
+                </ul>
+            </li>
             {/if}
         </ul>
     </nav>

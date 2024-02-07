@@ -24,5 +24,7 @@ namespace BackEnd
         
         void SetAccessToken(string token);
 
+        Task<Result<Dendron>> GetDendron();
+
     }
 }
