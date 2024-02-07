@@ -15,3 +15,5 @@ bundle.js*
 bundle.css*
 **/node_modules/**
 */out/*
+*/*.DotSettings.user
+*.swp
