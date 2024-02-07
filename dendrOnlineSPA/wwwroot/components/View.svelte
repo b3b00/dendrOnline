@@ -27,6 +27,11 @@
     import {Note, TaggedNote} from '../scripts/types'
     import type { Context } from 'svelte-simple-modal';
     import ErrorDialog from './ErrorDialog.svelte';
+    import CodeMarkdown from './CodeMarkdown.svelte';
+
+    import 'highlight.js/styles/github-dark.css';
+  
+
 
     const modal = getContext<Context>('simple-modal');
     
@@ -120,17 +125,19 @@
     <div style="display:inline">
     <h1 class="{titleStyle}">{title}</h1>
     <br>
-    <SvelteMarkdown source={content}/>
+    <SvelteMarkdown renderers={{ code: CodeMarkdown	}} source={content} />
     </div>
+    {#if backLinks && backLinks.length > 0}
     <div style="display:inline">
         <h2>Back links :</h2>
         <ul>
-            {#if backLinks && backLinks.length > 0}
+            
                 {#each backLinks as link (link.header.title)}
                     <li><a href="#/view/{link.header.title}">{link.header.description}</a></li>
                 {/each}
-            {/if}
+            
 
         </ul>
     </div>
+    {/if}
 </div>
