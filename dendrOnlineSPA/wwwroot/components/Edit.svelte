@@ -358,10 +358,10 @@
         on:input={update}>{description}</h1>
     </span>
 
-    <h1 on:click={deleteThisNote} on:keydown={deleteThisNote} role="button" tabindex="-1" style="display:inline;cursor:pointer"><Fa icon="{faTrashCan}" ></Fa></h1>
+    <h1 on:click={deleteThisNote} on:keydown={deleteThisNote} role="button" tabindex="-1" style="display:inline;cursor:pointer"><Fa icon="{faTrashCan}" /></h1>
     <!-- svelte-ignore a11y-no-noninteractive-element-to-interactive-role -->
-    <h1 on:click={save} on:keydown={save} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faFloppyDisk}" ></Fa></h1>
-    <h1 on:click={undo} on:keydown={undo} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faUndo}" ></Fa></h1>
+    <h1 on:click={save} on:keydown={save} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faFloppyDisk}" /></h1>
+    <h1 on:click={undo} on:keydown={undo} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faUndo}" /></h1>
     <br>
     <textarea bind:this={textInput} bind:value={content} rows="200" on:keyup={update}></textarea> 
     <br>

@@ -28,6 +28,8 @@
         currentTree = $tree;
     }
 
+    
+
     onMount(async () => {
         currentRepository = $repository;
         currentTree = $tree;
