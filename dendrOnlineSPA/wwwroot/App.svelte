@@ -1,17 +1,27 @@
 <script lang="ts">
+    // svelte
+    import {getContext} from 'svelte';
+    
+    // client and store
+    import {draftNotes, loadedNotes, noteId, repository, setTree, tree} from "./scripts/dendronStore";
+    import { DendronClient } from './scripts/dendronClient';
+    
+    
+ 
+    // components
+    import Fa from 'svelte-fa/src/fa.svelte';
+    import { faList, faPen, faEye, faFolderTree, faRefresh } from '@fortawesome/free-solid-svg-icons/index.js';
+    import Router, { push } from 'svelte-spa-router'
     import Repositories from './components/Repositories.svelte'
     import Tree from './components/Tree.svelte'    
     import EditWrapper from './components/EditWrapper.svelte';
-    import ViewWrapper from './components/ViewWrapper.svelte'
+    import ViewWrapper from './components/ViewWrapper.svelte';
+    import ConfirmDialog from './components/ConfirmDialog.svelte';
     import Home from './components/Home.svelte'
     import NotFound from "./components/NotFound.svelte";
-    import {draftNotes, loadedNotes, noteId, repository, setTree, tree} from "./scripts/dendronStore";
-    import Fa from 'svelte-fa/src/fa.svelte';
-    import { faList, faPen, faEye, faFolderTree, faRefresh } from '@fortawesome/free-solid-svg-icons/index.js';
-    
-    import Router, { push } from 'svelte-spa-router'
-  import { Modal } from 'svelte-simple-modal';
-  import { DendronClient } from './scripts/dendronClient';
+    import {Context} from 'svelte-simple-modal';
+
+    const modal = getContext<Context>('simple-modal');
 
     const routes = {
         // Exact path
@@ -31,7 +41,7 @@
         '*': NotFound,
     }
 
-    const refresh= async () => {
+    const doRefresh = async () => {
         const dendron = await DendronClient.GetDendron($repository.id);
         if (dendron.isOk) {
             
@@ -44,6 +54,35 @@
             console.log(`an error happened ${dendron.code}-${dendron.conflictCode} : ${dendron.errorMessage}`);
             push(`/repositories`);
         }
+    }
+
+    const refresh= async () => {
+
+        if ($draftNotes.length > 0) {
+            const editedNotes = $draftNotes.map(x => `${x.header.title}`).join('\n- ');
+            const message = `Are you sure to reload data ? Unsaved work will be lost. 
+${editedNotes}`;
+            modal.open(
+                ConfirmDialog,
+                {
+                    message: message,                                
+                    hasForm: true,
+                    oncancel: async () => {},
+                    onOkay: doRefresh
+                },
+                {
+                    closeButton: true,
+                    closeOnEsc: true,
+                    closeOnOuterClick: true,
+                }
+            );
+    
+        }
+        else {
+            await doRefresh();
+        }
+
+        
     }
 
 </script>
@@ -76,7 +115,5 @@
 </header>
 
 <main>
-    <Modal>
-        <Router {routes}/>
-    </Modal>
+    <Router {routes}/>
 </main>

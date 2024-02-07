@@ -18,7 +18,8 @@
         loadedNotes,
         draftNotes,
         getDraftNote,
-        getLoadedNote
+        getLoadedNote,
+        getBackLinks
     } from "../scripts/dendronStore";
     import {repository} from "../scripts/dendronStore";
     import {DendronClient} from "../scripts/dendronClient";
@@ -38,6 +39,8 @@
     let titleStyle:string = "normal"
 
     let note: Note|undefined = undefined;
+
+    let backLinks: Note[];
 
     let getNoteFromStore = function (id): TaggedNote {   
         
@@ -83,12 +86,14 @@
             title = getTitle(note.header.description)+(n.isDraft ? " *" : "");
             titleStyle = n.isDraft ? "draft" : "normal";
             content = preprocessLinks(note.body);
+            backLinks = getBackLinks(id);
         }
         else {
             const n = await DendronClient.GetNote($repository.id,id);
             if (n.isOk) {
                 note = n.theResult;
                 content = preprocessLinks(note.body);
+                backLinks = getBackLinks(id);
                 setLoadedNote(id,note);
                 title = getTitle(note.header.description)+($draftNotes.hasOwnProperty(note.header.title) ? " *" : "");
                 titleStyle = $draftNotes.hasOwnProperty(note.header.title) ? "draft" : "normal";
@@ -111,9 +116,21 @@
 
     });
 </script>
-<div>
+<div style="display:flex; flex-direction: row; flex-wrap: wrap;">
+    <div style="display:inline">
     <h1 class="{titleStyle}">{title}</h1>
     <br>
     <SvelteMarkdown source={content}/>
-    <br>
+    </div>
+    <div style="display:inline">
+        <h2>Back links :</h2>
+        <ul>
+            {#if backLinks && backLinks.length > 0}
+                {#each backLinks as link (link.header.title)}
+                    <li><a href="#/view/{link.header.title}">{link.header.description}</a></li>
+                {/each}
+            {/if}
+
+        </ul>
+    </div>
 </div>

@@ -4,7 +4,7 @@
     import { onMount, getContext } from 'svelte';    
     import { DendronClient} from "../scripts/dendronClient.js";    
     import TreeView from "@bolduh/svelte-treeview";    
-    import NoteNodeWraper from "./NoteNodeWraper.svelte";
+    import NoteNode from "./NoteNode.svelte";
     import {Dendron, Node, Repository} from '../scripts/types'
     import ErrorDialog from './ErrorDialog.svelte';
     import type { Context } from 'svelte-simple-modal';
@@ -62,7 +62,7 @@
     <!--{#await currentTree}-->
     <!--    <p>...loading note tree...</p>-->
     <!--{:then t}-->
-        <TreeView emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} filter={nodefilter} searchPlaceholder="search the notes ..."></TreeView>
+        <TreeView emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNode} filter={nodefilter} searchPlaceholder="search the notes ..."></TreeView>
     <!--{:catch error}-->
     <!--    <p style="color: red">{error.message}</p>-->
     <!--{/await}-->

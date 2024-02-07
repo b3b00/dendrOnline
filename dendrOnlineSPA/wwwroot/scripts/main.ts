@@ -1,6 +1,6 @@
-import App from '../App.svelte'
+import AppWrapper from '../AppWrapper.svelte'
 
-const app = new App({
+const app = new AppWrapper({
     target: document.body,
 });
 

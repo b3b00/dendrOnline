@@ -188,6 +188,14 @@ export function setTree(currentTree: Node) {
     tree.update(r => {  return currentTree  });
 }
 
+export function getBackLinks(note:string): Note[] {
+    let back:Note[] = []
+    loadedNotes.update((notes) => {
+        back = notes.filter(x => x.body.includes(`[[${note}]]`));
+        return notes;
+    })
+    return back;
+}
 
 //endregion
 
