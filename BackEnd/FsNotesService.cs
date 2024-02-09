@@ -10,6 +10,12 @@ namespace BackEnd
     public class FsNotesService : AsbtractNotesService
     {
 
+        public override async Task<string> GetRepositoryName()
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(RootDirectory);
+            return dirInfo.Name;
+        }
+
         public string RootDirectory { get; set; }
 
         public FsNotesService(string rootDirectory)

@@ -22,6 +22,8 @@ public class StubNotesService : AsbtractNotesService
             RootDirectory = rootDirectory;
         }
        
+        public override async Task<string> GetRepositoryName() => "repository";
+        
         public override void SetRepository(string name, long id)
         {
             RootDirectory = name;

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Octokit;
 
 namespace BackEnd
 {
@@ -85,6 +86,8 @@ namespace BackEnd
 
             return root;
         }
+        
+        public abstract Task<string> GetRepositoryName();
 
         public async Task<Result<Dendron>> GetDendron()
         {
@@ -101,6 +104,7 @@ namespace BackEnd
                 return Result<Dendron>.TransformError<INoteHierarchy, Dendron>(hierarchy);
             }
 
+            hierarchy.TheResult.Name = await GetRepositoryName();
             var dendron = new Dendron(hierarchy.TheResult);
 
             foreach (var noteName in noteNames.TheResult)

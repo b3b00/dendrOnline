@@ -192,6 +192,12 @@ namespace BackEnd
             return Result<Note>.Error(ResultCode.InternalError, "unable to github connection");
         }
         
+        public override async Task<string> GetRepositoryName()
+        {
+            var repo = await gitHubClient.Repository.Get(RepositoryId);
+            return repo.Name;
+        }
+        
         #region tooling
         
         private async Task<Result<Note>> DeleteFile(string message, long repositoryId, string fileName, string sha)
