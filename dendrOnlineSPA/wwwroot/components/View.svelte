@@ -30,6 +30,7 @@
     import CodeMarkdown from './CodeMarkdown.svelte';
 
     import 'highlight.js/styles/github-dark.css';
+  import TaskRenderer from './TaskRenderer.svelte';
   
 
 
@@ -125,7 +126,7 @@
     <div style="display:inline">
     <h1 class="{titleStyle}">{title}</h1>
     <br>
-    <SvelteMarkdown renderers={{ code: CodeMarkdown	}} source={content} />
+    <SvelteMarkdown renderers={{ code: CodeMarkdown, listitem: TaskRenderer	}} source={content} />
     </div>
     {#if backLinks && backLinks.length > 0}
     <div style="display:inline">
