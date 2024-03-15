@@ -56,12 +56,12 @@ namespace BackEnd
                     }
                     else
                     {
-                        Result<(string, string)>.Error(ResultCode.NotFound, $"note {name} not found");
+                        return Result<(string, string)>.Error(ResultCode.NotFound, $"note {name} not found");
                     }
                 }
                 catch (Exception e)
                 {
-                    Result<(string, string)>.Error(ResultCode.InternalError, $"internal error : {e.Message}");
+                   return Result<(string, string)>.Error(ResultCode.InternalError, $"internal error : {e.Message}");
                 }
             }
             return Result<(string,string)>.Error(ResultCode.InternalError, "unable to github connection");
