@@ -2,8 +2,8 @@
 
     import {repository, tree, setTree, loadedNotes} from '../scripts/dendronStore.js';
     import { onMount, getContext } from 'svelte';    
-    import { DendronClient} from "../scripts/dendronClient.js";    
-    import TreeView from "@bolduh/svelte-treeview";    
+    import { DendronClient} from "../scripts/dendronClient.js";        
+    import Accordion from "@bolduh/svelte-nested-accordion/src/Accordion.svelte";
     import NoteNode from "./NoteNode.svelte";
     import {Dendron, Node, Repository} from '../scripts/types'
     import ErrorDialog from './ErrorDialog.svelte';
@@ -62,7 +62,7 @@
     <!--{#await currentTree}-->
     <!--    <p>...loading note tree...</p>-->
     <!--{:then t}-->
-        <TreeView emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNode} filter={nodefilter} searchPlaceholder="search the notes ..."></TreeView>
+        <Accordion tab="25px" emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNode} filter={nodefilter} searchPlaceholder="search the notes ..."></Accordion>
     <!--{:catch error}-->
     <!--    <p style="color: red">{error.message}</p>-->
     <!--{/await}-->

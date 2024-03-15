@@ -1,4 +1,4 @@
-import { TVNode } from "@bolduh/svelte-treeview";
+import { TVNode } from "@bolduh/svelte-nested-accordion/src/AccordionTypes";
 
 export class Node implements TVNode {
   name: string;
