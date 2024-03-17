@@ -4,8 +4,9 @@
     import { onMount, getContext } from 'svelte';    
     import { DendronClient} from "../scripts/dendronClient.js";        
     import Accordion from "@bolduh/svelte-nested-accordion/src/Accordion.svelte";
-    import NoteNode from "./NoteNode.svelte";
+    import NoteNodeWraper from "./NoteNodeWraper.svelte";
     import {Dendron, Node, Repository} from '../scripts/types'
+    
     import ErrorDialog from './ErrorDialog.svelte';
     import type { Context } from 'svelte-simple-modal';
     
@@ -62,7 +63,7 @@
     <!--{#await currentTree}-->
     <!--    <p>...loading note tree...</p>-->
     <!--{:then t}-->
-        <Accordion tab="25px" emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNode} filter={nodefilter} searchPlaceholder="search the notes ..."></Accordion>
+        <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} filter={nodefilter} searchPlaceholder="search the notes ..."></Accordion>
     <!--{:catch error}-->
     <!--    <p style="color: red">{error.message}</p>-->
     <!--{/await}-->
