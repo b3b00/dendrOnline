@@ -95,3 +95,8 @@ export class Dendron {
   hierarchy: Node;
   notes: Note[];
 }
+
+export interface NoteFilter {
+  filter : string,
+  searchInNotes : boolean
+}
