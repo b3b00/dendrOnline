@@ -30,10 +30,9 @@ namespace BackEnd
 
         public bool Selected { get; set; } 
         
-        public bool Edited { get; set; } 
-        
-        [JsonPropertyName("children")]
-        public List<INoteHierarchy> Children { get; set; }
+        public bool Edited { get; set; }
+
+        [JsonPropertyName("children")] public List<INoteHierarchy> Children { get; set; } = new List<INoteHierarchy>();
         
         public string Dump(string tab)
         {
