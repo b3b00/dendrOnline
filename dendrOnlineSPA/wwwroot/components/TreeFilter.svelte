@@ -2,7 +2,7 @@
 <script lang="ts">
     import { onMount,createEventDispatcher } from 'svelte';
   import { NoteFilter } from '../scripts/types';
-  import Switch from './Switch.svelte';
+  import Switch from 'svelte-switch';
 
     const dispatch = createEventDispatcher<{ "filterChanged": NoteFilter }>();
 

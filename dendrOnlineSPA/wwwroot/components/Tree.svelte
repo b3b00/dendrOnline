@@ -15,7 +15,7 @@
     
     const modal = getContext<Context>('simple-modal');
 
-    export let id:string;
+    export const id:string = '';
 
     export let refresh:string = undefined;
 
@@ -23,21 +23,16 @@
     
     let currentTree : Node = undefined;
 
-    let nodefilter = (node, search)  => {
-		const contains = search === undefined || search === null || search.length== 0 || node.name.toLocaleLowerCase().includes(search.toLocaleLowerCase());       
-		return contains;
-	};
+ 
 
-    const fuseNoteFilter = (node:Node, filter:NoteFilter) : boolean => {    
-        testFuse(filter);
-        let note = getLoadedNote(node.id);        
-        if (filter.filter !== undefined && filter.filter !== null && filter.filter.length > 0) {                
+    const noteFilter = (node:Node, filter:NoteFilter) : boolean => {
+        let note = getLoadedNote(node.id);
+        if (filter.filter !== undefined && filter.filter !== null && filter.filter.length > 0) {
             // TODO use fuse
             if(node.name.toLocaleLowerCase().includes(filter.filter)) {
                 return true;
             };
             if (filter.searchInNotes && note) {
-                // TODO use fuse
                 if(note.body.toLocaleLowerCase().includes(filter.filter)) {
                     return true;
                 }                
@@ -48,21 +43,9 @@
     }
 
 
-    const testFuse = (filter:NoteFilter):void =>  {
-        const notes = $loadedNotes;
-        const fuseOptions = {
-            isCaseSensitive : false,
-            includeScore: true,
-            keys:['body'],
-            minScore: 70,
-            limit:1000
-        }
-        const fuse = new Fuse(notes);
-        const result = fuse.search(filter.filter,fuseOptions);
-        console.log(result);
-    }
 
     $: {
+        console.log('reactive statement : refreshing tree',$tree);
         currentTree = $tree;
     }
 
@@ -72,11 +55,16 @@
         currentRepository = $repository;
         currentTree = $tree;
         if (currentTree === null || currentTree === undefined || !currentTree.hasOwnProperty('name') || refresh) {
+            console.log('loading tree from BackEnd')
             const dendron = await DendronClient.GetDendron(currentRepository.id);
+            console.log('Backend response is ',dendron);
             if (dendron.isOk) {
-                setTree(dendron.theResult.hierarchy);
+                console.log('setting tree and notes in store ')
+                $tree = dendron.theResult.hierarchy;
+                //setTree(dendron.theResult.hierarchy);
+                currentTree = $tree;
                 $loadedNotes = dendron.theResult.notes;
-                console.log(`dendron is fully loaded`,dendron);
+                console.log(`dendron is now fully loaded`,dendron);
             }            
             else {
                 modal.open(
@@ -91,6 +79,9 @@
                     });
             }
         }
+        else {
+            console.log('tree loaded from store',currentTree);
+        }
     });
 
 </script>
@@ -98,7 +89,8 @@
     <!--{#await currentTree}-->
     <!--    <p>...loading note tree...</p>-->
     <!--{:then t}-->
-        <Accordion tab="25px" searchTemplate={NoteFilterTemplate} complexFilter={fuseNoteFilter} disposition="left" emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} searchPlaceholder="search the notes ..."></Accordion>
+    <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} searchTemplate={NoteFilterTemplate} complexFilter={noteFilter}></Accordion>
+        
     <!--{:catch error}-->
     <!--    <p style="color: red">{error.message}</p>-->
     <!--{/await}-->
