@@ -25,13 +25,13 @@
 
 </script>
 
-<div style="display:flex;flex-direction:column">
-    <div style="display:flex;flex-direction:row">        
+<div style="display:flex;flex-direction:row">
+    <div style="display:flex;flex-direction:row;flex-grow: 1">        
         <input type="text"  bind:value={filter} placeholder="search the notes ..."/>
     </div>
-    <div style="display:flex;flex-direction:row">
+    <div style="display:flex;flex-direction:row;flex-grow: 1">
         <label for="searchInNotes">Search in notes : </label>        
-        <Switch id="searchInNotes" bind:checked={searchInNotes}/>            
+        <Switch bind:checked={searchInNotes}/>            
     </div>    
     <div><button on:click={reset}>Reset</button></div>
 </div>
