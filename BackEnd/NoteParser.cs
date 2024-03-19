@@ -80,16 +80,13 @@ namespace BackEnd
                     }
                     else
                     {
-                        if (started)
-                        {
-                            end = i;
-                            ended = true;
-                        }
+                        end = i;
+                        ended = true;
                     }
                 }
                 else
                 {
-                    if (started && !ended)
+                    if (started)
                     {
                         header.Add(line);
                     }
