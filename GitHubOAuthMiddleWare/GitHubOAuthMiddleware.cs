@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
@@ -127,15 +128,16 @@ public static class GitHubOAuthMiddleware
     private static string GenerateStatePassword(int len)
     {
 
-    string choices = "abcdefghijklmnopqrstuvwxyz012345679ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    StringBuilder state = new StringBuilder();
-    Random rnd = new Random();
-    for (int i = 0; i < len; i++)
-    {
-        var x = rnd.Next(choices.Length);
-        state.Append(choices[x]);
-    }
-    return state.ToString();
+        string choices = "abcdefghijklmnopqrstuvwxyz012345679ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        
+        var randomGenerator = RandomNumberGenerator.Create();
+        
+        Random rnd = new Random();
+
+        var bytes = new byte[len];
+        randomGenerator.GetBytes(bytes,0,len);
+        var state = string.Join("", bytes.Select(x => choices[x%choices.Length]));
+        return state;
     }
 
 }

@@ -141,8 +141,7 @@ public class RepositoryController : DendronController
         }
         else
         {
-            var repositories = JsonSerializer.Deserialize<IList<GhRepository>>(repositoryList).ToList() ??
-                           new List<GhRepository>();
+            var repositories = JsonSerializer.Deserialize<IList<GhRepository>>(repositoryList).ToList();
             return repositories;
         }
     }
