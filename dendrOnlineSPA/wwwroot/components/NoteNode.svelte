@@ -4,7 +4,7 @@
     import { onMount, getContext } from 'svelte';
     import ErrorDialog from './ErrorDialog.svelte';
     import {push} from 'svelte-spa-router'
-    import {deleteNote, unDraft, unloadNote, repository, setTree, isDraft} from '../scripts/dendronStore.js';
+    import {deleteNote, unDraft, unloadNote, repository, setTree, isDraft, noteId} from '../scripts/dendronStore.js';
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons/index.js';
     import PromptDialog from "./PromptDialog.svelte";
@@ -114,7 +114,7 @@
 </script>
 
 <a name="{nodeTitle}">
-    <a href="#/view/{data.name}" style="{isDraft(data.name) ? 'color:red': ''}">{nodeTitle}</a>
+    <a href="#/view/{data.name}" style="{isDraft(data.name) ? 'color:red': ''};{$noteId == data.id ? 'background-color:yellow':''}">{nodeTitle}</a>
     
     <span tabindex="-5" role="button" style="cursor: pointer" on:keydown={(e) => { e.preventDefault(); showCreationDialog(data);}} on:click={(e) => { e.preventDefault(); showCreationDialog(data);}}><Fa icon="{faPlus}" /></span>
     <span tabindex="-5" role="button" style="cursor: pointer" on:keydown={(e) => { e.preventDefault(); showDeletionDialog(data);}} on:click={(e) => { e.preventDefault(); showDeletionDialog(data);}}><Fa icon="{faTrashCan}" /></span>
