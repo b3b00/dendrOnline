@@ -36,10 +36,11 @@
             if(node.name.toLocaleLowerCase().includes(filter.filter)) {
                 return true;
             };
-            if (note) {
+            if (filter.searchInNotes && note) {
                 // TODO use fuse
-                const x = note.body.toLocaleLowerCase().includes(filter.filter);
-                return x;
+                if(note.body.toLocaleLowerCase().includes(filter.filter)) {
+                    return true;
+                }                
             }
             return false;
         }

@@ -2,6 +2,7 @@
 <script lang="ts">
     import { onMount,createEventDispatcher } from 'svelte';
   import { NoteFilter } from '../scripts/types';
+  import Switch from './Switch.svelte';
 
     const dispatch = createEventDispatcher<{ "filterChanged": NoteFilter }>();
 
@@ -24,14 +25,13 @@
 
 </script>
 
-<div style="display:flex;flex-direction:row">
-    <div>
-        <label for="filter">Nom :</label>
-        <input type="text" id="filter" bind:value={filter} />
+<div style="display:flex;flex-direction:column">
+    <div style="display:flex;flex-direction:row">        
+        <input type="text"  bind:value={filter} placeholder="search the notes ..."/>
     </div>
-    <div>
-        <label for="searchInNotes">Search in notes : </label>
-        <input type="checkbox" id="searchInNotes" bind:checked={searchInNotes}/>            
+    <div style="display:flex;flex-direction:row">
+        <label for="searchInNotes">Search in notes : </label>        
+        <Switch id="searchInNotes" bind:checked={searchInNotes}/>            
     </div>    
     <div><button on:click={reset}>Reset</button></div>
 </div>
