@@ -84,30 +84,13 @@
         }
     });
 
-    let nodefilter = (node, search)  => {
-        let note = getLoadedNote(node.id);
-        if (search !== undefined && search !== null && search.length > 0) {
-            if(node.name.toLocaleLowerCase().includes(search)) {
-                return true;
-            };
-            if (note) {
-                if(note.body.toLocaleLowerCase().includes(search)) {
-                    return true;
-                }                
-            }
-            return false;
-        }
-        return true;
-
-	};
-
 </script>
 <div>
     <!--{#await currentTree}-->
     <!--    <p>...loading note tree...</p>-->
     <!--{:then t}-->
-    <!-- <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} searchTemplate={NoteFilterTemplate} complexFilter={noteFilter}></Accordion> -->
-    <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} filter={nodefilter} searchPlaceholder="search the notes ..."></Accordion>        
+    <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} searchTemplate={NoteFilterTemplate} complexFilter={noteFilter}></Accordion>
+        
     <!--{:catch error}-->
     <!--    <p style="color: red">{error.message}</p>-->
     <!--{/await}-->
