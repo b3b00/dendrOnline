@@ -7,7 +7,7 @@
     import NoteNodeWraper from "./NoteNodeWraper.svelte";
     import {Dendron, Node, NoteFilter, Repository} from '../scripts/types'
     import NoteFilterTemplate from './TreeFilter.svelte';
-    import Fuse from 'fuse.js';
+    import { Wave } from 'svelte-loading-spinners';
 
     
     import ErrorDialog from './ErrorDialog.svelte';
@@ -23,7 +23,7 @@
     
     let currentTree : Node = undefined;
 
- 
+    let loading:boolean = false;
 
     const noteFilter = (node:Node, filter:NoteFilter) : boolean => {
         let note = getLoadedNote(node.id);
@@ -56,7 +56,9 @@
         currentTree = $tree;
         if (currentTree === null || currentTree === undefined || !currentTree.hasOwnProperty('name') || refresh) {
             console.log('loading tree from BackEnd')
+            loading = true;
             const dendron = await DendronClient.GetDendron(currentRepository.id);
+            loading = false;
             console.log('Backend response is ',dendron);
             if (dendron.isOk) {
                 console.log('setting tree and notes in store ')
@@ -86,12 +88,12 @@
 
 </script>
 <div>
-    <!--{#await currentTree}-->
-    <!--    <p>...loading note tree...</p>-->
-    <!--{:then t}-->
-    <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show...Maybe your {$repository.name} repository is not a dendron repository" root={currentTree} nodeTemplate={NoteNodeWraper} searchTemplate={NoteFilterTemplate} complexFilter={noteFilter}></Accordion>
-        
-    <!--{:catch error}-->
-    <!--    <p style="color: red">{error.message}</p>-->
-    <!--{/await}-->
+    {#if loading}
+        <div class="spinner-item" title="Wave">
+            <Wave  size="45" />
+            <div class="spinner-title">Dendron is loading...</div>
+        </div>
+    {:else}
+        <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show..." root={currentTree} nodeTemplate={NoteNodeWraper} searchTemplate={NoteFilterTemplate} complexFilter={noteFilter}></Accordion>
+    {/if}
 </div>

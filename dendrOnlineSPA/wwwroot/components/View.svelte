@@ -68,6 +68,16 @@
         return null;
     }
 
+    let removeLeadingAndTrailingQuotes = (title: string):string =>  {
+        if (title.startsWith('\'')) {
+            title = title.substring(1);
+        }
+        if (title.endsWith('\'')) {
+            title = title.substring(0,title.length-1);
+        }
+        return title;
+    }
+
     let preprocessLinks = function(markdown:string) {
         const regex = /\[\[(.*)\]\]/ig;
         const matches = markdown.matchAll(regex);
@@ -76,7 +86,7 @@
             const name = match[1];
             const tag = match[0]
             var note = getNoteFromStore(match[1]);  
-            var description = note.note.header.description;
+            var description = removeLeadingAndTrailingQuotes(note.note.header.description);
             processed = processed.replaceAll(tag,`[${description}](#/view/${name})`);
         }
 
