@@ -15,18 +15,18 @@
 </script>
 
 <style>
-    h2 {
-        font-size: 2rem;
-        text-align: center;
+    code {
+        color:red
     }
 
     .buttons {
         display: flex;
         justify-content: space-between;
+        margin-top: 25px;
     }
 </style>
 
-<h2>{message}</h2>
+<code >{@html message.replace('\n','<br>')}</code>
 
 
 

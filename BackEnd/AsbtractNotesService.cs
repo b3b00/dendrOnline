@@ -100,7 +100,7 @@ namespace BackEnd
             if (!noteNames.TheResult.Any())
             {
                 return Result<Dendron>.Error(ResultCode.NotFound,
-                    $"Repository {await GetRepositoryName()} is not identified as a dendron repository.");
+                    $"Repository {await GetRepositoryName()} is not identified as a dendron repository.\n\nTry another repository or initialize your repository as a Dendron.");
             } 
 
             var hierarchy = await GetHierarchy(noteNames.TheResult, null, null, new List<string>());

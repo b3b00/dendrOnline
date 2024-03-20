@@ -15,7 +15,7 @@ namespace BackEnd
 {
     public class GithubNotesService : AsbtractNotesService
     {
-        
+        private const string NoGitHubConnectionMessage = "Unable to connect to GitHub.\nYou may try to go to <a href=\"www.github.com\">github.com</a> and logout";
         private GitHubClient gitHubClient { get; set; }
 
         private long RepositoryId { get; set; }
@@ -64,7 +64,7 @@ namespace BackEnd
                    return Result<(string, string)>.Error(ResultCode.InternalError, $"internal error : {e.Message}");
                 }
             }
-            return Result<(string,string)>.Error(ResultCode.InternalError, "unable to github connection");
+            return Result<(string,string)>.Error(ResultCode.InternalError, NoGitHubConnectionMessage);
         }
 
         public override async Task<Result<Note>> SetContent(string noteName, Note note)
@@ -104,7 +104,7 @@ namespace BackEnd
                 }
             }
 
-            return Result<Note>.Error(ResultCode.InternalError, "unable to github connection");
+            return Result<Note>.Error(ResultCode.InternalError, NoGitHubConnectionMessage);
         }
 
         public override async Task<string> CreateNote(string noteName)
@@ -189,7 +189,7 @@ namespace BackEnd
                     return Result<Note>.Error(ResultCode.NotFound, $"note {noteName} not found");
                 }
             }
-            return Result<Note>.Error(ResultCode.InternalError, "unable to github connection");
+            return Result<Note>.Error(ResultCode.InternalError, NoGitHubConnectionMessage);
         }
         
         public override async Task<string> GetRepositoryName()
