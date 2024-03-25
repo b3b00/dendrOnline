@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.23.8",
-    "@bolduh/svelte-nested-accordion": "^0.1.8",
+    "@bolduh/svelte-nested-accordion": "^0.1.9",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
