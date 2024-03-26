@@ -94,6 +94,18 @@
             <div class="spinner-title">Dendron is loading...</div>
         </div>
     {:else}
-        <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show..." root={currentTree} nodeTemplate={NoteNodeWraper} searchTemplate={NoteFilterTemplate} complexFilter={noteFilter}></Accordion>
+        <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show..." root={currentTree} nodeTemplate={NoteNodeWraper} searchTemplate={NoteFilterTemplate} complexFilter={noteFilter} nodeClass="dendron">
+            <style slot="style">
+                .dendron {
+                    border-bottom: thin solid black;
+                    border-left: thin dotted black;
+                    padding : 10px
+                }
+
+                .dendron:hover {
+                    background-color:lightgrey
+                }
+            </style>
+        </Accordion>
     {/if}
 </div>
