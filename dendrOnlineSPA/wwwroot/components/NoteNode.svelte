@@ -4,7 +4,7 @@
     import { onMount, getContext } from 'svelte';
     import ErrorDialog from './ErrorDialog.svelte';
     import {push} from 'svelte-spa-router'
-    import {deleteNote, unDraft, unloadNote, repository, setTree, isDraft, noteId} from '../scripts/dendronStore.js';
+    import {deleteNote, unDraft, unloadNote, repository, setTree, isDraft, noteId, getDraftNote, getLoadedNote} from '../scripts/dendronStore.js';
     import Fa from 'svelte-fa/src/fa.svelte';
     import { faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons/index.js';
     import PromptDialog from "./PromptDialog.svelte";
@@ -12,7 +12,7 @@
     import {DendronClient} from "../scripts/dendronClient.js";
     import type { Context } from 'svelte-simple-modal';
     
-    import {Node} from '../scripts/types';
+    import {Node, TaggedNote} from '../scripts/types';
 
     const modal = getContext<Context>('simple-modal');
 
@@ -20,10 +20,37 @@
 
     let nodeTitle: string = "";
 
+    let getNoteFromStore = function (id): TaggedNote {   
+        
+        var draft = getDraftNote(id);
+        if (draft) {
+            return {
+                isDraft:true,
+                note:draft
+            }
+        }
+
+        var loaded = getLoadedNote(id);
+        if (loaded) {
+            return {
+                isDraft:false,
+                note:loaded
+            }
+        }
+        return null;
+    }
+
     onMount(async () => {
-        if (data?.name !== undefined && data?.name !== null) {
-            nodeTitle = data?.name;
-            nodeTitle = nodeTitle.substring(nodeTitle.lastIndexOf('.')+1);
+        if (data?.name !== undefined && data?.name !== null) {      
+            
+            let note = getNoteFromStore(data.id);
+            if (note) {
+                nodeTitle = note.note.header.description;
+            }
+            else {
+                nodeTitle = data?.name;
+                nodeTitle = nodeTitle.substring(nodeTitle.lastIndexOf('.')+1);
+            }
         }
         else {
             nodeTitle = data?.name;
