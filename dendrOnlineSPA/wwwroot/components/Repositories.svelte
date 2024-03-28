@@ -51,12 +51,20 @@
     });
 
 </script>
+<style>
+    .repository {
+        cursor: pointer;
+    }
+    .repository:hover {
+        background-color: lightgray;
+    }
+</style>
 
 <div>
     <input type="text" bind:value={filter} placeholder="search ..."/>
     {#if filteredRepositories.length > 0}
         {#each filteredRepositories as repository}
-            <div class="w3-display-container" aria-hidden="true" style="cursor: pointer" on:click={() => {                            
+            <div class="w3-display-container repository" aria-hidden="true" on:click={() => {                            
                         if (currentRepository && currentRepository.id != repository.id) {
                             setRepository(repository);
                             setTree(null);
