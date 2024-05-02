@@ -13,11 +13,12 @@ namespace dendrOnlineSPA.Controllers;
 public class RepositoryController : DendronController
 {
 
-
+    private IMongoService _mongoService;
 
     public RepositoryController(ILogger<RepositoryController> logger, IConfiguration configuration,
-        INotesService notesService) : base(logger, configuration, notesService)
+        INotesService notesService, IMongoService mongoService) : base(logger, configuration, notesService)
     {
+        _mongoService = mongoService;
     }
 
     [HttpGet("/Index")]
@@ -57,9 +58,46 @@ public class RepositoryController : DendronController
     [HttpGet("/dendron/{repositoryId}")]
     public async Task<Result<Dendron>> GetDendron(long repositoryId)
     {
+        
         HttpContext.SetRepositoryId(repositoryId);
         var dendron = await NotesService.GetDendron();
+        if (dendron.IsOk)
+        {
+            dendron.TheResult.RepositoryId = repositoryId;
+            var favorite = await _mongoService.GetFavorite(HttpContext.GetUserId());
+            dendron.TheResult.IsFavoriteRepository = favorite != null && favorite.Repository == repositoryId;
+        }
         return dendron;
+    }
+    
+    [HttpGet("/favorite/dendron/")]
+    public async Task<Result<Dendron>> GetFavoriteDendron()
+    {
+        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
+        var accessToken = HttpContext.GetGithubAccessToken();
+        client.Credentials = new Credentials(accessToken);
+        var currentUser = await client.User.Current();
+        var userId = currentUser.Id;
+        var favorite = await _mongoService.GetFavorite(userId);
+        HttpContext.Session.SetString("userId",userId.ToString());
+        
+        if (favorite != null)
+        {
+           
+            var repository = await client.Repository.Get(favorite.Repository);
+            Logger.LogInformation($"loading favorite repository {repository.Name} for user {currentUser.Name}");
+            HttpContext.SetRepositoryId(favorite.Repository);
+            var dendron = await NotesService.GetDendron();
+            dendron.TheResult.RepositoryId = favorite.Repository;
+            dendron.TheResult.IsFavoriteRepository = true;
+            dendron.TheResult.RepositoryName = repository.Name;
+            return dendron;
+        }
+        else
+        {
+            return Result<Dendron>.Error(ResultCode.NotFound, ConflictCode.NoConflict,
+                $"no favorite repository found");
+        }
     }
 
     [HttpGet("/note/{repositoryId}/{noteId}")]

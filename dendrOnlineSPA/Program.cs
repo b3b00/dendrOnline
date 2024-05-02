@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using BackEnd;
 using dendrOnlineSPA;
 using GitHubOAuthMiddleWare;
@@ -25,9 +26,16 @@ builder.Services.AddSession(options =>
     
 });
 
+
+
+
+
 builder.Services.AddScoped<INotesService, GithubNotesService>();
+builder.Services.AddSingleton<IMongoService,MongoService>();
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
