@@ -11,7 +11,7 @@
     let hasFavorite = false;
 
     onMount(async () => {        
-        
+        /*
         let favorite = await DendronClient.GetFavoriteRepository();
         if (favorite.isOk) {
             let dendron:BackEndResult<Dendron> = undefined;
@@ -35,7 +35,7 @@
         else {
             loading = false;
             hasFavorite = false;
-        }
+        }*/
     });
 
 </script>
