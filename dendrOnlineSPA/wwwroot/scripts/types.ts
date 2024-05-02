@@ -94,9 +94,18 @@ export interface BackEndResult<T> {
 export class Dendron {
   hierarchy: Node;
   notes: Note[];
+  repositoryId: string;
+  repositoryName: string;
+  isFavoriteRepository:boolean;  
 }
 
 export interface NoteFilter {
   filter : string,
   searchInNotes : boolean
+}
+
+export interface Favorite {
+  user : number,
+  repository : number,
+  repositoryName : string
 }

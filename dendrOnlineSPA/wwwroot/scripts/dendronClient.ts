@@ -7,6 +7,7 @@ import {
   BackEndResultCode,
   ConflictCode,
   HierarchyAndSha,
+  Favorite,
 } from "./types";
 
 const ErrorResult = <T>(error: string, code: BackEndResultCode): BackEndResult<T> => {
@@ -53,6 +54,64 @@ export const DendronClient = {
   GetDendron : async (repositoryId): Promise<BackEndResult<Dendron>> => {
     try {
       const res = await fetch(`/dendron/${repositoryId}`,{credentials: 'include'});
+      if (res.status == 204) {
+        return {
+          theResult : undefined,
+          isOk:false,
+          code: BackEndResultCode.NotFound,
+          conflictCode:ConflictCode.NoConflict,
+          errorMessage:`dendron tree is empty`
+        };
+      }
+      let dendron = await res.json();
+      return dendron;
+    } catch (e) {
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
+    }
+  },
+
+
+  GetFavoriteRepository : async (): Promise<BackEndResult<Favorite>> => {
+    try {
+      const res = await fetch(`/favorite`,{credentials: 'include'});
+      if (res.status == 404) {
+        return {
+          theResult : undefined,
+          isOk:false,
+          code: BackEndResultCode.NotFound,
+          conflictCode:ConflictCode.NoConflict,
+          errorMessage:`no favorite dendron`
+        };
+      }
+      if (res.status == 204) {
+        return {
+          theResult : undefined,
+          isOk:false,
+          code: BackEndResultCode.NotFound,
+          conflictCode:ConflictCode.NoConflict,
+          errorMessage:`dendron tree is empty`
+        };
+      }
+      let favorite = await res.json();
+      return favorite;
+    } catch (e) {
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
+    }
+  },
+
+
+  GetFavoriteDendron : async (): Promise<BackEndResult<Dendron>> => {
+    try {
+      const res = await fetch(`/favorite/dendron/`,{credentials: 'include'});
+      if (res.status == 404) {
+        return {
+          theResult : undefined,
+          isOk:false,
+          code: BackEndResultCode.NotFound,
+          conflictCode:ConflictCode.NoConflict,
+          errorMessage:`no favorite dendron`
+        };
+      }
       if (res.status == 204) {
         return {
           theResult : undefined,
@@ -129,4 +188,18 @@ export const DendronClient = {
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },
+
+  setFavorite: async (repositoryId: string) => {
+    try {
+      const res = await fetch(`favorite/${repositoryId}`, {
+        credentials: 'include',
+        method:"POST"
+      });
+      console.log(res);
+    }
+    catch(e) {
+      console.log(e);
+    }
+  }
+ 
 };
