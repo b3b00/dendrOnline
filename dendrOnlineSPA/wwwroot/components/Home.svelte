@@ -11,7 +11,7 @@
     let hasFavorite = false;
 
     onMount(async () => {        
-        /*
+        
         let favorite = await DendronClient.GetFavoriteRepository();
         if (favorite.isOk) {
             let dendron:BackEndResult<Dendron> = undefined;
@@ -20,22 +20,22 @@
             loading = true;
             hasFavorite = true;
             repositoryName = favorite.theResult.repositoryName; 
-            dendron = await DendronClient.GetFavoriteDendron();                
+            dendron = await DendronClient.GetFavoriteDendron();
 
             console.log(dendron);
 
             if (dendron.isOk) {
                 console.log(`favorite repository loaded : ${dendron.theResult.repositoryName}`);
-                $repository = {id:dendron.theResult.repositoryId,name:dendron.theResult.repositoryName};            
+                $repository = {id:dendron.theResult.repositoryId,name:dendron.theResult.repositoryName};
                 setTree(dendron.theResult.hierarchy);
                 $isFavoriteRepository = true;
-                push(`#/tree/${dendron.theResult.repositoryId}`);            
+                push(`#/tree/${dendron.theResult.repositoryId}`);
             }
         }
         else {
             loading = false;
             hasFavorite = false;
-        }*/
+        }
     });
 
 </script>

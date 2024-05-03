@@ -13,12 +13,11 @@ namespace dendrOnlineSPA.Controllers;
 public class RepositoryController : DendronController
 {
 
-    private IMongoService _mongoService;
+    
 
     public RepositoryController(ILogger<RepositoryController> logger, IConfiguration configuration,
-        INotesService notesService, IMongoService mongoService) : base(logger, configuration, notesService)
+        INotesService notesService) : base(logger, configuration, notesService)
     {
-        _mongoService = mongoService;
     }
 
     [HttpGet("/Index")]
@@ -64,7 +63,7 @@ public class RepositoryController : DendronController
         if (dendron.IsOk)
         {
             dendron.TheResult.RepositoryId = repositoryId;
-            var favorite = await _mongoService.GetFavorite(HttpContext.GetUserId());
+            var favorite = HttpContext.GetFavorite();
             dendron.TheResult.IsFavoriteRepository = favorite != null && favorite.Repository == repositoryId;
         }
         return dendron;
@@ -78,7 +77,7 @@ public class RepositoryController : DendronController
         client.Credentials = new Credentials(accessToken);
         var currentUser = await client.User.Current();
         var userId = currentUser.Id;
-        var favorite = await _mongoService.GetFavorite(userId);
+        var favorite = HttpContext.GetFavorite(); 
         HttpContext.Session.SetString("userId",userId.ToString());
         
         if (favorite != null)

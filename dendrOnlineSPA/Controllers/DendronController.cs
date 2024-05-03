@@ -31,7 +31,7 @@ public class DendronController : ControllerBase
         }
     }
 
-    public DendronController(ILogger<RepositoryController> logger, IConfiguration configuration, INotesService notesService)
+    public DendronController(ILogger<DendronController> logger, IConfiguration configuration, INotesService notesService)
     {
         _logger = logger;
         _configuration = configuration;

@@ -1,4 +1,3 @@
-using MongoDB.Bson;
 
 namespace BackEnd
 {
@@ -16,8 +15,6 @@ namespace BackEnd
             User = userId;
             Repository = repositoryId;
         }
-        
-        public ObjectId _id { get; set; }
         public long User { get; set; }
         public long Repository { get; set; }
         

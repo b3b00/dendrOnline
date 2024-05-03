@@ -1,64 +1,39 @@
 using BackEnd;
 using GitHubOAuthMiddleWare;
 using Microsoft.AspNetCore.Mvc;
-using dendrOnlineSPA.Model;
-using dendrOnlinSPA.model;
 using Octokit;
+
 
 namespace dendrOnlineSPA.Controllers;
 
-public class FavoriteController : ControllerBase
+public class FavoriteController : DendronController
 {
-    
-    private readonly ILogger<FavoriteController> _logger;
 
-    protected ILogger<FavoriteController> Logger => _logger;
-
-    private readonly IConfiguration _configuration;
-
-    protected IConfiguration Configuration => _configuration;
-
-    private readonly IMongoService _mongoService;
-
-    protected IMongoService MongoService => _mongoService;
-
-    public FavoriteController(ILogger<FavoriteController> logger, IConfiguration configuration, IMongoService mongoService)
+    public FavoriteController(ILogger<FavoriteController> logger, IConfiguration configuration,
+        INotesService notesService) : base(logger, configuration, notesService)
     {
-        _logger = logger;
-        _configuration = configuration;
-        _mongoService = mongoService;
+        
     }
 
     [HttpPost("/favorite/{repositoryId}")]
     public async Task<IActionResult> SetFavorite(long repositoryId)
     {
-        MongoService.SaveFavorite(HttpContext.GetUserId(), repositoryId);
+        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
+        var accessToken = HttpContext.GetGithubAccessToken();
+        client.Credentials = new Credentials(accessToken);
+        var repo = await client.Repository.Get(repositoryId);
+        HttpContext.SetFavorite(repositoryId, repo.Name);
         return Ok();
     }
 
     [HttpGet("/favorite")]
     public async Task<Result<Favorite>> GetFavorite()
     {
-        
-        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
-        var accessToken = HttpContext.GetGithubAccessToken();
-        client.Credentials = new Credentials(accessToken);
-        var currentUser = await client.User.Current();
-        var userId = currentUser.Id;
-        
-        Logger.LogInformation($"looking for favorite for user {userId} {currentUser.Name} {currentUser.Login}");
-        var favorite = await MongoService.GetFavorite(userId);
-        
-        
-        
-        if (favorite != null)
+
+        var fav = HttpContext.GetFavorite();
+        if (fav != null)
         {
-            Logger.LogInformation($"found a favorite repo {favorite.Repository}");
-            client.Credentials = new Credentials(accessToken);
-            var repo = await client.Repository.Get(favorite.Repository);
-            Logger.LogInformation($"favortie repo name is {repo.Name}");
-            favorite.RepositoryName = repo.Name;
-            return favorite;
+            return Result<Favorite>.Ok(fav);
         }
         else
         {

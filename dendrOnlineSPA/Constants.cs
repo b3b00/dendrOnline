@@ -9,7 +9,4 @@ public class Constants
     public const string StartUrlParameter = "github_startUrl";
     public const string RedirectUrlParameter =  "github_redirectUrl";
     public const string LogoutUrlParameter =  "github_LogoutUrl";
-    public const string MongoConnectionStringParameter =  "mongo_connection_string";
-    public const string MongoDbNameParameter =  "mongo_db_name";
-    
 }

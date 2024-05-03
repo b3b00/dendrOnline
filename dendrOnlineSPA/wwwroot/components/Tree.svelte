@@ -25,6 +25,8 @@
 
     let loading:boolean = false;
 
+    let repositoryName = "";
+
     const noteFilter = (node:Node, filter:NoteFilter) : boolean => {
         let note = getLoadedNote(node.id);
         if (filter.filter !== undefined && filter.filter !== null && filter.filter.length > 0) {
@@ -64,6 +66,7 @@
             const dendron = await DendronClient.GetDendron(currentRepository.id);
             loading = false;
             console.log('Backend response is ',dendron);
+            repositoryName = dendron.theResult.repositoryName;
             if (dendron.isOk) {
                 $isFavoriteRepository = dendron.theResult.isFavoriteRepository;
                 console.log('setting tree and notes in store ')
@@ -102,7 +105,7 @@
             <div class="spinner-title">Dendron is loading...</div>
         </div>
     {:else}
-    <a href="#" on:click={setFavoriteRepository}><Fa icon="{faHeart}" color="{$isFavoriteRepository ? 'yellow':'grey'}"></Fa></a>
+    <span on:click={setFavoriteRepository} style="color:{$isFavoriteRepository ? 'yellow':'grey'}"><Fa size="2x" icon="{faHeart}" color="{$isFavoriteRepository ? 'yellow':'grey'}"></Fa>{repositoryName}</span><br>
         <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show..." root={currentTree} nodeTemplate={NoteNodeWraper} searchTemplate={NoteFilterTemplate} complexFilter={noteFilter} nodeClass="dendron">
             <style slot="style">
                 .dendron {
