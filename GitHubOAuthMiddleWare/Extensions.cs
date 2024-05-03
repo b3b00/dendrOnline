@@ -9,6 +9,8 @@ public static class Extensions
     {
         return httpContext.Session.GetString(GitHubOAuthMiddleWare.GitHubOAuthMiddleware.AccessToken);
     }
+
+   
     
     public static void DeleteGithubAccessToken(this HttpContext httpContext)
     {

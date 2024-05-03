@@ -4,6 +4,8 @@ import {Node, Note, Repository} from '../scripts/types';
 //region repositories
 export const repository: Writable<Repository|undefined> = writable();
 
+export const isFavoriteRepository: Writable<boolean> = writable(false);
+
 export function setRepository(repo:Repository) {
     repository.update(r => { return repo });
 }

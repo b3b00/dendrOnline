@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import {repository, tree, setTree, loadedNotes, getLoadedNote} from '../scripts/dendronStore.js';
+    import {repository, isFavoriteRepository, tree, setTree, loadedNotes, getLoadedNote} from '../scripts/dendronStore.js';
     import { onMount, getContext } from 'svelte';    
     import { DendronClient} from "../scripts/dendronClient.js";        
     import Accordion from "@bolduh/svelte-nested-accordion/src/Accordion.svelte";
@@ -8,8 +8,8 @@
     import {Dendron, Node, NoteFilter, Repository} from '../scripts/types'
     import NoteFilterTemplate from './TreeFilter.svelte';
     import { Wave } from 'svelte-loading-spinners';
-
-    
+    import Fa from 'svelte-fa/src/fa.svelte';
+    import { faHeart } from '@fortawesome/free-solid-svg-icons/index.js';    
     import ErrorDialog from './ErrorDialog.svelte';
     import type { Context } from 'svelte-simple-modal';
     
@@ -24,6 +24,7 @@
     let currentTree : Node = undefined;
 
     let loading:boolean = false;
+
 
     const noteFilter = (node:Node, filter:NoteFilter) : boolean => {
         let note = getLoadedNote(node.id);
@@ -49,6 +50,10 @@
         currentTree = $tree;
     }
 
+    const setFavoriteRepository = async () => {
+        DendronClient.setFavorite($repository.id);
+        $isFavoriteRepository = !$isFavoriteRepository;
+    }
     
 
     onMount(async () => {
@@ -59,8 +64,9 @@
             loading = true;
             const dendron = await DendronClient.GetDendron(currentRepository.id);
             loading = false;
-            console.log('Backend response is ',dendron);
+            console.log('Backend response is ',dendron);            
             if (dendron.isOk) {
+                $isFavoriteRepository = dendron.theResult.isFavoriteRepository;
                 console.log('setting tree and notes in store ')
                 $tree = dendron.theResult.hierarchy;
                 //setTree(dendron.theResult.hierarchy);
@@ -69,6 +75,9 @@
                 console.log(`dendron is now fully loaded`,dendron);
             }            
             else {
+                $isFavoriteRepository = false;
+                $repository = undefined;
+                setTree(undefined);
                 modal.open(
                     ErrorDialog,
                     {
@@ -94,6 +103,11 @@
             <div class="spinner-title">Dendron is loading...</div>
         </div>
     {:else}
+    <span on:click={setFavoriteRepository} style="color:{$isFavoriteRepository ? 'tomato':'grey'};font-weight:bold">
+        <Fa size="2x" icon="{faHeart}" color="{$isFavoriteRepository ? 'tomato':'grey'}"></Fa>
+        {currentRepository?.name}
+    </span>
+    <br>
         <Accordion tab="25px" disposition="left" emptyTreeMessage="nothing to show..." root={currentTree} nodeTemplate={NoteNodeWraper} searchTemplate={NoteFilterTemplate} complexFilter={noteFilter} nodeClass="dendron">
             <style slot="style">
                 .dendron {
