@@ -26,7 +26,8 @@ namespace BackEnd
         public MongoService(string connectionString, string dbName)
         {
             _connectionString = connectionString;
-            _mongoClient = new MongoClient(connectionString);
+            _mongoClient = new MongoClient(connectionString+"&AllowInsecureTls=false");
+            
             _database = _mongoClient.GetDatabase(dbName);
             _collection = _database.GetCollection<Favorite>(collectionName);
         }
