@@ -56,6 +56,8 @@ app.UseGHOAuth(options =>
     options.ExcludePath = "/health";
 });
 
+app.UseNoCors();
+
 if (app.Environment.IsDevelopment())
 {
     app.Run();
