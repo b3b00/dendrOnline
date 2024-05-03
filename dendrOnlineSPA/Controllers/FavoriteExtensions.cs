@@ -29,4 +29,9 @@ public static class FavoriteExtensions
         httpContext.Response.Cookies.Append("dendron-favorite",JsonSerializer.Serialize(fav), new CookieOptions() { Expires = neverExpire});
     }
     
+    public static void DeleteFavorite(this HttpContext httpContext)
+    {
+        httpContext.Response.Cookies.Delete("dendron-favorite");
+    }
+    
 }

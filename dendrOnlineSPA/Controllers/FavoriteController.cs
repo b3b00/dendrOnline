@@ -18,12 +18,23 @@ public class FavoriteController : DendronController
     [HttpPost("/favorite/{repositoryId}")]
     public async Task<IActionResult> SetFavorite(long repositoryId)
     {
-        GitHubClient client = new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
-        var accessToken = HttpContext.GetGithubAccessToken();
-        client.Credentials = new Credentials(accessToken);
-        var repo = await client.Repository.Get(repositoryId);
-        HttpContext.SetFavorite(repositoryId, repo.Name);
-        return Ok();
+        var oldFav = HttpContext.GetFavorite();
+        if (oldFav != null && oldFav.Repository == repositoryId)
+        {
+            HttpContext.DeleteFavorite();
+            return Ok();
+        }
+        else
+        {
+            GitHubClient client =
+                new GitHubClient(new ProductHeaderValue("dendrOnline"), new Uri("https://github.com/"));
+            var accessToken = HttpContext.GetGithubAccessToken();
+            client.Credentials = new Credentials(accessToken);
+            var repo = await client.Repository.Get(repositoryId);
+
+            HttpContext.SetFavorite(repositoryId, repo.Name);
+            return Ok();
+        }
     }
 
     [HttpGet("/favorite")]
