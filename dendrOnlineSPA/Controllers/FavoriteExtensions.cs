@@ -26,7 +26,7 @@ public static class FavoriteExtensions
             Repository = repositoryId
         };
         var neverExpire = new DateTimeOffset(3030, 03, 30, 23, 00, 00,TimeSpan.Zero);
-        httpContext.Response.Cookies.Append("dendron-favorite",JsonSerializer.Serialize(fav), new CookieOptions() { Expires = neverExpire});
+        httpContext.Response.Cookies.Append("dendron-favorite",JsonSerializer.Serialize(fav), new CookieOptions() { Expires = neverExpire, Secure = true});
     }
     
     public static void DeleteFavorite(this HttpContext httpContext)
