@@ -9,13 +9,11 @@
 
 <script lang="ts">
 
-    import { onMount, getContext } from 'svelte';
-    import {location} from 'svelte-spa-router'
+    import { onMount, getContext, setContext } from 'svelte';
     import {
         getTitle,
         setNoteId,
         setLoadedNote,
-        loadedNotes,
         draftNotes,
         getDraftNote,
         getLoadedNote,
@@ -28,11 +26,12 @@
     import type { Context } from 'svelte-simple-modal';
     import ErrorDialog from './ErrorDialog.svelte';
     import CodeMarkdown from './CodeMarkdown.svelte';
+    import type { ViewContext } from '../scripts/types';
 
     import 'highlight.js/styles/github-dark.css';
   import TaskRenderer from './TaskRenderer.svelte';
   
-
+   
 
     const modal = getContext<Context>('simple-modal');
     
@@ -47,6 +46,14 @@
     let note: Note|undefined = undefined;
 
     let backLinks: Note[];
+
+    let getNoteId = function () : string {
+        return id;
+    }
+
+    setContext<ViewContext>('view-context', {
+        getNoteId : getNoteId,
+    });
 
     let getNoteFromStore = function (id): TaggedNote {   
         

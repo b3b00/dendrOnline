@@ -173,6 +173,8 @@ export const DendronClient = {
     note: Note
   ): Promise<BackEndResult<HierarchyAndSha>> => {
     try {
+      const url = `/note/${repositoryId}/${note.header.title}`
+      console.log(`saveNote :: PUT url`);
       const res = await fetch(`/note/${repositoryId}/${note.header.title}`, {
         credentials: 'include',
         method: "PUT",
@@ -181,10 +183,12 @@ export const DendronClient = {
         },
         body: JSON.stringify(note), // body data type must match "Content-Type" header
       });
-
+      console.log(`PUT => ${res.status} - ${res.statusText}`);
       let tree = await res.json();
+      console.log(`note ${note.header.title} saved, tree updated`);
       return tree;
     } catch (e) {
+      console.log(`saveNote :: error :: ${e.message}`,e);
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
   },

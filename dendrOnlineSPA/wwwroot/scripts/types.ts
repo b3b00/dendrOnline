@@ -109,3 +109,7 @@ export interface Favorite {
   repository : number,
   repositoryName : string
 }
+
+export interface ViewContext {
+  getNoteId() : string;  
+}
