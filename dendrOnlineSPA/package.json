@@ -15,7 +15,7 @@
     "@jest/globals": "^29.7.0",
     "@rollup/plugin-typescript": "^11.1.6",
     "@tsconfig/svelte": "^5.0.2",
-    "@types/jest": "^29.5.11",    
+    "@types/jest": "^29.5.11",
     "jest": "^29.7.0",
     "prettier": "^1.17.0",
     "svelte-loading-spinners": "^0.3.4",
@@ -38,10 +38,13 @@
     "guid-typescript": "^1.0.9",
     "highlight.js": "11.9.0",
     "itty-router": "^4.0.14",
+    "mdast-util-gfm": "^3.1.0",
+    "mdast-util-to-markdown": "^2.1.2",
     "mermaid": "^10.8.0",
     "moment": "^2.24.0",
     "mustache": "^4.2.0",
     "node-fetch": "^3.3.2",
+    "remark-gfm": "^4.0.1",
     "rollup": "^3.15.0",
     "rollup-plugin-css-only": "^4.3.0",
     "rollup-plugin-livereload": "^2.0.0",
@@ -54,6 +57,8 @@
     "svelte-simple-modal": "^1.6.2",
     "svelte-spa-router": "^3.3.0",
     "svelte-switch": "^0.0.5",
-    "sync-request": "6.0.0"
+    "sync-request": "6.0.0",
+    "sync-sha1": "^1.0.1",
+    "unist-util-visit": "^5.0.0"
   }
 }
