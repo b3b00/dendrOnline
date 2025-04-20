@@ -39,6 +39,7 @@ let toggle = async () => {
         updateNote(noteId, note);
         const newTree = await DendronClient.SaveNote($repository.id, note);
         if (newTree.isOk) {
+                note.sha = newTree.theResult.sha;
             setTree(newTree.theResult.hierarchy);
             unDraft(noteId);
         }
