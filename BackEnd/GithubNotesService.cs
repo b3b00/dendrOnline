@@ -244,7 +244,7 @@ namespace BackEnd
             var createRequest = new CreateFileRequest(
                 $"DendrOnline : ajout de l'image {fileName}",
                 base64Content,
-                "main");
+                "main", true);
 
             await gitHubClient.Repository.Content.CreateFile(
                 RepositoryId,
