@@ -161,7 +161,7 @@
             content = oldNote.body;
             description = oldNote.header.description;
             titleStyle = "normal";
-            floppyVisibility = "display:none";        
+            floppyVisibility = "display:none";
         }
     }
 

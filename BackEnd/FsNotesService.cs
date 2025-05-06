@@ -23,6 +23,8 @@ namespace BackEnd
             RootDirectory = rootDirectory;
         }
 
+        public override async Task<string> GetUserLogin() => "test";
+
         public override void SetRepository(string name, long id)
         {
             RootDirectory = name;

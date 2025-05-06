@@ -89,6 +89,8 @@ namespace BackEnd
         
         public abstract Task<string> GetRepositoryName();
 
+        public abstract Task<string> GetUserLogin();
+        
         public async Task<Result<Dendron>> GetDendron()
         {
             var noteNames = await GetNotes();
@@ -111,7 +113,9 @@ namespace BackEnd
             }
 
             hierarchy.TheResult.Name = await GetRepositoryName();
-            var dendron = new Dendron(hierarchy.TheResult);
+
+            var owner = await GetUserLogin();
+            var dendron = new Dendron(hierarchy.TheResult, owner);
 
             foreach (var noteName in noteNames.TheResult)
             {

@@ -197,6 +197,12 @@ namespace BackEnd
             var repo = await gitHubClient.Repository.Get(RepositoryId);
             return repo.Name;
         }
+
+        public override async Task<string> GetUserLogin()
+        {
+            var user = gitHubClient.User.Current();
+            return user.Result.Login;
+        }
         
         #region tooling
         

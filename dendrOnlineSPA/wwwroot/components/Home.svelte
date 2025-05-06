@@ -26,7 +26,7 @@
 
             if (dendron.isOk) {
                 console.log(`favorite repository loaded : ${dendron.theResult.repositoryName}`);
-                $repository = {id:dendron.theResult.repositoryId,name:dendron.theResult.repositoryName};
+                $repository = {id:dendron.theResult.repositoryId,name:dendron.theResult.repositoryName, owner:dendron.theResult.repositoryOwner};
                 setTree(dendron.theResult.hierarchy);
                 $isFavoriteRepository = true;
                 push(`#/tree/${dendron.theResult.repositoryId}`);

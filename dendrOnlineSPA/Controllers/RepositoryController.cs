@@ -65,6 +65,7 @@ public class RepositoryController : DendronController
             dendron.TheResult.RepositoryId = repositoryId;
             var favorite = HttpContext.GetFavorite();
             dendron.TheResult.IsFavoriteRepository = favorite != null && favorite.Repository == repositoryId;
+            
         }
         return dendron;
     }
@@ -82,7 +83,6 @@ public class RepositoryController : DendronController
         
         if (favorite != null)
         {
-           
             var repository = await client.Repository.Get(favorite.Repository);
             Logger.LogInformation($"loading favorite repository {repository.Name} for user {currentUser.Name}");
             HttpContext.SetRepositoryId(favorite.Repository);
@@ -90,6 +90,8 @@ public class RepositoryController : DendronController
             dendron.TheResult.RepositoryId = favorite.Repository;
             dendron.TheResult.IsFavoriteRepository = true;
             dendron.TheResult.RepositoryName = repository.Name;
+            var user = await client.User.Current();
+            dendron.TheResult.RepositoryOwner = user.Login;
             return dendron;
         }
         else
@@ -171,7 +173,9 @@ public class RepositoryController : DendronController
         if (string.IsNullOrEmpty(repositoryList))
         {
             var repos = await client.Repository.GetAllForCurrent();
-            var repositories = repos.Select(x => new GhRepository(x.Id, x.Name)).ToList();
+            var user = await client.User.Current();
+            var owner = user.Login;
+            var repositories = repos.Select(x => new GhRepository(x.Id, x.Name,owner)).ToList();
             repositoryList = JsonSerializer.Serialize(repositories);
             HttpContext?.Session?.SetString("repositories", repositoryList);
             return repositories;
