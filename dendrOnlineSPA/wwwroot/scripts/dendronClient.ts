@@ -204,6 +204,24 @@ export const DendronClient = {
     catch(e) {
       console.log(e);
     }
-  }
+  },
+
+  addImage : async (repositoryId: string, image: File, type: string): Promise<BackEndResult<{ok:boolean}>> => {
+    try {
+      const arrayBuffer = await image.arrayBuffer();
+      const formData = new FormData();
+      formData.append("image", image);
+      const res = await fetch(`/image/${repositoryId}`, {
+        credentials: 'include',
+        method: "POST",
+        body: formData
+      });
+      
+      return {theResult:{ok:true},code:BackEndResultCode.Ok,conflictCode:ConflictCode.NoConflict,isOk:true,errorMessage:""};
+    } catch (e) {
+
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
+    }
+  },
  
 };

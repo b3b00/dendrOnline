@@ -164,6 +164,16 @@ public class RepositoryController : DendronController
         }
         return tree;
     }
+
+    [HttpPost("/image/{repositoryId}")]
+    public async Task<IActionResult> AddImage(long repositoryId, IFormFile image)
+    {
+        var name = image.Name;
+        var contentType= image.ContentType;
+        var fileName = image.FileName;
+        Logger.LogInformation($"received file {name} withe fileName {fileName} of type {contentType}");
+        return Ok();
+    }
     
     
     

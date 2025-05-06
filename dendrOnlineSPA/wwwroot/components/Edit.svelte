@@ -258,6 +258,26 @@
         }
     }
 
+    let onPaste = async function(args:any) {
+
+        console.log("pasta", args);
+        const items = args.clipboardData.items;
+
+        for (let item of items) {
+            if (item.type.startsWith('image/')) {
+                item.getAsString((str) => {
+                    console.log("pasta", str);
+                });
+                console.log(item);
+                const file = item.getAsFile();
+                const result = await DendronClient.addImage($repository.id,file, item.type);
+                console.log(file);
+                const url = URL.createObjectURL(file);                    
+                break;
+            }
+        }
+    }
+
     let update = function () {
         checkIfLinkInsertionIsNeeded();
         if (note.body != content || note.header.description != description) {
@@ -355,7 +375,8 @@
     <span>
         <h1 contenteditable="true" style="display:inline" class="{titleStyle}" 
         bind:textContent={description} 
-        on:input={update}>{description}</h1>
+        on:input={update}
+        >{description}</h1>
     </span>
 
     <h1 on:click={deleteThisNote} on:keydown={deleteThisNote} role="button" tabindex="-1" style="display:inline;cursor:pointer"><Fa icon="{faTrashCan}" /></h1>
@@ -363,6 +384,6 @@
     <h1 on:click={save} on:keydown={save} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faFloppyDisk}" /></h1>
     <h1 on:click={undo} on:keydown={undo} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faUndo}" /></h1>
     <br>
-    <textarea bind:this={textInput} bind:value={content} rows="200" on:keyup={update}></textarea> 
+    <textarea on:paste={onPaste} bind:this={textInput} bind:value={content} rows="200" on:keyup={update}></textarea> 
     <br>
 </div>
