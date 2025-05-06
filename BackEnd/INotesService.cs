@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace BackEnd
 {
@@ -25,6 +26,8 @@ namespace BackEnd
         void SetAccessToken(string token);
 
         Task<Result<Dendron>> GetDendron();
+
+        Task AddImage(IFormFile file, string fileName);
 
     }
 }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Octokit;
 
 namespace BackEnd
@@ -15,6 +16,9 @@ namespace BackEnd
         public string UserName { get; set; }
         
         public abstract void SetRepository(string name, long id);
+        
+        public abstract Task AddImage(IFormFile file, string fileName);
+        
         public void SetUser(string name, long id)
         {
             UserId = id;

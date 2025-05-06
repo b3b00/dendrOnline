@@ -166,13 +166,38 @@ public class RepositoryController : DendronController
     }
 
     [HttpPost("/image/{repositoryId}")]
-    public async Task<IActionResult> AddImage(long repositoryId, IFormFile image)
+    public async Task<Result<string>> AddImage(long repositoryId, IFormFile image)
     {
-        var name = image.Name;
-        var contentType= image.ContentType;
-        var fileName = image.FileName;
-        Logger.LogInformation($"received file {name} withe fileName {fileName} of type {contentType}");
-        return Ok();
+        var name = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        string extension = ".png";
+        if (image.ContentType == "image/jpeg")
+        {
+            extension = ".jpg";
+        }
+
+        if (image.ContentType == "image/png")
+        {
+            extension = ".png";
+        }
+
+        if (image.ContentType == "image/bmp")
+        {
+            extension = ".bmp";
+        }
+        var fileName = name+extension;
+        
+        Logger.LogInformation($"received file {name} withe fileName {fileName} of type {image.ContentType}");
+        try
+        {
+            await NotesService.AddImage(image, fileName);
+            
+            return fileName;
+        }
+        catch (Exception ex)
+        {
+            return Result<string>.Error(ResultCode.InternalError, ex.Message);
+        }
+
     }
     
     

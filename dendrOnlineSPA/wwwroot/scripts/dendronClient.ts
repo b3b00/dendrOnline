@@ -206,7 +206,7 @@ export const DendronClient = {
     }
   },
 
-  addImage : async (repositoryId: string, image: File, type: string): Promise<BackEndResult<{ok:boolean}>> => {
+  addImage : async (repositoryId: string, image: File, type: string): Promise<BackEndResult<{filename:string}>> => {
     try {
       const arrayBuffer = await image.arrayBuffer();
       const formData = new FormData();
@@ -216,8 +216,12 @@ export const DendronClient = {
         method: "POST",
         body: formData
       });
-      
-      return {theResult:{ok:true},code:BackEndResultCode.Ok,conflictCode:ConflictCode.NoConflict,isOk:true,errorMessage:""};
+      if (res.status == 200)  {
+        const result = await res.json();
+        return result;
+      } else  {
+        return {theResult:{filename:""},code:BackEndResultCode.InternalError,conflictCode:ConflictCode.NoConflict,isOk:true,errorMessage:res.statusText};
+      }
     } catch (e) {
 
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);

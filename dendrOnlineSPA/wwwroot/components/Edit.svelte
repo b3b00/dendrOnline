@@ -271,8 +271,34 @@
                 console.log(item);
                 const file = item.getAsFile();
                 const result = await DendronClient.addImage($repository.id,file, item.type);
-                console.log(file);
-                const url = URL.createObjectURL(file);                    
+                console.log("image uploaded", result);
+                if (result.isOk) {
+                    console.log("pasta", result.theResult);
+                    var link = `![](assets/images/${result.theResult})`;
+                    // TODO insert text at the right position and give focus back to the textarea
+                    const range = window.getSelection();
+                    const { selectionStart: start, selectionEnd: end } = textInput;
+                    textInput.setRangeText(`${link}`);
+                    const newPosition = end+link.length;
+                    textInput.setSelectionRange(newPosition,newPosition);
+                    content = textInput.value;
+                    update();
+                    textInput.focus();
+                }
+                 else {
+                    modal.open(
+                        ErrorDialog,
+                        {
+                            message: `An error occured when uploading image : ${result.errorMessage} `
+                        },
+                        {
+                            closeButton: true,
+                            closeOnEsc: true,
+                            closeOnOuterClick: true
+                        }
+                    );
+                }
+
                 break;
             }
         }

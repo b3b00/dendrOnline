@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace BackEnd
 {
@@ -25,6 +27,11 @@ namespace BackEnd
 
         public override async Task<string> GetUserLogin() => "test";
 
+        public override async Task AddImage(IFormFile file, string fileName)
+        {
+            
+        }
+        
         public override void SetRepository(string name, long id)
         {
             RootDirectory = name;

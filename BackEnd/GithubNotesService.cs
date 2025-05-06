@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -7,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Octokit;
 using ProductHeaderValue = Octokit.ProductHeaderValue;
@@ -202,6 +204,52 @@ namespace BackEnd
         {
             var user = gitHubClient.User.Current();
             return user.Result.Login;
+        }
+        
+        public override async Task AddImage(IFormFile file, string fileName)
+        {
+            if (gitHubClient == null)
+            {
+                throw new InvalidOperationException(NoGitHubConnectionMessage);
+            }
+
+            // Vérifier si le dossier assets/images existe, sinon le créer
+            try
+            {
+                await gitHubClient.Repository.Content.GetAllContents(RepositoryId, "notes/assets/images");
+            }
+            catch (NotFoundException)
+            {
+                // Créer les dossiers requis
+                var createFolderRequest = new CreateFileRequest(
+                    "DendrOnline : images folder creation",
+                    "this folder contains images for notes",
+                    "main");
+
+                await gitHubClient.Repository.Content.CreateFile(
+                    RepositoryId,
+                    $"notes/assets/images/{fileName}",
+                    createFolderRequest);
+            }
+
+            // Convertir le fichier en base64
+            string base64Content;
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                base64Content = Convert.ToBase64String(memoryStream.ToArray());
+            }
+
+            // Téléverser le fichier vers GitHub
+            var createRequest = new CreateFileRequest(
+                $"DendrOnline : ajout de l'image {fileName}",
+                base64Content,
+                "main");
+
+            await gitHubClient.Repository.Content.CreateFile(
+                RepositoryId,
+                $"notes/assets/images/{fileName}",
+                createRequest);
         }
         
         #region tooling
