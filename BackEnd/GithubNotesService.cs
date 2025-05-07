@@ -142,6 +142,12 @@ namespace BackEnd
             var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, "notes");
             return contents.Where(x => x.Name.EndsWith(".md")).ToList();
         }
+        
+        public override async Task<Result<IList<ImageAsset>>> GetImages()
+        {
+            var contents = await gitHubClient.Repository.Content.GetAllContents(RepositoryId, "notes/assets/images");
+            return contents.Select(x => new ImageAsset(x.Name, x.DownloadUrl)).ToList();
+        }
 
         private async Task<Result<(bool exists, RepositoryContent content)>> NoteExists(string note)
         {
@@ -205,6 +211,7 @@ namespace BackEnd
             var user = gitHubClient.User.Current();
             return user.Result.Login;
         }
+
         
         public override async Task AddImage(IFormFile file, string fileName)
         {

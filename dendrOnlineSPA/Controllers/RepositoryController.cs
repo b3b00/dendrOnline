@@ -5,6 +5,7 @@ using dendrOnlinSPA.model;
 using GitHubOAuthMiddleWare;
 using Microsoft.AspNetCore.Mvc;
 using Octokit;
+using System.Collections.Generic;
 
 namespace dendrOnlineSPA.Controllers;
 
@@ -199,7 +200,13 @@ public class RepositoryController : DendronController
         }
 
     }
-    
+
+    [HttpGet("/images/{repositoryId}")]
+    public async Task<Result<IList<ImageAsset>>> GetImages(string repositoryId)
+    {
+        var result =  await NotesService.GetImages();
+        return Result<IList<ImageAsset>>.Ok(result.TheResult);
+    }
     
     
     public async Task<Result<IList<GhRepository>>> GetRepositories(GitHubClient client)

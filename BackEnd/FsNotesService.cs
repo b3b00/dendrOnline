@@ -31,7 +31,12 @@ namespace BackEnd
         {
             
         }
-        
+
+        public override async Task<Result<IList<ImageAsset>>> GetImages()
+        {
+            return  Result<IList<ImageAsset>>.Error(ResultCode.NotFound,ConflictCode.NoConflict,"no images");
+        }
+
         public override void SetRepository(string name, long id)
         {
             RootDirectory = name;

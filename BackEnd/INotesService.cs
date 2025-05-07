@@ -28,6 +28,8 @@ namespace BackEnd
         Task<Result<Dendron>> GetDendron();
 
         Task AddImage(IFormFile file, string fileName);
+        
+        Task<Result<IList<ImageAsset>>> GetImages();
 
     }
 }

@@ -39,6 +39,11 @@ public class StubNotesService : AsbtractNotesService
             return;
         }
 
+        public override async Task<Result<IList<ImageAsset>>> GetImages()
+        {
+            return  Result<IList<ImageAsset>>.Ok(new List<ImageAsset>());
+        }
+
         public override void SetAccessToken(string token)
         {
             ;
