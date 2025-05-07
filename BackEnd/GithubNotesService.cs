@@ -143,7 +143,7 @@ namespace BackEnd
             return contents.Where(x => x.Name.EndsWith(".md")).ToList();
         }
         
-        public override async Task<Result<IList<ImageAsset>>> GetImages(string repositoryId)
+        public override async Task<Result<IList<ImageAsset>>> GetImages(long repositoryId)
         {
             var contents = await gitHubClient.Repository.Content.GetAllContents(repositoryId, "notes/assets/images");
             return contents.Select(x => new ImageAsset(x.Name, x.DownloadUrl)).ToList();

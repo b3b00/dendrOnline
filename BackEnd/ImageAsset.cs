@@ -2,9 +2,10 @@ namespace BackEnd
 {
     public class ImageAsset
     {
-        public ImageAsset(string argName, string argDownloadUrl)
+        public ImageAsset(string name, string url)
         {
-            throw new System.NotImplementedException();
+            Name = name;
+            Url = url;
         }
 
         public string Name { get; set; }
