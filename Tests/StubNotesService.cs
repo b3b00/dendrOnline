@@ -39,7 +39,7 @@ public class StubNotesService : AsbtractNotesService
             return;
         }
 
-        public override async Task<Result<IList<ImageAsset>>> GetImages()
+        public override async Task<Result<IList<ImageAsset>>> GetImages(string repositoryId)
         {
             return  Result<IList<ImageAsset>>.Ok(new List<ImageAsset>());
         }

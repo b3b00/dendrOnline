@@ -101,6 +101,11 @@ export class Dendron {
   isFavoriteRepository:boolean;  
 }
 
+export class ImageAsset {
+  name: string;
+  url: string;
+}
+
 export interface NoteFilter {
   filter : string,
   searchInNotes : boolean

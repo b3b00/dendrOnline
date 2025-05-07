@@ -8,6 +8,7 @@ import {
   ConflictCode,
   HierarchyAndSha,
   Favorite,
+  ImageAsset,
 } from "./types";
 
 const ErrorResult = <T>(error: string, code: BackEndResultCode): BackEndResult<T> => {
@@ -65,6 +66,25 @@ export const DendronClient = {
       }
       let dendron = await res.json();
       return dendron;
+    } catch (e) {
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
+    }
+  },
+
+  GetImages : async(repositoryId : string): Promise<BackEndResult<{images:ImageAsset[]}>> => {
+    try {
+      const res = await fetch(`/images/${repositoryId}`,{credentials: 'include'});
+      if (res.status == 204) {
+        return {
+          theResult : undefined,
+          isOk:false,
+          code: BackEndResultCode.NotFound,
+          conflictCode:ConflictCode.NoConflict,
+          errorMessage:`no images`
+        };
+      }      
+      let images = await res.json();
+      return images;
     } catch (e) {
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }

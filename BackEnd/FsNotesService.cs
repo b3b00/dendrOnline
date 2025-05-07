@@ -32,7 +32,7 @@ namespace BackEnd
             
         }
 
-        public override async Task<Result<IList<ImageAsset>>> GetImages()
+        public override async Task<Result<IList<ImageAsset>>> GetImages(string repositoryId)
         {
             return  Result<IList<ImageAsset>>.Error(ResultCode.NotFound,ConflictCode.NoConflict,"no images");
         }
