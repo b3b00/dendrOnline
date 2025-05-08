@@ -5,6 +5,7 @@ using dendrOnlinSPA.model;
 using GitHubOAuthMiddleWare;
 using Microsoft.AspNetCore.Mvc;
 using Octokit;
+using System.Collections.Generic;
 
 namespace dendrOnlineSPA.Controllers;
 
@@ -65,6 +66,7 @@ public class RepositoryController : DendronController
             dendron.TheResult.RepositoryId = repositoryId;
             var favorite = HttpContext.GetFavorite();
             dendron.TheResult.IsFavoriteRepository = favorite != null && favorite.Repository == repositoryId;
+            
         }
         return dendron;
     }
@@ -82,7 +84,6 @@ public class RepositoryController : DendronController
         
         if (favorite != null)
         {
-           
             var repository = await client.Repository.Get(favorite.Repository);
             Logger.LogInformation($"loading favorite repository {repository.Name} for user {currentUser.Name}");
             HttpContext.SetRepositoryId(favorite.Repository);
@@ -90,6 +91,8 @@ public class RepositoryController : DendronController
             dendron.TheResult.RepositoryId = favorite.Repository;
             dendron.TheResult.IsFavoriteRepository = true;
             dendron.TheResult.RepositoryName = repository.Name;
+            var user = await client.User.Current();
+            dendron.TheResult.RepositoryOwner = user.Login;
             return dendron;
         }
         else
@@ -162,7 +165,48 @@ public class RepositoryController : DendronController
         }
         return tree;
     }
-    
+
+    [HttpPost("/image/{repositoryId}")]
+    public async Task<Result<string>> AddImage(long repositoryId, IFormFile image)
+    {
+        var name = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        string extension = ".png";
+        if (image.ContentType == "image/jpeg")
+        {
+            extension = ".jpg";
+        }
+
+        if (image.ContentType == "image/png")
+        {
+            extension = ".png";
+        }
+
+        if (image.ContentType == "image/bmp")
+        {
+            extension = ".bmp";
+        }
+        var fileName = name+extension;
+        
+        Logger.LogInformation($"received file {name} withe fileName {fileName} of type {image.ContentType}");
+        try
+        {
+            await NotesService.AddImage(image, fileName);
+            
+            return fileName;
+        }
+        catch (Exception ex)
+        {
+            return Result<string>.Error(ResultCode.InternalError, ex.Message);
+        }
+
+    }
+
+    [HttpGet("/images/{repositoryId}")]
+    public async Task<Result<IList<ImageAsset>>> GetImages(string repositoryId)
+    {
+        var result =  await NotesService.GetImages();
+        return Result<IList<ImageAsset>>.Ok(result.TheResult);
+    }
     
     
     public async Task<Result<IList<GhRepository>>> GetRepositories(GitHubClient client)
@@ -171,7 +215,9 @@ public class RepositoryController : DendronController
         if (string.IsNullOrEmpty(repositoryList))
         {
             var repos = await client.Repository.GetAllForCurrent();
-            var repositories = repos.Select(x => new GhRepository(x.Id, x.Name)).ToList();
+            var user = await client.User.Current();
+            var owner = user.Login;
+            var repositories = repos.Select(x => new GhRepository(x.Id, x.Name,owner)).ToList();
             repositoryList = JsonSerializer.Serialize(repositories);
             HttpContext?.Session?.SetString("repositories", repositoryList);
             return repositories;

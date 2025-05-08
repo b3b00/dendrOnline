@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BackEnd;
+using Microsoft.AspNetCore.Http;
 using SharpFileSystem;
 using SharpFileSystem.FileSystems;
 
@@ -23,10 +24,24 @@ public class StubNotesService : AsbtractNotesService
         }
        
         public override async Task<string> GetRepositoryName() => "repository";
-        
+        public override async Task<string> GetUserLogin()
+        {
+            return "user";
+        }
+
         public override void SetRepository(string name, long id)
         {
             RootDirectory = name;
+        }
+
+        public override async Task AddImage(IFormFile file, string fileName)
+        {
+            return;
+        }
+
+        public override async Task<Result<IList<ImageAsset>>> GetImages(string repositoryId)
+        {
+            return  Result<IList<ImageAsset>>.Ok(new List<ImageAsset>());
         }
 
         public override void SetAccessToken(string token)

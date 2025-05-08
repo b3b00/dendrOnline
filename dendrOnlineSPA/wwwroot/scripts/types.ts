@@ -39,6 +39,7 @@ export interface TaggedNote {
 export interface Repository {
   id: string;
   name: string;
+  owner:string;
 }
 
 export interface SelectionItem {
@@ -96,7 +97,13 @@ export class Dendron {
   notes: Note[];
   repositoryId: string;
   repositoryName: string;
+  repositoryOwner: string;
   isFavoriteRepository:boolean;  
+}
+
+export class ImageAsset {
+  name: string;
+  url: string;
 }
 
 export interface NoteFilter {

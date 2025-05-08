@@ -161,7 +161,7 @@
             content = oldNote.body;
             description = oldNote.header.description;
             titleStyle = "normal";
-            floppyVisibility = "display:none";        
+            floppyVisibility = "display:none";
         }
     }
 
@@ -255,6 +255,52 @@
             insertLink();
         }
         else {
+        }
+    }
+
+    let onPaste = async function(args:any) {
+
+        console.log("pasta", args);
+        const items = args.clipboardData.items;
+
+        for (let item of items) {
+            if (item.type.startsWith('image/')) {
+                item.getAsString((str) => {
+                    console.log("pasta", str);
+                });
+                console.log(item);
+                const file = item.getAsFile();
+                const result = await DendronClient.addImage($repository.id,file, item.type);
+                console.log("image uploaded", result);
+                if (result.isOk) {
+                    console.log("pasta", result.theResult);
+                    var link = `![](assets/images/${result.theResult})`;
+                    // TODO insert text at the right position and give focus back to the textarea
+                    const range = window.getSelection();
+                    const { selectionStart: start, selectionEnd: end } = textInput;
+                    textInput.setRangeText(`${link}`);
+                    const newPosition = end+link.length;
+                    textInput.setSelectionRange(newPosition,newPosition);
+                    content = textInput.value;
+                    update();
+                    textInput.focus();
+                }
+                 else {
+                    modal.open(
+                        ErrorDialog,
+                        {
+                            message: `An error occured when uploading image : ${result.errorMessage} `
+                        },
+                        {
+                            closeButton: true,
+                            closeOnEsc: true,
+                            closeOnOuterClick: true
+                        }
+                    );
+                }
+
+                break;
+            }
         }
     }
 
@@ -355,7 +401,8 @@
     <span>
         <h1 contenteditable="true" style="display:inline" class="{titleStyle}" 
         bind:textContent={description} 
-        on:input={update}>{description}</h1>
+        on:input={update}
+        >{description}</h1>
     </span>
 
     <h1 on:click={deleteThisNote} on:keydown={deleteThisNote} role="button" tabindex="-1" style="display:inline;cursor:pointer"><Fa icon="{faTrashCan}" /></h1>
@@ -363,6 +410,6 @@
     <h1 on:click={save} on:keydown={save} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faFloppyDisk}" /></h1>
     <h1 on:click={undo} on:keydown={undo} role="button" tabindex="-1" style="{floppyVisibility};cursor:pointer"><Fa icon="{faUndo}" /></h1>
     <br>
-    <textarea bind:this={textInput} bind:value={content} rows="200" on:keyup={update}></textarea> 
+    <textarea on:paste={onPaste} bind:this={textInput} bind:value={content} rows="200" on:keyup={update}></textarea> 
     <br>
 </div>

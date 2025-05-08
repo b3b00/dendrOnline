@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Octokit;
 
 namespace BackEnd
@@ -15,6 +16,9 @@ namespace BackEnd
         public string UserName { get; set; }
         
         public abstract void SetRepository(string name, long id);
+        
+        public abstract Task AddImage(IFormFile file, string fileName);
+        
         public void SetUser(string name, long id)
         {
             UserId = id;
@@ -22,6 +26,8 @@ namespace BackEnd
         }
 
         public abstract void SetAccessToken(string token);
+        
+        public abstract Task<Result<IList<ImageAsset>>> GetImages(string repositoryId);
 
         public abstract Task<Result<(string content, string sha)>> GetContent(string name);
 
@@ -89,6 +95,8 @@ namespace BackEnd
         
         public abstract Task<string> GetRepositoryName();
 
+        public abstract Task<string> GetUserLogin();
+        
         public async Task<Result<Dendron>> GetDendron()
         {
             var noteNames = await GetNotes();
@@ -111,7 +119,9 @@ namespace BackEnd
             }
 
             hierarchy.TheResult.Name = await GetRepositoryName();
-            var dendron = new Dendron(hierarchy.TheResult);
+
+            var owner = await GetUserLogin();
+            var dendron = new Dendron(hierarchy.TheResult, owner);
 
             foreach (var noteName in noteNames.TheResult)
             {

@@ -86,8 +86,8 @@
     }
 
     let preprocessLinks = function(markdown:string) {
-        const regex = /\[\[(.*)\]\]/ig;
-        const matches = markdown.matchAll(regex);
+        const linkRegex = /\[\[(.*)\]\]/ig;
+        const matches = markdown.matchAll(linkRegex);
         let processed = markdown;
         for (let match of matches) {
             const name = match[1];
@@ -95,6 +95,19 @@
             var note = getNoteFromStore(match[1]);  
             var description = removeLeadingAndTrailingQuotes(note.note.header.description);
             processed = processed.replaceAll(tag,`[${description}](#/view/${name})`);
+        }
+
+        const imgRegex = /!\[\]\((.*)\)/ig;
+        const imgMatches = processed.matchAll(imgRegex);
+        for (let match of imgMatches) {
+            const name = match[1];
+            const tag = match[0]
+
+            var images = `markdown : ![](https://raw.githubusercontent.com/${$repository.owner}/${$repository.name}/refs/heads/main/notes/${name})<br>
+            html : <img src="https://raw.githubusercontent.com/${$repository.owner}/${$repository.name}/refs/heads/main/notes/${name}"/>`
+
+            //processed = processed.replaceAll(tag,`![](https://raw.githubusercontent.com/${$repository.owner}/${$repository.name}/refs/heads/main/notes/${name})`);
+            processed = processed.replaceAll(tag,images);
         }
 
         return processed;

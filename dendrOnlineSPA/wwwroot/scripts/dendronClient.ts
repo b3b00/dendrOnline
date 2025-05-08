@@ -8,6 +8,7 @@ import {
   ConflictCode,
   HierarchyAndSha,
   Favorite,
+  ImageAsset,
 } from "./types";
 
 const ErrorResult = <T>(error: string, code: BackEndResultCode): BackEndResult<T> => {
@@ -65,6 +66,25 @@ export const DendronClient = {
       }
       let dendron = await res.json();
       return dendron;
+    } catch (e) {
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
+    }
+  },
+
+  GetImages : async(repositoryId : string): Promise<BackEndResult<{images:ImageAsset[]}>> => {
+    try {
+      const res = await fetch(`/images/${repositoryId}`,{credentials: 'include'});
+      if (res.status == 204) {
+        return {
+          theResult : undefined,
+          isOk:false,
+          code: BackEndResultCode.NotFound,
+          conflictCode:ConflictCode.NoConflict,
+          errorMessage:`no images`
+        };
+      }      
+      let images = await res.json();
+      return images;
     } catch (e) {
       return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
     }
@@ -204,6 +224,28 @@ export const DendronClient = {
     catch(e) {
       console.log(e);
     }
-  }
+  },
+
+  addImage : async (repositoryId: string, image: File, type: string): Promise<BackEndResult<{filename:string}>> => {
+    try {
+      const arrayBuffer = await image.arrayBuffer();
+      const formData = new FormData();
+      formData.append("image", image);
+      const res = await fetch(`/image/${repositoryId}`, {
+        credentials: 'include',
+        method: "POST",
+        body: formData
+      });
+      if (res.status == 200)  {
+        const result = await res.json();
+        return result;
+      } else  {
+        return {theResult:{filename:""},code:BackEndResultCode.InternalError,conflictCode:ConflictCode.NoConflict,isOk:true,errorMessage:res.statusText};
+      }
+    } catch (e) {
+
+      return ErrorResult(`Error : ${e.message}`, BackEndResultCode.InternalError);
+    }
+  },
  
 };

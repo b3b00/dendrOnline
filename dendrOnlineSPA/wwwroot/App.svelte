@@ -10,10 +10,11 @@
  
     // components
     import Fa from 'svelte-fa/src/fa.svelte';
-    import { faList, faPen, faEye, faFolderTree, faRefresh } from '@fortawesome/free-solid-svg-icons/index.js';
+    import { faList, faPen, faEye, faFolderTree, faRefresh, faImages } from '@fortawesome/free-solid-svg-icons/index.js';
     import Router, { push } from 'svelte-spa-router'
     import Repositories from './components/Repositories.svelte'
-    import Tree from './components/Tree.svelte'    
+    import Tree from './components/Tree.svelte'
+    import Assets from './components/Assets.svelte'
     import EditWrapper from './components/EditWrapper.svelte';
     import ViewWrapper from './components/ViewWrapper.svelte';
     import ConfirmDialog from './components/ConfirmDialog.svelte';
@@ -35,6 +36,7 @@
         '/view/:id': ViewWrapper,
         '/tree/:id/:refresh?': Tree,
         '/new/:id': EditWrapper,
+        '/assets': Assets,
 
         // Catch-all
         // This is optional, but if present it must be the last
@@ -65,7 +67,7 @@ ${editedNotes}`;
             modal.open(
                 ConfirmDialog,
                 {
-                    message: message,                                
+                    message: message,
                     hasForm: true,
                     oncancel: async () => {},
                     onOkay: doRefresh
@@ -100,6 +102,7 @@ ${editedNotes}`;
             {#if $repository && $repository.id}
                 <li><a href="#/tree/{$repository.id}/refresh" on:click={refresh}><Fa icon="{faRefresh}"/><span style="margin-left: 5px">Refresh tree</span></a></li>
                 <li><a href="#/tree/{$repository.id}" ><Fa icon="{faFolderTree}"/><span style="margin-left: 5px">Tree</span></a></li>
+                <li><a href="#/assets"><Fa icon="{faImages}"/><span style="margin-left: 5px">Assets</span></a></li>
                 {/if}
             {#if $noteId}
             <li>
