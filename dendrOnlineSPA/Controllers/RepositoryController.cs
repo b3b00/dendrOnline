@@ -202,9 +202,9 @@ public class RepositoryController : DendronController
     }
 
     [HttpGet("/images/{repositoryId}")]
-    public async Task<Result<IList<ImageAsset>>> GetImages(string repositoryId)
+    public async Task<Result<IList<ImageAsset>>> GetImages(long repositoryId)
     {
-        var result =  await NotesService.GetImages();
+        var result =  await NotesService.GetImages(repositoryId);
         return Result<IList<ImageAsset>>.Ok(result.TheResult);
     }
     

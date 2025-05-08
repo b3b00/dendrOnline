@@ -71,7 +71,7 @@ export const DendronClient = {
     }
   },
 
-  GetImages : async(repositoryId : string): Promise<BackEndResult<{images:ImageAsset[]}>> => {
+  GetImages : async(repositoryId : string): Promise<BackEndResult<ImageAsset[]>> => {
     try {
       const res = await fetch(`/images/${repositoryId}`,{credentials: 'include'});
       if (res.status == 204) {

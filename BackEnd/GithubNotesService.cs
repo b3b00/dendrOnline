@@ -9,7 +9,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using Octokit;
 using ProductHeaderValue = Octokit.ProductHeaderValue;
 
@@ -143,7 +142,7 @@ namespace BackEnd
             return contents.Where(x => x.Name.EndsWith(".md")).ToList();
         }
         
-        public override async Task<Result<IList<ImageAsset>>> GetImages(string repositoryId)
+        public override async Task<Result<IList<ImageAsset>>> GetImages(long repositoryId)
         {
             var contents = await gitHubClient.Repository.Content.GetAllContents(repositoryId, "notes/assets/images");
             return contents.Select(x => new ImageAsset(x.Name, x.DownloadUrl)).ToList();

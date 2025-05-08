@@ -29,7 +29,7 @@ namespace BackEnd
 
         Task AddImage(IFormFile file, string fileName);
         
-        Task<Result<IList<ImageAsset>>> GetImages(string repositoryId);
+        Task<Result<IList<ImageAsset>>> GetImages(long repositoryId);
 
     }
 }

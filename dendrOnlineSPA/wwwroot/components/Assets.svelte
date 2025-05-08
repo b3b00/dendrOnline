@@ -18,10 +18,11 @@
     import type { Context } from 'svelte-simple-modal';
     import ErrorDialog from './ErrorDialog.svelte';
     import CodeMarkdown from './CodeMarkdown.svelte';
-    import type { ViewContext } from '../scripts/types';
+    import type { ViewContext, ImageAsset } from '../scripts/types';
 
     import 'highlight.js/styles/github-dark.css';
   import TaskRenderer from './TaskRenderer.svelte';
+  import Asset from './Asset.svelte';
   
    
 
@@ -47,10 +48,29 @@
         getNoteId : getNoteId,
     });
 
-    
+    let assets: ImageAsset[] = [];
     
     onMount(async () => {
-        console.log("get assets (name + url)");
+        let assetsResult = await DendronClient.GetImages($repository.id);
+if (assetsResult.isOk) {
+            assets = assetsResult.theResult;
+        }
+        else {
+            modal.open(
+                ErrorDialog,
+                {
+                    message: `An error occured: ${assetsResult.errorMessage} `
+                },
+                {
+                    closeButton: true,
+                    closeOnEsc: true,
+                    closeOnOuterClick: true,
+                }
+            );
+        }
     });
 </script>
 <h2>here will soon be an assets management.</h2>
+{#each assets as asset}
+    <Asset {asset} />
+{/each}

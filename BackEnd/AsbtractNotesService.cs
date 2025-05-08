@@ -27,7 +27,7 @@ namespace BackEnd
 
         public abstract void SetAccessToken(string token);
         
-        public abstract Task<Result<IList<ImageAsset>>> GetImages(string repositoryId);
+        public abstract Task<Result<IList<ImageAsset>>> GetImages(long repositoryId);
 
         public abstract Task<Result<(string content, string sha)>> GetContent(string name);
 
