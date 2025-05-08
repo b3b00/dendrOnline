@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubOAuthMiddleWare", "Gi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dendrOnlineSPA", "dendrOnlineSPA\dendrOnlineSPA.csproj", "{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Play", "Play\Play.csproj", "{F600B676-2BA5-4993-9947-7E2EFFCE7B04}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,9 +40,5 @@ Global
 		{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C7105CA-FA8F-458D-BD4D-8D94BB11E7B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F600B676-2BA5-4993-9947-7E2EFFCE7B04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F600B676-2BA5-4993-9947-7E2EFFCE7B04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F600B676-2BA5-4993-9947-7E2EFFCE7B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F600B676-2BA5-4993-9947-7E2EFFCE7B04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
