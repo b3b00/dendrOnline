@@ -31,7 +31,7 @@ COPY --from=build-front-env /dendrOnlineSPA/wwwroot /dendrOnlineSPA/wwwroot
 RUN dotnet publish --no-restore -c Release -o out ./dendrOnlineSPA
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /
 # copy application
 COPY --from=build-back-env /out .
