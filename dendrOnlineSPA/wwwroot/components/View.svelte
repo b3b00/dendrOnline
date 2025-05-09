@@ -103,8 +103,7 @@
             const name = match[1];
             const tag = match[0]
 
-            var images = `markdown : ![](https://raw.githubusercontent.com/${$repository.owner}/${$repository.name}/refs/heads/main/notes/${name})<br>
-            html : <img src="https://raw.githubusercontent.com/${$repository.owner}/${$repository.name}/refs/heads/main/notes/${name}"/>`
+            var images = `![](https://raw.githubusercontent.com/${$repository.owner}/${$repository.name}/refs/heads/main/notes/${name})<br>`
 
             //processed = processed.replaceAll(tag,`![](https://raw.githubusercontent.com/${$repository.owner}/${$repository.name}/refs/heads/main/notes/${name})`);
             processed = processed.replaceAll(tag,images);
