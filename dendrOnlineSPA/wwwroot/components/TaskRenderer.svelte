@@ -20,7 +20,13 @@ let id: string;
 const modal = getContext<Context>('simple-modal');
 
 onMount(async () => {
-    id = await TaskToggler.hashItem(text);
+    id = await TaskToggler.hashItem(text);    
+    if (task) {
+    console.log(`RENDERER.onMount() :: todo item :>${text}< with id:>${id}< - chekced:>${checked}<`);
+    }
+    else {
+        console.log(`RENDERER.onMount() :: item :>${text}< with id :>${id}<`);
+    }
 })
 
 
@@ -34,6 +40,7 @@ let toggle = async () => {
         note = getDraftNote(noteId);
     }
     if (note) {
+        console.log(`RENDERED.toggle() trying to toggle note :>${text}> with id:>${id}< body:>${note.body}<`)
         let content = await TaskToggler.Toggle(text, id, note.body);
         note.body = note.body = content;
         updateNote(noteId, note);

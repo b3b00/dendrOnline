@@ -21,13 +21,18 @@ function Toggle(item : string) {
     return function(tree) {
       const hash = hashItem(item);
       visit(tree, "listItem", (node) => {
+        console.log(`visit node `,node);
         let thisItem = node.children[0].children[0].value;
+        
         let thisHash = hashItem(thisItem);
+       console.log(`TOGGLER : visit item :>${thisItem}< with hash :>${thisHash}<`) 
         if (hash === null || hash == thisHash) {
+          console.log(`TOGGLER : found item :>${thisItem}< with hash:>${thisHash}<`)
           node.children[0].children[0].value =
             node.children[0].children[0].value;
 
           if (node.checked) {
+            console.log(`TOGGLER : toggling ${thisItem} to unchecked`);
             node.checked = false;
           } else {
             node.checked = true;
