@@ -40,7 +40,6 @@ let toggle = async () => {
         note = getDraftNote(noteId);
     }
     if (note) {
-        console.log(`RENDERED.toggle() trying to toggle note :>${text}> with id:>${id}< body:>${note.body}<`)
         let content = await TaskToggler.Toggle(text, id, note.body);
         note.body = note.body = content;
         updateNote(noteId, note);
@@ -53,7 +52,6 @@ let toggle = async () => {
         else {
             modal.show(ErrorDialog, { title: 'Error', message: newTree.errorMessage });
         }
-        
     }
 }
 
