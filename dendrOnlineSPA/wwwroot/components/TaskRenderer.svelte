@@ -20,7 +20,13 @@ let id: string;
 const modal = getContext<Context>('simple-modal');
 
 onMount(async () => {
-    id = await TaskToggler.hashItem(text);
+    id = await TaskToggler.hashItem(text);    
+    if (task) {
+    console.log(`RENDERER.onMount() :: todo item :>${text}< with id:>${id}< - chekced:>${checked}<`);
+    }
+    else {
+        console.log(`RENDERER.onMount() :: item :>${text}< with id :>${id}<`);
+    }
 })
 
 
@@ -46,7 +52,6 @@ let toggle = async () => {
         else {
             modal.show(ErrorDialog, { title: 'Error', message: newTree.errorMessage });
         }
-        
     }
 }
 
